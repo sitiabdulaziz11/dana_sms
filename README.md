@@ -15,7 +15,7 @@ A web-based student management system developed for Dana Academy to help streaml
 
 | Frontend        | Backend         | Database      | Others              |
 |-----------------|------------------|---------------|---------------------|
-| React           | Flask (Python)   | MySQL / SQLite| Axios, Bootstrap    |
+| HTML, CSS, JS           | Flask (Python)   | MySQL / SQLite| Axios, Bootstrap May be later with React   |
 
 ## 📁 Project Structure
 
