@@ -15,4 +15,14 @@ class Teacher(models.Model):
     image_file = models.ImageField()
     address = models.CharField(max_length=60)
     hiring_date = models.DateField(auto_now_add=True)
-    phone_no = models.IntegerField()
+    # phone_no = models.IntegerField() ?
+
+
+class PhoneNumber(models.Model):
+    """Phone number model
+    """
+    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE, related_name='phone_numbers')
+    number = models.CharField(max_length=60)
+
+    # grade and section, what cours/subject, result of subject,
+    # dose he/she teach, student got from grade and section, parent and admin may be, cv and id/pasport later

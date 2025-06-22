@@ -18,7 +18,11 @@ class Student(models.Model):
     address = models.CharField(max_length=60)
     registration_date = models.DateField(auto_now_add=True)
 
+    # Relations
+    parent = models.ForignKey(Patent, on_delete=models.CASCADE)
+
     # phone_no from parent or? grade, section other separet table or?, email , password good or?
+    # result, teachers, subjects, admin and parent.
 
     # def __str__(self):
     #     return f"{self.first_name} {self.last_name}"

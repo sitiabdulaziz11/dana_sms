@@ -1,3 +1,15 @@
-which should i do, should i use deferent app for each entity like student, parent and others or and why?
+create comman app, relate them and see steps from max
 
-how to relate , subject, teacher, grade, section, result,(admin is it requer?) 
+how to relate , subject, teacher, grade, section, result,(admin is it requer?)
+
+i have this models, what should i do next?
+
+function to add/sum, sub.... , wole views
+
+views
+url
+templates and css
+models
+admin
+r/n
+forms
