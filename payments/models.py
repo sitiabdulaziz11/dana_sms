@@ -17,7 +17,7 @@ MONTH_CHOICES = [
 ]
 PAYMENT_STATUS_CHOICES = [
         ('paid', 'Paid'),
-        ('not_paid', 'Not Paid'),
+        ('pending', 'Pending'),
     ]
 
 PAYMENT_TYPE_CHOICES = [
@@ -33,10 +33,10 @@ class Payment(models.Model):
     amount = models.FloatField()
     debited_date = models.DateField(auto_now_add=True)
     debited_month = models.CharField(max_length=120, choices=MONTH_CHOICES)
-    payment_type= models.CharField()  # monthly or for after class redding
+    payment_type= models.CharField(max_length=120, choices=PAYMENT_TYPE_CHOICES )  # monthly or for after class redding
     payment_status = models.CharField(max_length=10,
         choices=PAYMENT_STATUS_CHOICES,
-        default='not_paid')  # payid or not payid
+        default='pending')  # payid or not payid
  
     # Relation with Payment model
 student = models.ForeignKey('StudentRegistration', on_delete=models.CASCADE, related_name='payments')

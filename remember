@@ -1,6 +1,5 @@
 
-start on payment_type two model or not?
-
+?
 create comman app, relate them and see steps from max
 
 how to relate , subject, teacher, grade, section, result,(admin is it requer?)
@@ -16,3 +15,5 @@ models
 admin
 r/n
 forms
+
+start on payment_type two model or not
