@@ -62,3 +62,12 @@ class SubjectResult(models.Model):
     student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
+
+    def calculate_total_score(self):
+        components = [
+            self.test1_score, self.test2_score, self.test3_score,
+            self.assignment, self.worksheet, self.mid_exam,
+            self.exer_book, self.final_exam
+        ]
+        self.total_score = sum(filter(None, components)) if any(components) else 0
+        self.save()

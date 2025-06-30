@@ -38,6 +38,8 @@ class Payment(models.Model):
         choices=PAYMENT_STATUS_CHOICES,
         default='pending')  # payid or not payid
  
-    # Relation with Payment model
-student = models.ForeignKey('StudentRegistration', on_delete=models.CASCADE, related_name='payments')
+    # Relation with student model
+    student = models.ForeignKey('StudentRegistration', on_delete=models.CASCADE, related_name='payments')
 
+    def __str__(self):
+        return f"{self.payer_name} - {self.student} - {self.debited_month} - {self.payment_type} - {self.payment_status}, {self.debited_date}"

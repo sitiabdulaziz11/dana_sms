@@ -1,12 +1,28 @@
 
-?
-create comman app, relate them and see steps from max
+
+
 
 how to relate , subject, teacher, grade, section, result,(admin is it requer?)
 
 i have this models, what should i do next?
 
 function to add/sum, sub.... , wole views
+
+.order_by('debited_month')
+
+why i do all this from django.contrib import admin
+from .models import Payment
+
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ('payer_name', 'debited_month', 'payment_type', 'payment_status', 'amount_paid')
+    list_filter = ('payment_type', 'payment_status', 'debited_month')
+    search_fields = ('payer_name',)
+    ordering = ('-debited_month',)
+    list_editable = ('payment_status',)
+
+admin.site.register(Payment, PaymentAdmin)?
+
+HOW TO Export this to PDF/Excel?
 
 views
 url
@@ -17,3 +33,4 @@ r/n
 forms
 
 start on payment_type two model or not
+create comman app, relate them
