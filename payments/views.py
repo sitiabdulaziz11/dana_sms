@@ -6,6 +6,14 @@ from .models import MONTH_CHOICES
 # Create your views here.
 
 
+
+
+
+
+
+
+
+
 def unpaid_monthly_payments(request):
     """To display unpaid and number of unpaid srudents.
     """
