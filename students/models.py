@@ -8,7 +8,7 @@ from parents.models import Parent
 class StudentRegistration(models.Model):
     """Studentes information.
     """
-    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
     first_name = models.CharField(max_length=100)
     middlename = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -25,10 +25,10 @@ class StudentRegistration(models.Model):
     nationality = models.CharField(max_length=50)
 
     # Relations
-    parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
+    # parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
 
     # phone_no from parent or? grade, section other separet table or?, email , password good or?
     # result, teachers, subjects, admin and parent.
 
-    # def __str__(self):
-    #     return f"{self.first_name} {self.last_name}"
+    def __str__(self):
+        return f"{self.first_name} {self.middlename} {self.last_name}"
