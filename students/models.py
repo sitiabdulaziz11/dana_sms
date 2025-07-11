@@ -1,9 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
+import pycountry
 
 from parents.models import Parent
 
 # Create your models here.
+
+gender_choice = [
+    ('male', 'Male'),
+    ('female','Female'),
+    ('other', 'Other'),
+]
+
+COUNTRY_CHOICES = sorted([(country.name, country.name) for country in pycountry.countries])
+
 
 class StudentRegistration(models.Model):
     """Studentes information.
@@ -12,7 +22,7 @@ class StudentRegistration(models.Model):
     first_name = models.CharField(max_length=100)
     middlename = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    gender = models.CharField(max_length=15)
+    gender = models.CharField(max_length=15, choices=gender_choice)
     # email = models.EmailField(max_length=254, unique=True)
     birth_date = models.DateField(null=True, blank=True)
     age = models.IntegerField()
@@ -22,13 +32,19 @@ class StudentRegistration(models.Model):
     kebele_wereda = models.CharField(max_length=50)
     kfleketema = models.CharField(max_length=50)
     hous_number = models.CharField(max_length=50)
-    nationality = models.CharField(max_length=50)
+    nationality = models.CharField(max_length=70, choices=COUNTRY_CHOICES)
 
     # Relations
     # parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
 
     # phone_no from parent or? grade, section other separet table or?, email , password good or?
     # result, teachers, subjects, admin and parent.
+
+    class Meta:
+        """Meta class to custemize student registration class.
+        """
+        ordering = ['first_name']
+
 
     def __str__(self):
         return f"{self.first_name} {self.middlename} {self.last_name}"
