@@ -6,8 +6,34 @@ from students.models import StudentRegistration
 
 # Create your models here.
 
-MONTH_CHOICES = [
-    ('Registration', 'Registration'),
+# MONTH_CHOICES = [
+#     ('September', 'Meskerem/September'),
+#     ('October', 'Tqmt/October'),
+#     ('November', 'Hdar/November'),
+#     ('December', 'Tehsas/December'),
+#     ('January', 'Tr/January'),
+#     ('February', 'Yekatit/February'),
+#     ('March', 'Megabit/March'),
+#     ('April', 'Miyaziya/April'),
+#     ('May', 'Gnbot/May'),
+#     ('June', 'Sene/June'),
+# ]
+PAYMENT_STATUS_CHOICES = [
+        ('paid', 'Paid'),
+        ('pending', 'Pending'),
+    ]
+
+PAYMENT_TYPE_CHOICES = [
+        ('Registration', 'Registration'),
+        ('monthly', 'Monthly'),
+        ('after_class', 'After Class Reading'),
+    ]
+
+
+class Payment(models.Model):
+    """Model which handles payment status.
+    """
+    MONTH_CHOICES = [
     ('September', 'Meskerem/September'),
     ('October', 'Tqmt/October'),
     ('November', 'Hdar/November'),
@@ -19,30 +45,18 @@ MONTH_CHOICES = [
     ('May', 'Gnbot/May'),
     ('June', 'Sene/June'),
 ]
-PAYMENT_STATUS_CHOICES = [
-        ('paid', 'Paid'),
-        ('pending', 'Pending'),
-    ]
 
-PAYMENT_TYPE_CHOICES = [
-        ('monthly', 'Monthly'),
-        ('after_class', 'After Class Reading'),
-    ]
-
-
-class Payment(models.Model):
-    """Model which handles payment status.
-    """
     payer_name = models.CharField(max_length=120)   #?
     amount = models.FloatField()
     debited_date_time = models.DateTimeField(default=timezone.now)
     # debited_date = models.DateField(auto_now_add=True)
-    debited_month = models.CharField(max_length=120, choices=MONTH_CHOICES)
-    payment_type = models.CharField(max_length=120, choices=PAYMENT_TYPE_CHOICES,
+    debited_month = models.CharField(max_length=120, choices=MONTH_CHOICES,
         blank=True,
-        null=True )  # monthly or for after class redding
+        null=True)
+    payment_type = models.CharField(max_length=120, choices=PAYMENT_TYPE_CHOICES)  # monthly or for after class redding
     payment_status = models.CharField(max_length=20,
         choices=PAYMENT_STATUS_CHOICES,
+        default='pending',
         blank=True,
         null=True)  # payid or not payid
  
@@ -58,17 +72,22 @@ class Payment(models.Model):
     def clean(self):
         """Custom validation logic
         """
-        if self.debited_month == 'Registration':
-            self.payment_status = None
-            self.payment_type = None
+        if self.payment_type == 'Registration':
+            # self.payment_status = None
+            self.debited_month = None
         else:
-            if not self.payment_status or not self.payment_type:
-                raise ValidationError("Payment type and status are required unless it's Registration.")
+            if not self.debited_month:
+                raise ValidationError("debited_month is required.")
     
-    # def save(self, *args, **kwargs):
-    #     self.full_clean()  # Calls the clean() method before saving
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Calls the clean() method before saving
+        
+        if not self.debited_date_time:
+            self.payment_status = 'pending'
+        self.payment_status = 'paid'
+
+        super().save(*args, **kwargs)
 
 
     def __str__(self):
-        return f"{self.payer_name} - {self.student} - {self.debited_month} - {self.payment_type} - {self.payment_status} - {self.debited_date_time}"
+        return f"  {self.student} - {self.debited_month} - {self.payment_type} - {self.payment_status} - {self.amount} - {self.debited_date_time} - {self.payer_name}"
