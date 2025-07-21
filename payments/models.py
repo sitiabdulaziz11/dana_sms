@@ -23,12 +23,6 @@ PAYMENT_STATUS_CHOICES = [
         ('pending', 'Pending'),
     ]
 
-PAYMENT_TYPE_CHOICES = [
-        ('Registration', 'Registration'),
-        ('monthly', 'Monthly'),
-        ('after_class', 'After Class Reading'),
-    ]
-
 
 class Payment(models.Model):
     """Model which handles payment status.
@@ -45,6 +39,12 @@ class Payment(models.Model):
     ('May', 'Gnbot/May'),
     ('June', 'Sene/June'),
 ]
+    
+    PAYMENT_TYPE_CHOICES = [
+        ('Registration', 'Registration'),
+        ('monthly', 'Monthly'),
+        ('after_class', 'After Class Reading'),
+    ]
 
     payer_name = models.CharField(max_length=120)   #?
     amount = models.FloatField()

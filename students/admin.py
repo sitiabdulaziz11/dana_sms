@@ -45,21 +45,37 @@ class PaymentStatusFilter(admin.SimpleListFilter):
         """
         """
         month = request.GET.get('month')
-        if not month:
-            return queryset
+        payment_type = request.GET.get('payment_type')
+
+        filter_kwargs = {}
+        if month:
+            filter_kwargs['debited_month'] = month
+        if payment_type:
+            filter_kwargs['payment_type'] = payment_type
         
-        paid_students_ids = Payment.objects.filter(debited_month=month, payment_status='paid').values_list('student_id', flat=True)
+        paid_students_ids = Payment.objects.filter(**filter_kwargs, payment_status='paid').values_list('student_id', flat=True)
         if self.value() == 'paid':
             return queryset.filter(id__in=paid_students_ids)
         elif self.value() == 'pending':
             return queryset.exclude(id__in=paid_students_ids)
         return queryset
 
+class PaymentTypeFilter(admin.SimpleListFilter):
+    """To filter by payment type.
+    """
+    title = 'Payment Type'
+    parameter_name = 'payment_type'
+
+    def lookups(self, request, model_admin):
+        return Payment.PAYMENT_TYPE_CHOICES
+    
+    def queryset(self, request, queryset):
+        return queryset
 
 class StudentRegistrationAdmin(admin.ModelAdmin):
     """To update student registration model.
     """
-    list_filter = (PaymentStatusFilter, PaymentMonthFilter,)
+    list_filter = (PaymentStatusFilter, PaymentMonthFilter, PaymentTypeFilter,)
     
 
 admin.site.register(StudentRegistration, StudentRegistrationAdmin)
