@@ -15,8 +15,9 @@ class PaymentMonthFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         """Define dropdown filter options in admin
         """
-        months = Payment.objects.values_list('debited_month', flat=True).distinct()  # To get distinct months from Payment model.
-        return [(month, month) for month in months if month]
+        raw_months = Payment.objects.values_list('debited_month', flat=True).distinct()  # To get distinct months from Payment model.
+        cleaned_months = set(month.strip().capitalize() for month in raw_months if month)
+        return [(month, month) for month in sorted(cleaned_months) if month]
         # return Payment.MONTH_CHOICES
     
     def queryset(self, request, queryset):
@@ -75,7 +76,7 @@ class PaymentTypeFilter(admin.SimpleListFilter):
 class StudentRegistrationAdmin(admin.ModelAdmin):
     """To update student registration model.
     """
-    list_filter = (PaymentStatusFilter, PaymentMonthFilter, PaymentTypeFilter,)
+    list_filter = (PaymentStatusFilter, PaymentTypeFilter, PaymentMonthFilter, )
     
 
 admin.site.register(StudentRegistration, StudentRegistrationAdmin)
