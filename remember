@@ -1,9 +1,11 @@
 
+payment system
+- integrate with school fee, bank transfer and generate paper
+
 
 default id for students how to see?
     print/display each thing in table format?
     how to download that data?
-- integrate with school fee, bank transfer and generate paper
     
 - if amount less or above the desierd, show error
 
