@@ -15,9 +15,10 @@ class PaymentMonthFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         """Define dropdown filter options in admin
         """
-        raw_months = Payment.objects.values_list('debited_month', flat=True).distinct()  # To get distinct months from Payment model.
+        raw_months = Payment.objects.values_list('debited_month', flat=True)  #.distinct()  # To get distinct months from Payment model.
         cleaned_months = set(month.strip().capitalize() for month in raw_months if month)
-        return [(month, month) for month in sorted(cleaned_months) if month]
+        return [(month, month) for month in cleaned_months if month]
+        # return [(month, month) for month in sorted(cleaned_months) if month] # sorted used to ordedr alphabeticaly
         # return Payment.MONTH_CHOICES
     
     def queryset(self, request, queryset):
@@ -55,6 +56,7 @@ class PaymentStatusFilter(admin.SimpleListFilter):
             filter_kwargs['payment_type'] = payment_type
         
         paid_students_ids = Payment.objects.filter(**filter_kwargs, payment_status='paid').values_list('student_id', flat=True)
+        
         if self.value() == 'paid':
             return queryset.filter(id__in=paid_students_ids)
         elif self.value() == 'pending':
@@ -73,10 +75,23 @@ class PaymentTypeFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         return queryset
 
+
 class StudentRegistrationAdmin(admin.ModelAdmin):
     """To update student registration model.
     """
     list_filter = (PaymentStatusFilter, PaymentTypeFilter, PaymentMonthFilter, )
-    
+    list_display = (
+        'custom_id', 'first_name', 'middle_name', 'last_name', 
+        'gender', 'birth_date', 'age', 'image_file',
+    )
+    list_display_links = ('custom_id',)
+    search_fields = ('first_name', 'last_name',)
+
+    def custom_id(self, obj):
+        """ To coustomize student id.
+        """
+        # return f"A/D/{obj.id}/25"
+        return obj.custom_id()
+    custom_id.short_description = "Student ID"
 
 admin.site.register(StudentRegistration, StudentRegistrationAdmin)

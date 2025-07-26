@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import pycountry
+from datetime import datetime
 
 from parents.models import Parent
 
@@ -20,7 +21,7 @@ class StudentRegistration(models.Model):
     """
     # user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
     first_name = models.CharField(max_length=100)
-    middlename = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     gender = models.CharField(max_length=15, choices=gender_choice)
     # email = models.EmailField(max_length=254, unique=True)
@@ -33,6 +34,7 @@ class StudentRegistration(models.Model):
     kfleketema = models.CharField(max_length=50)
     hous_number = models.CharField(max_length=50)
     nationality = models.CharField(max_length=70, choices=COUNTRY_CHOICES)
+    join_year = models.CharField(max_length=2)
 
     # Relations
     # parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
@@ -44,6 +46,16 @@ class StudentRegistration(models.Model):
         """Meta class to custemize student registration class.
         """
         ordering = ['first_name']
+    
+    def custom_id(self):
+        """To customize id
+        """
+        return f"A/D/{self.id}/{self.join_year}"
+    
+    def save(self, *args, **kwargs):
+        if not self.join_year:
+            self.join_year = str(datetime.now().year)[-2]
+        super().save(*args, **kwargs)
 
 
     def __str__(self):
