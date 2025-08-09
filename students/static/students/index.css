@@ -1,0 +1,16 @@
+
+#welcome {
+    /* background-color: #6305dd; */
+    /* background-color: blueviolet; */
+    background: linear-gradient(to right top, rgb(0, 117, 0), #002910);
+    padding: 6rem 12%;
+}
+
+#welcome h1 {
+    margin-bottom: 1rem;
+}
+
+#well {
+    margin-top: 10rem;
+
+}

@@ -34,7 +34,10 @@ class StudentRegistration(models.Model):
     kfleketema = models.CharField(max_length=50)
     hous_number = models.CharField(max_length=50)
     nationality = models.CharField(max_length=70, choices=COUNTRY_CHOICES)
-    join_year = models.CharField(max_length=2)
+    
+    join_year = models.CharField(max_length=2, default=str(datetime.now().year)[-2:])
+    # student_id = models.CharField(max_length=20, unique=True, blank=True)
+    # prefix = models.CharField(max_length=10, default="A/D")  # editable
 
     # Relations
     # parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
@@ -51,12 +54,20 @@ class StudentRegistration(models.Model):
         """To customize id
         """
         return f"A/D/{self.id}/{self.join_year}"
-    
+
     def save(self, *args, **kwargs):
         if not self.join_year:
             self.join_year = str(datetime.now().year)[-2]
         super().save(*args, **kwargs)
+    
+    # def save(self, *args, **kwargs):
+    #     is_new = self.pk is None
+    #     super().save(*args, **kwargs)
+
+    #     if is_new and not self.student_id:
+    #         self.student_id = f"{self.prefix}/{self.id}/{self.join_year}"
+    #     super().save(update_fields=['student_id'])
 
 
     def __str__(self):
-        return f"{self.first_name} {self.middlename} {self.last_name}"
+        return f"{self.first_name} {self.middle_name} {self.last_name}"

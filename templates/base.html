@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static "app.css" %}">
+    {% block css_file %}{% endblock %}
+</head>
+<body>
+    <header id="main-nav">
+        <div>
+            <img src="{% static "students/images/dana_logo1.PNG" %}" alt="dana academy logo"/>
+            <div id="in-nav">
+                <h1> Dana Student</h1>
+                <h1>Managment System </h1>
+            </div>
+        </div>
+        <nav>
+            <a href="">Dashboards</a>
+            <a href="">About Dana</a>
+            <a href="">Contacts</a>
+        </nav>
+    </header>
+{% block content %}
+{% endblock %}
+</body>
+</html>

@@ -1,22 +1,98 @@
-from django.shortcuts import render
+# import os
+import uuid
+import requests
+from django.shortcuts import render, redirect
+from django.conf import settings
 
-# from .models import Payment
+
+from .models import Payment
 # from .models import MONTH_CHOICES
-from django.http import Http404
-from .models import StudentRegistration
+from django.http import Http404, HttpResponse
+from students.models import StudentRegistration
 
 # Create your views here.
 
-def student_payment_history(request, stud_id):
-   """Function which display students payment history
+
+def initialize_payment(request, student_id):
+   """To initialize payment.
    """
-   try:
-     student = StudentRegistration.objects.get(id=stud_id)
-   except StudentRegistration.DoesNotExist:
-      raise Http404("Student not found.")
+   student = StudentRegistration.objects.get(id=student_id)
+
+   tx_ref = f"schoolfee_{uuid.uuid4()}"   # str(uuid.uuid4())?
+   # tx_ref = f"schoolfee_{student.id}_{uuid.uuid4()}" ?
+   chapa_url = "https://api.chapa.co/v1/transaction/initialize"   #? what is it and how i get it?
+   chapa_secret = settings.CHAPA_SECRET_KEY
+
+   headers = {
+      # "Authorization": f"Bearer {settings.CHAPA_SECRET_KEY}"
+      "Authorization": f"Bearer {chapa_secret}",
+   }   #?
+
+   latest_payment = student.payments.last()
+
+   if latest_payment:
+      data = {
+      "amount": str(latest_payment.amount),
+      "currency": "ETB",
+      "email": student.Payment.email,  # ?
+      "first_name": student.first_name,  # ?
+      "middle_name": student.middle_name,
+      "tx_ref": tx_ref,
+      "callback_url": "http://127.0.0.1:8000/payment/verify/",
+      "return_url": "http://127.0.0.1:8000/payment/success/",
+      "customization": {
+         "title": "School Fee Payment",
+         "description": f"Payment for {student.first_name}",
+      }
+   }
+
+   response = requests.post(chapa_url, json=data, headers=headers)  #?
+   if response.status_code == 200:
+      payment_url = response.json()["data"]["checkout_url"]
+      return redirect(payment_url)
+   else:
+      print(response.json())   # for debugging
+      redirect("/payment/error")
+      # return HttpResponse("Error initiating payment")
+
+def verify_payment(request):
+   """Callback route to verify payment after processing on Chapa.
+   """
+   tx_refc = request.GET.get("tx_ref")
+
+   if not tx_refc:
+      return HttpResponse("Transaction reference not found", status=400)
    
-   all_payments = student.payments.all()   # to get all payments
-   monthly_payments = all_payments.filter(paymen_type="monthly")
+   url = f"https://api.chapa.co/v1/transaction/verify/{tx_refc}"
+   headers={"Authorization": f"Bearer {settings.CHAPA_SECRET_KEY}"}
+
+   response = requests.get(url, headers=headers)
+
+   if response.status_code == 200:
+      data = response.json()
+      if data["status"] == "success":
+         # Update payment status in DB
+         return redirect("payment_success")
+   return redirect("payment_error")
+
+
+def payment_success(request):
+   """To handle successful request.
+   """
+   return render(request, "payment/success.html")
+
+
+
+# def student_payment_history(request, stud_id):
+#    """Function which display students payment history
+#    """
+#    try:
+#      student = StudentRegistration.objects.get(id=stud_id)
+#    except StudentRegistration.DoesNotExist:
+#       raise Http404("Student not found.")
+   
+#    all_payments = student.payments.all()   # to get all payments
+#    monthly_payments = all_payments.filter(paymen_type="monthly")
 
    # # 🔁 Get monthly payment for each month
    # monthly_by_month = {}

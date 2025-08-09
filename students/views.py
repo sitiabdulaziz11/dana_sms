@@ -2,9 +2,14 @@ from django.shortcuts import render
 
 # Create your views here.
 
-
-def register_student(request):
-    """To register students
+def main_page(request):
+    """To display main or home page
     """
-    if request.method == "POST":
-        student = 
+    return render(request, "students/index.html")
+
+
+# def register_student(request):
+#     """To register students
+#     """
+#     if request.method == "POST":
+#         student = 

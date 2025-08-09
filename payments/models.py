@@ -6,18 +6,6 @@ from students.models import StudentRegistration
 
 # Create your models here.
 
-# MONTH_CHOICES = [
-#     ('September', 'Meskerem/September'),
-#     ('October', 'Tqmt/October'),
-#     ('November', 'Hdar/November'),
-#     ('December', 'Tehsas/December'),
-#     ('January', 'Tr/January'),
-#     ('February', 'Yekatit/February'),
-#     ('March', 'Megabit/March'),
-#     ('April', 'Miyaziya/April'),
-#     ('May', 'Gnbot/May'),
-#     ('June', 'Sene/June'),
-# ]
 PAYMENT_STATUS_CHOICES = [
         ('paid', 'Paid'),
         ('pending', 'Pending'),
@@ -59,6 +47,7 @@ class Payment(models.Model):
         default='pending',
         blank=True,
         null=True)  # payid or not payid
+    email = models.EmailField()
  
     # Relation with student model 
     student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name='payments') #  payer name need or not student is enough or?
