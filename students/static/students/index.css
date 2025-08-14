@@ -86,13 +86,12 @@
 @media (min-width: 1000px) {
     #welcome {
         flex-direction: row; /* keep items side-by-side */
-        /* gap: 4rem; */
     }
 }
 
-#mission {
+#vision1 {
     /* max-width: 70rem; */
-    margin: 6rem 0 2rem 5rem;
+    margin: 5rem 2rem 2rem 5rem;
     align-items: center;
 }
 
@@ -101,13 +100,26 @@
     justify-content: space-between;
     margin-right: 5rem;
     font-size: 2rem;
-    /* color: aliceblue; */
 }
 
 #vision-title h1 {
-    margin-bottom: 0;
     text-align: center;
-    /* background: #0d0a58; */
+    background: linear-gradient(to right top, rgb(2, 155, 2), #039c3e);
+    color: white;
+    width: 25rem;
+    height: 13rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2rem;
+    box-shadow: 1rem 1rem 1rem black;
+}
+
+#amh {
+    margin-left: 10rem;
+}
+#oro {
+    line-height: 1.6;
 }
 
 #vision {
@@ -118,15 +130,79 @@
 
 #vision p {
     flex: 1;  /* Equal width for all paragraphs */
-    text-align: justify;
     text-justify: newspaper;
-    /* width: 10rem; */
     font-size: 2rem;
     font-family: 'Times New Roman', Times, serif;
-    font-weight: 500;
+    font-weight: 550;
     hyphens: auto;  /* allow breaking long words */
-    line-height: 0.9;
-    padding-right: 2rem;
+    padding: 2rem;
+    color: rgb(216, 218, 221);
+    border-radius: 2rem;
+    box-shadow: 1rem 1rem 1rem black;
+    background: linear-gradient(to right top, rgb(4, 114, 150), #49d77f);
+}
+
+#mission {
+    text-align: justify;
+    background-color: rgb(28, 6, 6);
+    padding: 2rem;
+}
+
+#mission div {
+    margin: 2rem 18rem 2rem 13rem;
+    max-width: 60rem;
+}
+#mission h1 {
+    font-size: 2rem;
+    font-family: 'Times New Roman', Times, serif;
+    color: aqua;
+}
+
+#mission p {
+    font-size: 1.8rem;
+    font-family: 'Times New Roman', Times, serif;
+    color: black;
+     background: linear-gradient(to right top, rgb(120, 119, 122), #d2d2d8);
+    /* color: antiquewhite; */
+    box-shadow: 1rem 1rem 1rem rgb(88, 88, 88);
+    padding: 1.5rem;
+    border-radius: 2rem;
+    line-height: 1.4;
+}
+
+#bett {
+    margin : 3rem 0 0 0;
+    text-align: center;
+}
+#bett h1 {
+    font-size: 3rem;
+}
+
+#team {
+    text-align: center;
+}
+#team img {
+    margin: 4rem;
+    width: 10rem;
+    height: 8rem;
+}
+#supp {
+    text-align: center;
+}
+#supp img {
+    margin: 4rem;
+    width: 10rem;
+    height: 8rem;
+}
+
+footer {
+    text-align: center;
+    background-color: rgb(28, 6, 6);
+    height: 5rem;
+    color: azure;
+    justify-content: space-between;
+    display: flex;
+    padding: 0 2rem;
 }
 
 /* .imag {
