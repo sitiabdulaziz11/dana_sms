@@ -2,12 +2,12 @@
 #welcome {
     /* background-color: #6305dd; lightblue  */
     /* background-color: blueviolet; */
-    background:  url("images/dana.png"), linear-gradient(to right top, rgb(2, 155, 2), #002910);
-    padding: 6rem 2%;
+    background:  url("images/dana.png"), linear-gradient(to right top, rgb(3, 129, 3), #001107);
+    /* padding: 6rem 0%; */
     display: flex;
     /* flex-direction: row; */
     flex-wrap: wrap;
-    gap: 2rem;
+    /* gap: 2rem; */
     background-size: contain;
     background-position: right;
     background-repeat: no-repeat;
@@ -26,6 +26,8 @@
     flex: 1 1 300px; /* min 300px, grows as space allows */
     max-width: 500px; /* prevents stretching too wide */
     text-align: center;
+    margin-top: 4rem;
+    gap: 0;
 }
 
 /* #welcome div {
@@ -37,18 +39,21 @@
 #welcome h1 {
     color: white;
     font-size: 2.5rem;
-    width: 28rem;
+    width: 22rem;
     margin-top: 8rem;
     margin-bottom: 0;
+    /* margin-right: 10rem; */
+    /* padding: 0; */
 }
 
 #welcome h2 {
     margin-top: 1rem;
     margin-bottom: 0rem;
-    color: rgb(199, 62, 214);
+    /* color: rgb(199, 62, 214); */
+    color: rgb(229, 71, 31);
     font-size: 2rem;
-    background-color: rgb(9, 9, 9);
-    /* width: 20rem; */
+    /* background-color: rgb(9, 9, 9); */
+    width: 20rem;
     /* display: inline-block; */
     padding-bottom: 0.3rem;
     padding-right: -1rem;
@@ -62,12 +67,38 @@
     color: white;
     font-weight: bold;
 }
-#welcome h3 {
+h3 {
+    background-color: rgb(28, 6, 6);
     font-size: 4.1rem;
-    margin: 0;
-    color: rgb(229, 71, 31);
+    /* height: 10rem; */
+    /* margin: 2rem; */
+    /* margin: 2rem ; */
+    color:rgb(4, 163, 163);
+    /* padding: 0.5rem; */
+    border-radius: 1rem;
+    text-align: center;
+    /* max-width: 30rem; */
+    /* display: flex; */
+    /* justify-items: center; */
+    /* color: rgb(229, 71, 31); */
     /* color: gold */
 }
+/* h3 {
+    background-color: rgb(28, 6, 6);
+    font-size: 4.1rem;
+    height: 10rem;
+    /* margin: 0; */
+    /* margin: 3rem 7rem 2rem 7rem; */
+    /* color:rgb(4, 163, 163); */
+    /* padding: 0.5rem; */
+    /* border-radius: 1rem; */
+    /* text-align: center; */
+    /* max-width: 30rem; */
+    /* display: flex; */
+    /* justify-items: center; */
+    /* color: rgb(229, 71, 31); */
+    /* color: gold */
+/* } */ 
 #welcome h4 {
     font-size: 2rem;
     color: rgb(237, 77, 112);
@@ -129,17 +160,18 @@
 }
 
 #vision p {
+    font-style: oblique;
     flex: 1;  /* Equal width for all paragraphs */
-    text-justify: newspaper;
+    text-justify: auto;
     font-size: 2rem;
     font-family: 'Times New Roman', Times, serif;
-    font-weight: 550;
+    font-weight: 500;
     hyphens: auto;  /* allow breaking long words */
     padding: 2rem;
     color: rgb(216, 218, 221);
     border-radius: 2rem;
     box-shadow: 1rem 1rem 1rem black;
-    background: linear-gradient(to right top, rgb(4, 114, 150), #49d77f);
+    background: linear-gradient(to right top, rgb(3, 56, 73), #05491f);
 }
 
 #mission {
@@ -162,8 +194,8 @@
     font-size: 1.8rem;
     font-family: 'Times New Roman', Times, serif;
     color: black;
-     background: linear-gradient(to right top, rgb(120, 119, 122), #d2d2d8);
-    /* color: antiquewhite; */
+     /* background: linear-gradient(to right top, rgb(120, 119, 122), #d2d2d8); */
+    color: antiquewhite;
     box-shadow: 1rem 1rem 1rem rgb(88, 88, 88);
     padding: 1.5rem;
     border-radius: 2rem;
