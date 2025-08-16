@@ -6,9 +6,19 @@
 {% endblock %}
 
 {% block css_file %}
-
+    <link rel="stylesheet" href="{% static "students/dashboards.css" %}" />
 {% endblock %}
 
 {% block content%}
-
+<section id="dash">
+   <h1>Dashboards</h1> 
+</section>
+<aside class="sidebar">
+    <ul>
+        <li><a href="">📝Student Registration</a></li>
+        <li><a href="">💳Payments</a></li>
+        <li><a href="">📅Attendance</a></li>
+        <li><a href="">📊Student result</a></li>
+    </ul>
+</aside>
 {% endblock content%}

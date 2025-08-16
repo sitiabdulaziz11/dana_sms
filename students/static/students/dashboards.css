@@ -1,0 +1,45 @@
+
+
+/* body {
+    background: linear-gradient(to right top, rgb(154, 209, 227), rgb(3, 3, 236));
+} */
+
+#dash {
+    padding: 3rem 1rem 1%;
+    margin: 0;
+    background: linear-gradient(to right top, rgb(17, 130, 168), rgb(4, 4, 106));
+}
+
+#dash h1 {
+    padding-top: 3rem;
+    color: rgb(254, 254, 254);
+    margin: 2rem auto 0 auto;
+    font-size: 2rem;
+}
+
+.sidebar {
+    width: 20rem;
+    background: linear-gradient(to right top, rgb(41, 134, 162), rgb(206, 13, 42));
+    position: fixed;
+    min-height: 100vh;
+    /* color: white; */
+    /* padding: 2rem 1rem; */
+    /* top: 0; */
+    /* bottom: 0;  */
+    /* left: 0; */
+}
+
+.sidebar ul {
+    list-style: none;
+    /* padding: 0; */
+}
+
+.sidebar li {
+    margin: 1.2rem 0;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: rgb(237, 225, 98);
+    font-size: 1.5rem;
+}

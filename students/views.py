@@ -7,6 +7,11 @@ def main_page(request):
     """
     return render(request, "students/index.html")
 
+def dashboards(request):
+    """To display main or home page
+    """
+    return render(request, "students/dashboards.html")
+
 
 # def register_student(request):
 #     """To register students

@@ -30,15 +30,21 @@ h3 {
     justify-content: space-between;
     align-items: center;
     padding: 0.5% 7% 0 0.5%;
-    position: absolute;
+    position: absolute;   /* to cover header place*/
     top: 0;
     left: 0;
     color: white;
 }
+#main-nav nav {
+    position: fixed;
+    top: 1rem;
+    right: 2rem;
+    font-size: 2.5rem;
+}
 
 #main-nav img {
-    width: 10rem;
-    height: 7rem;
+    width: 9rem;
+    height: 6rem;
 }
 
 #main-nav img:hover,
