@@ -11,5 +11,10 @@ class StudentRegistrationForm(forms.ModelForm):
     which fields to include or exclude.
         """
         model = StudentRegistration
-        exclude = ["parent"]
+        exclude = ["join_year"]
+        labels = [
+            "kebele_wereda": "Wo"
+            "kfleketema", "hous_number", "nationality"
+        ]
+        # exclude = ["parent"]
         # labels =  {}

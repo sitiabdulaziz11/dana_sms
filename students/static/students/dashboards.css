@@ -42,4 +42,18 @@
     text-decoration: none;
     color: rgb(237, 225, 98);
     font-size: 1.5rem;
+    padding: 0.7rem;
+}
+.sidebar:hover li,
+.sidebar:active li {
+  transform: scale(1.06);
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,0.35)) saturate(120%);
+  opacity: 0.95;
+}
+
+.sidebar a:hover,
+.sidebar a:hover {
+    color: aliceblue;
+    background-color: rgb(48, 1, 87);
+    border-radius: 1.7rem;
 }

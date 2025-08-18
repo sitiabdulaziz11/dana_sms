@@ -18,7 +18,6 @@ def dashboards(request):
 def register_student(request):
     """To register students
     """
-    form = StudentRegistrationForm()
     if request.method == "POST":
         form = StudentRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -28,7 +27,4 @@ def register_student(request):
             form = StudentRegistrationForm()
     return render(request, "students/registration.html", {"form": form})
 
-def success(request):
-    """Display success message after registration.
-    """
-    return render(request, "students/success.html")
+
