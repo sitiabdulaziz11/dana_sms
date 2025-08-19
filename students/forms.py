@@ -12,9 +12,12 @@ class StudentRegistrationForm(forms.ModelForm):
         """
         model = StudentRegistration
         exclude = ["join_year"]
-        labels = [
-            "kebele_wereda": "Wo"
-            "kfleketema", "hous_number", "nationality"
-        ]
+        labels = {
+            "city": "City/ከተማ",
+            "kfle_ketema": "Subcity/ክፍለ ከተማ",
+            "wereda": "Wereda/ወረዳ",
+            "hous_number": "Hous Number/የቤት ቁጥር",
+            "nationality": "Nationality"
+        }
         # exclude = ["parent"]
         # labels =  {}

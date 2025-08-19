@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 import pycountry
 from datetime import datetime
 
-from parents.models import Parent
-from common.models import Grade, Section
 
 # Create your models here.
 
@@ -27,8 +25,11 @@ class StudentRegistration(models.Model):
     gender = models.CharField(max_length=15, choices=gender_choice)
     birth_date = models.DateField(null=True, blank=True)
     age = models.IntegerField()
+
+    grade = models.ForeignKey("common.Grade", on_delete=models.SET_NULL, null=True, related_name="students")
+    section = models.ForeignKey("common.Section", on_delete=models.SET_NULL, null=True, related_name="students")
+    
     image_file = models.ImageField()
-    address = models.CharField(max_length=60)
     registration_date = models.DateField(auto_now_add=True)
     city = models.CharField(max_length=50)
     kfle_ketema = models.CharField(max_length=50)
@@ -49,9 +50,7 @@ class StudentRegistration(models.Model):
     # result, teachers, subjects, admin and parent.
 
     # Relations
-    grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True, related_name="students")
-    section = models.ForeignKey(Section, on_delete=models.SET_NULL, null=True, related_name="students")
-
+    
     class Meta:
         """Meta class to custemize student registration class.
         """
@@ -100,8 +99,8 @@ class Enrollment(models.Model):
     """Enrollment model to enrol students in each year.
     """
     student = models.ForeignKey(StudentRegistration, on_delete=models.SET_NULL, null=True)
-    grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
-    section = models.ForeignKey(Section, on_delete=models.SET_NULL, null=True)
+    grade = models.ForeignKey("common.Grade", on_delete=models.SET_NULL, null=True)
+    section = models.ForeignKey("common.Section", on_delete=models.SET_NULL, null=True)
     academic_year = models.ForeignKey(AcademicYear, on_delete=models.SET_NULL, null=True)
 
     class Meta:

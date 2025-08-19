@@ -1,0 +1,36 @@
+{% comment %} {% extends "base.html" %} {% endcomment %}
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title %} Grade and Section Regisrtation{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static "" %}">
+    {% block css_file %}{% endblock %}
+    <link rel="shortcut icon" href="{% static "images/dana_logo1.PNG"%}">
+</head>
+<body>
+{% comment %} {% block content%} {% endcomment %}
+<section>
+    <h1>Welcome Dear Admin!</h1>
+    <h3>Register Grade and Section Here.</h3>
+</section>
+<section>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ g_form.as_p}}
+        {{ s_form.as_p}}
+        <button type="submit">Register</button>
+    </form>
+    {% comment %} <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ s_form.as_p}}
+        <button type="submit">Register</button>
+    </form> {% endcomment %}
+</section>
+{% comment %} {% endblock content%} {% endcomment %}
+</body>
+</html>

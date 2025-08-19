@@ -11,6 +11,9 @@ class Grade(models.Model):
     """
     grade_name = models.CharField(max_length=30)
 
+    def __str__(self):
+        return f" Grade {self.grade_name}"
+
 class Section(models.Model):
     """Models which define students section.
     """

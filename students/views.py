@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 
 from .forms import StudentRegistrationForm
+from .models import AcademicYear, Enrollment
 
 # Create your views here.
 
@@ -22,7 +23,18 @@ def register_student(request):
     if request.method == "POST":
         form = StudentRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            students = form.save()
+
+            # Get the current active academic year
+            current_year = AcademicYear.objects.filter(is_active=True).first()
+
+            # Create enrollment record
+            Enrollment.objects.create(
+                student=students,
+                grade=students.grade,
+                section=students.section,
+                academic_year=current_year
+            )
             return redirect("success")
         else:
             form = StudentRegistrationForm()

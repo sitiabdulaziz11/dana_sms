@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("payments.purls")),
     path("", include("students.surls")),
+    path("", include("common.urlsc")),
 ]
