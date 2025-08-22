@@ -34,7 +34,7 @@ class StudentRegistration(models.Model):
     city = models.CharField(max_length=50)
     kfle_ketema = models.CharField(max_length=50)
     wereda= models.CharField(max_length=50)
-    hous_number = models.CharField(max_length=50)
+    hous_number = models.CharField(max_length=50, null=True, blank=True)
     nationality = models.CharField(max_length=70, choices=COUNTRY_CHOICES)
     email = models.EmailField(max_length=254, blank=True, null=True, unique=True)
     password = models.CharField(max_length=128, blank=True, null=True, unique=True)

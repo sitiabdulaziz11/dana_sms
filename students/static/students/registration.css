@@ -1,0 +1,85 @@
+
+#all {
+    margin: 0;
+    display: block;
+    /* text-align: center; */
+    justify-items: center;
+    gap: 10rem;
+}
+
+#all h1 {
+    text-align: center;
+    color: #39bd6a;
+    font-size: 2.5rem;
+    margin: 1rem 0 0 0;
+}
+
+#all h3 {
+    color: #bd398d;
+    font-size: 2rem;
+    margin: 0.3rem;
+}
+
+#all button {
+    font-weight: bold;
+    font-size: 2rem;
+    margin: 2rem 0 6rem 8rem;
+    padding: 0.5rem;
+    color: rgb(230, 183, 150);
+    background: firebrick;
+    border-radius: 12px;
+    border-width: medium;
+}
+
+#all button:hover,
+#all button:active {
+    color: chartreuse;
+    background: blueviolet;
+}
+
+/* #all button input {
+    padding: 1rem;
+} */
+
+body {
+    margin: 0;
+}
+
+.form_control {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 7rem;
+}
+
+.form_control label {
+    font-weight: bold;
+    font-size:1.4rem;
+    display: block;
+    margin: 0;
+}
+
+.form_control input,
+.form_control textarea {
+    /* display: block; */
+    font: inherit;
+    width: 90%;
+    padding: 0.4rem;
+    border-radius: 6px;
+    outline: none;
+    border-width: medium;
+}
+
+.form_control input:focus,
+.form_control select:focus,
+.form_control textarea:focus {
+    border-color: #39bd6a;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.6);
+    background-color: #d7e0ef;
+}
+
+form .required label::after {
+    content: " *";
+    color: rgb(255, 9, 9);
+    font-weight: bold;
+}

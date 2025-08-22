@@ -19,6 +19,9 @@ class Section(models.Model):
     """
     section_name = models.CharField(max_length=30)
 
+    def __str__(self):
+        return f"Section {self.section_name}"
+
 # class Term(models.Model)
 class Semester(models.Model):
     """Models that specify the semester of the year.

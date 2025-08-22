@@ -35,7 +35,8 @@ def register_student(request):
                 section=students.section,
                 academic_year=current_year
             )
-            return redirect("success")
+            # return redirect("succ")
+            return redirect("pay", student_id=students.id)
         else:
             form = StudentRegistrationForm()
     return render(request, "students/registration.html", {"form": form})

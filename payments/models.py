@@ -47,7 +47,7 @@ class Payment(models.Model):
         default='pending',
         blank=True,
         null=True)  # payid or not payid
-    email = models.EmailField()
+    email = models.EmailField(null=True, blank=True)
  
     # Relation with student model 
     student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name='payments') #  payer name need or not student is enough or?

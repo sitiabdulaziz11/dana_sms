@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('registration_date', models.DateField(auto_now_add=True)),
                 ('kebele_wereda', models.CharField(max_length=50)),
                 ('kfleketema', models.CharField(max_length=50)),
-                ('hous_number', models.CharField(max_length=50)),
+                ('hous_number', models.CharField(max_length=50, null=True, blank=True)),
                 ('nationality', models.CharField(max_length=50)),
                 ('parent', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='parents.parent')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
