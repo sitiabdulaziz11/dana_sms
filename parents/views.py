@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from formtools.wizard.views import SessionWizardView
 from django.forms import modelformset_factory
+from django.http import Http404, HttpResponse
+
 
 from .forms import ParentForm, PhoneNumberForm, EmergencyContactForm
 from .models import Parent, PhoneNumber
+from students.models import StudentRegistration
 
 # Create your views here.
 
@@ -84,6 +87,7 @@ def phoneNum_info(request):
             phone = form.save(commit=False)
             phone.parent = parent
             phone.save()
+            request.session["phone_id"] = phone.id
 
             # Check which button was clicked
             if "add_another" in request.POST:
@@ -91,52 +95,49 @@ def phoneNum_info(request):
                 return redirect("phone_info")
             else:
                 # Move to the next step (emergency contact)
-                return redirect("emrgncy_info")
+                return redirect("register")
     else:
         form = PhoneNumberForm()
 
     # Display all saved phones for this parent
-    phones = PhoneNumber.objects.filter(parent=parent)
+    # phones = PhoneNumber.objects.filter(parent=parent)
     return render(request, "parents/phone_enroll.html", {
-        "form": form,
-        "phones": phones
+        "form": form
+        # "phones": phones
         })
-   
-    # if request.method == "POST":
-    #     formset = PhoneFormSet(request.POST, queryset=PhoneNumber.objects.none())
-    #     if formset.is_valid():
-    #         phones = formset.save(commit=False)
-    #         for phone in phones:
-    #             phone.parent = parent
-    #             phone.save()
-    #         return redirect("emergency_step")
-    # else:
-    #     formset = PhoneFormSet(queryset=PhoneNumber.objects.none())
-    # return render(request, "parents/phone_enroll.html", {"formset": formset})
 
 def emergency_info(request):
     """For phone number
     """
     parent_id = request.session.get("parent_id")
+    if not parent_id:
+        return HttpResponse("no parent id")
+    
     parent = get_object_or_404(Parent, id=parent_id)
 
+    student_id = request.session.get("student_id")
+    if not student_id:
+        return HttpResponse("no student id")
+    
+    student = get_object_or_404(StudentRegistration, id=student_id)
+
     if request.method == "POST":
-        form = PhoneNumberForm(request.POST)
+        form = EmergencyContactForm(request.POST)
         if form.is_valid():
-            phone = form.save(commit=False)
-            phone.parent = parent
-            phone.save()
+            emergency = form.save(commit=False)
+            emergency.parent = parent
+            emergency.save()
 
             # Check which button was clicked
             if "add_another" in request.POST:
                 # Reload the same page for adding another phone
-                return redirect("phone_info")
-            else:
+                return redirect("emrgncy_info")
+            else: 
                 # Move to the next step (emergency contact)
-                return redirect("emergency_step")
+                return redirect("pay_with_id", student_id=student.id)
     else:
-        form = PhoneNumberForm()
+        form = EmergencyContactForm()
 
     # Display all saved phones for this parent
-    phones = PhoneNumber.objects.filter(parent=parent)
-    return render(request, "parents/phone_enroll.html", {"form": form, "phones": phones})
+    # phones = PhoneNumber.objects.filter(parent=parent)
+    return render(request, "parents/emergency_enroll.html", {"form": form}) #"phones": phones})

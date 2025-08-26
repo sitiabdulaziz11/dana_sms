@@ -5,6 +5,7 @@
     {% csrf_token %}
     {{ form.as_p }}
 
-    <button type="submit">Finish</button>
+    {% comment %} <button type="submit">Finish</button> {% endcomment %}
+    <button type="submit">Continue to Payment</button>
 </form>
 {% endblock %}

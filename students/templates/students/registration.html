@@ -23,7 +23,7 @@
     <h3>Register your children here</h3>
     <h3>Student Information </h3>
 
-    <section>
+    <section id="sec2">
         <form method="post" enctype="multipart/form-data">
             {% comment %} <input type="text" id="first_name" name="first_name" placeholder="First Name"> {% endcomment %}
             {% comment %} <label for="first_name">First Name</label> {% endcomment %}
@@ -40,7 +40,8 @@
                     {{ field.label_tag }}: {{ field }}<br>
                 {% endfor %} {% endcomment %}
             {% endfor %}
-            <button type="submit">Continue to Payment</button>
+            {% comment %} <button type="submit">Continue to Payment</button> {% endcomment %}
+            <button type="submit">Next</button>
         </form>
     </section>
 </section>

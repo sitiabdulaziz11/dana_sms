@@ -56,6 +56,10 @@ class Parent(models.Model):
     nationality = models.CharField(max_length=70, choices=COUNTRY_CHOICES)
     email = models.EmailField(max_length=254, blank=True, null=True)
     password = models.CharField(max_length=128, blank=True, null=True)
+    signature = models.ImageField(
+        upload_to="signatures/",  # folder inside MEDIA_ROOT
+        blank=True,
+        null=True)
 
     def __str__(self):
         return f"{self.first_name} {self.middle_name} {self.last_name}"
@@ -70,22 +74,29 @@ class PhoneNumber(models.Model):
     owner = models.CharField(max_length=30, choices=[('father', 'Father'), ('mother', 'Mother'), ('uncle', 'Uncle'), ('other', 'Other') ])
     number_type = models.CharField(max_length=30, choices=[('personal', 'Personal'), ('work phone', 'Work Phone'), ('other', 'Other')])
 
+    def __str__(self):
+        """ To print out the values.
+        """
+        return f" {self.parent}: {self.number}"
+
 class EmergencyContact(models.Model):
     """Emergency contact for a student.
     """
-    student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name="emergency")
+    student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name="emergency", null=True, blank=True)
     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True, blank=True,)
+    phone_num = models.ForeignKey(PhoneNumber, on_delete=models.CASCADE, null=True, blank=True)  # phone_num &phone_number b/c to relate or to register a new respectively.
+
 
     # For non-parents (Uncle, Neighbor, etc.)
-    first_name = models.CharField(max_length=100)
-    middle_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    relationship = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    middle_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    relationship = models.CharField(max_length=100, choices=RELATION_CHOICES)
+    phone_number = models.CharField(max_length=100, null=True, blank=True)
     registration_date = models.DateField(auto_now_add=True)
-    city = models.CharField(max_length=50)
-    kfle_ketema = models.CharField(max_length=50)
-    wereda= models.CharField(max_length=50)
+    city = models.CharField(max_length=50, null=True, blank=True)
+    kfle_ketema = models.CharField(max_length=50, null=True, blank=True)
+    wereda= models.CharField(max_length=50, null=True, blank=True)
     hous_number = models.CharField(max_length=50, blank=True, null=True)
     email = models.EmailField(max_length=254, blank=True, null=True)
     nationality = models.CharField(max_length=70, blank=True, null=True, choices=COUNTRY_CHOICES)
@@ -95,5 +106,3 @@ class EmergencyContact(models.Model):
         null=True)
     email = models.EmailField(max_length=254, blank=True, null=True, unique=True)
     password = models.CharField(max_length=128, blank=True, null=True, unique=True)
-
-    # phone_num = models.ForeignKey(PhoneNumber, on_delete=models.CASCADE,)  # phone_num & phone_number b/c to relate or to register a new respectively.

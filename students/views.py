@@ -29,7 +29,8 @@ def register_student(request):
         if student_form.is_valid():
             student = student_form.save()
             # enrollment_formset.instance = students
-
+            request.session["student_id"] = student.id  # store for next steps
+            
             enrollment_formset = EnrollmentFormSet(
                 request.POST,
                 instance=student,
@@ -53,22 +54,14 @@ def register_student(request):
 
             if enrollment_formset.is_valid():
                 enrollment_formset.save()
-                return redirect("pay", student_id=student.id)
-
-            # return redirect("pay", student_id=students.id)
-            # else:
-            #     # Re-render with errors
-            #     return render(request, "students/registration.html", {
-            #         "form": student_form,
-            #         "enrollment_formset": enrollment_formset,
-            #     })
-        # else:
-        #     # student_form = StudentRegistrationForm()
-        #     # enrollment_formset = EnrollmentFormSet(request.POST, prefix='enroll')
-        #     return render(request, "students/registration.html", {
-        #         "form": student_form,
-        #         "enrollment_formset": enrollment_formset,
-        #     })
+                # return redirect("pay", student_id=student.id)
+                return redirect("emrgncy_info")
+        else:
+            # re-render with errors
+            return render(request, "students/registration.html", {
+                "form": student_form,
+                "enrollment_formset": enrollment_formset,
+            })
     else:
         student_form = StudentRegistrationForm()
         enrollment_formset = EnrollmentFormSet(prefix='enroll')

@@ -41,6 +41,10 @@ body {
     margin: 0;
 }
 
+#sec2 {
+    padding: 2rem;
+}
+
 .form_control {
     margin: 0;
     display: grid;
