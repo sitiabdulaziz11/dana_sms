@@ -1,0 +1,10 @@
+
+{% block content %}
+<h2>Step 1: Parent Information</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="add_another">Save & Add Another</button>
+    <button type="submit">Next</button>
+</form>
+{% endblock %}

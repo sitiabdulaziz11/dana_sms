@@ -1,7 +1,7 @@
 # import os
 import uuid
 import requests
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.http import Http404, HttpResponse
 
@@ -14,12 +14,23 @@ from .forms import PaymentForm
 
 # Create your views here.
 
-def make_payment(request, student_id):
+def make_payment(request, student_id=None):
    """views to make student payment.
    """
-   student = StudentRegistration.objects.get(id=student_id)
-   if request.method == "POST":
-      payment_form = PaymentForm(request.POST, request.FILES)
+   student = None
+
+   if student_id:
+      try:
+         student = StudentRegistration.objects.get(id=student_id)
+      except StudentRegistration.DoesNotExist:
+         # return HttpResponse("Sorry, no student exists")
+         return render(request, "payments/student_not_found.html", {
+            "student_id": student_id
+         })
+      
+   payment_form = PaymentForm(request.POST or None, request.FILES or None)
+   if request.method == "POST" and student:
+      # payment_form = PaymentForm(request.POST, request.FILES)
       if payment_form.is_valid():
          payment = payment_form.save(commit=False)
          payment.student = student

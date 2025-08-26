@@ -1,0 +1,8 @@
+
+{% load static %}
+
+{% block content %}
+    <h2>Student Not Found</h2>
+    <p>Sorry, no student exists with ID: {{ student_id }} </p>
+    <a href="{% url 'pay' %}"> Go back to Payment Page</a>
+{% endblock content %}

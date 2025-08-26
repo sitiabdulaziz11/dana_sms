@@ -44,7 +44,7 @@ class StudentRegistration(models.Model):
     # prefix = models.CharField(max_length=10, default="A/D")  # editable
 
     # Relations
-    # parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
+    parent = models.ForeignKey("parents.Parent", on_delete=models.SET_NULL, null=True, related_name="children")
 
     # phone_no from parent or? grade, section other separet table or?, email , password good or?
     # result, teachers, subjects, admin and parent.
@@ -102,6 +102,7 @@ class Enrollment(models.Model):
     grade = models.ForeignKey("common.Grade", on_delete=models.SET_NULL, null=True)
     section = models.ForeignKey("common.Section", on_delete=models.SET_NULL, null=True)
     academic_year = models.ForeignKey(AcademicYear, on_delete=models.SET_NULL, null=True)
+    enrollment_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         """ To make unique"""

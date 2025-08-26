@@ -10,29 +10,44 @@ COUNTRY_CHOICES = sorted([(country.name, country.name) for country in pycountry.
 
 # Create your models here.
 
+RELATION_CHOICES = [
+    ('father', 'Father'),
+    ('mother', 'Mother'),
+    ('guardian', 'Guardian'),
+    ('uncle', 'Uncle'),
+    ('aunt', 'Aunt'),
+    ('grandmother', 'Grandmother'),
+    ('grandfather', 'Grandfather'),
+    ('other', 'Other'),
+]
+
+EDUCATION_LEVEL_CHOICES = [
+    ('none', 'No Formal Education'),
+    ('primary', 'Primary'),
+    ('secondary', 'Secondary'),
+    ('highschool', 'High School'),
+    ('diploma', 'Diploma'),
+    ('bachelor', "Bachelor's Degree"),
+    ('master', "Master's Degree"),
+    ('phd', 'PhD'),
+    ('other', 'Other'),
+]
+
 class Parent(models.Model):
     """
     Student's Parent Module
     """
     # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    father_first_name = models.CharField(max_length=100)
-    father_middlename = models.CharField(max_length=100)
-    father_last_name = models.CharField(max_length=100)
-    father_age = models.IntegerField(null=True, blank=True)
-    education_level = models.CharField(max_length=100)
+    role = models.CharField(max_length=50, choices=RELATION_CHOICES)
+    first_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    age = models.IntegerField(null=True, blank=True)
+    education_level = models.CharField(max_length=100, choices=EDUCATION_LEVEL_CHOICES)
     ocupation = models.CharField(max_length=100)
     work_place = models.CharField(max_length=50)
     # father_phone_no = models.IntegerField()
-    father_image_file = models.ImageField(null=True, blank=True)
-    mother_first_name = models.CharField(max_length=100)
-    mother_middlename = models.CharField(max_length=100)
-    mother_last_name = models.CharField(max_length=100)
-    mother_age = models.IntegerField(null=True, blank=True)
-    education_level = models.CharField(max_length=100)
-    ocupation = models.CharField(max_length=100)
-    work_place = models.CharField(max_length=50)
-    # mother_phone_no = models.IntegerField()
-    mother_image_file = models.ImageField(null=True, blank=True)
+    image_file = models.ImageField(null=True, blank=True)
     registration_date = models.DateField(auto_now_add=True)
     city = models.CharField(max_length=50)
     kfle_ketema = models.CharField(max_length=50)
@@ -41,22 +56,27 @@ class Parent(models.Model):
     nationality = models.CharField(max_length=70, choices=COUNTRY_CHOICES)
     email = models.EmailField(max_length=254, blank=True, null=True)
     password = models.CharField(max_length=128, blank=True, null=True)
-    
 
+    def __str__(self):
+        return f"{self.first_name} {self.middle_name} {self.last_name}"
+        
 
 class PhoneNumber(models.Model):
     """Phone number model
     """
     parent = models.ForeignKey('Parent', on_delete=models.CASCADE, related_name='phone_numbers')
-    student = models.ForeignKey(StudentRegistration, on_delete=models.SET_NULL, null=True)
+    # student = models.ForeignKey(StudentRegistration, on_delete=models.SET_NULL, null=True)   #? required or not?
     number = models.CharField(max_length=60)
-    owner = models.CharField(max_length=30, choices=[('father', 'Father'), ('mother', 'Mother')])
+    owner = models.CharField(max_length=30, choices=[('father', 'Father'), ('mother', 'Mother'), ('uncle', 'Uncle'), ('other', 'Other') ])
     number_type = models.CharField(max_length=30, choices=[('personal', 'Personal'), ('work phone', 'Work Phone'), ('other', 'Other')])
 
-class EmetgencyContact(models.Model):
+class EmergencyContact(models.Model):
     """Emergency contact for a student.
     """
     student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name="emergency")
+    parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True, blank=True,)
+
+    # For non-parents (Uncle, Neighbor, etc.)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -75,3 +95,5 @@ class EmetgencyContact(models.Model):
         null=True)
     email = models.EmailField(max_length=254, blank=True, null=True, unique=True)
     password = models.CharField(max_length=128, blank=True, null=True, unique=True)
+
+    # phone_num = models.ForeignKey(PhoneNumber, on_delete=models.CASCADE,)  # phone_num & phone_number b/c to relate or to register a new respectively.

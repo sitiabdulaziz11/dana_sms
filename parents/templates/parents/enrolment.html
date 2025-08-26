@@ -1,0 +1,10 @@
+{% load static %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {{ wizard.form.as_p }}
+    <button type="submit">
+    {% if wizard.step.last %}submit{% else %}Next{% endif%}
+    </button>
+</form>

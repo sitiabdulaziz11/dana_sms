@@ -21,6 +21,8 @@
 <section id="all">
     <h1>Welcome Dear Parents!</h1>
     <h3>Register your children here</h3>
+    <h3>Student Information </h3>
+
     <section>
         <form method="post" enctype="multipart/form-data">
             {% comment %} <input type="text" id="first_name" name="first_name" placeholder="First Name"> {% endcomment %}
@@ -29,6 +31,15 @@
             <div class="form_control">
             {{ form.as_p}}
             </div>
+            <h3>Enrolment Information</h3>
+            {{ enrollment_formset.management_form }}
+            {% for form in enrollment_formset %}
+                {{ form.as_p }}
+                {{ form.student }}
+                {% comment %} {% for field in form %}
+                    {{ field.label_tag }}: {{ field }}<br>
+                {% endfor %} {% endcomment %}
+            {% endfor %}
             <button type="submit">Continue to Payment</button>
         </form>
     </section>

@@ -1,5 +1,7 @@
 from django import forms
-from .models import StudentRegistration
+from django.forms import inlineformset_factory
+
+from .models import StudentRegistration, Enrollment
 
 
 class StudentRegistrationForm(forms.ModelForm):
@@ -25,3 +27,27 @@ class StudentRegistrationForm(forms.ModelForm):
         }
         # exclude = ["parent"]
         # labels =  {}
+
+class EnrollmentForm(forms.ModelForm):
+    """model form for student enrollment.
+    """
+    class Meta:
+        model = Enrollment
+        # fields = '__all__'
+        # exclude = ["enrollment_date"]
+        fields = ['grade', 'section', 'academic_year']
+
+# EnrollmentFormSet = inlineformset_factory(
+#     StudentRegistration,
+#     Enrollment,
+#     form=EnrollmentForm,
+#     extra=1,   # show at least one enrollment form
+#     can_delete=False  # enrollment should not be skipped
+# )
+EnrollmentFormSet = inlineformset_factory(
+    StudentRegistration,  # Parent model
+    Enrollment,  # Related model
+    fields=('student', 'grade', 'section', 'academic_year'),  # Fields to include
+    extra=1,  # Number of empty forms to display
+    can_delete=False,
+)

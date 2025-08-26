@@ -22,4 +22,5 @@ urlpatterns = [
     path("", include("payments.purls")),
     path("", include("students.surls")),
     path("", include("common.urlsc")),
+    path("", include("parents.urlsp")),
 ]

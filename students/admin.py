@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import StudentRegistration
+from .models import StudentRegistration, Enrollment
 from payments.models import Payment
 
 # Register your models here.
@@ -94,4 +94,10 @@ class StudentRegistrationAdmin(admin.ModelAdmin):
         return obj.custom_id()
     custom_id.short_description = "Student ID"
 
+class EnrollmentAdmin(admin.ModelAdmin):
+    """models for enrollment 
+    """
+    list_display = ["student", "grade", "section", "academic_year", "enrollment_date"]
+
 admin.site.register(StudentRegistration, StudentRegistrationAdmin)
+admin.site.register(Enrollment, EnrollmentAdmin)

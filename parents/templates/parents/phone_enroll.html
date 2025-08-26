@@ -1,0 +1,22 @@
+
+{% block content %}
+<h2>Step 2: Phone Number</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+     <button type="submit" name="add_another">Save & Add Another</button>
+    <button type="submit">Next</button>
+</form>
+
+{% comment %} <h3>Saved Phone Numbers:</h3>
+<ul>
+    {% for phone in phones %}
+        <li>{{ phone.owner }}: {{ phone.number }} ({{ phone.number_type }})</li>
+    {% empty %}
+        <li>No phone numbers added yet.</li>
+    {% endfor %}
+</ul> {% endcomment %}
+
+{% endblock %}
