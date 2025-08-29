@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import pycountry
+from django.utils import timezone
 
 from students.models import StudentRegistration
 
@@ -56,10 +57,15 @@ class Parent(models.Model):
     nationality = models.CharField(max_length=70, choices=COUNTRY_CHOICES)
     email = models.EmailField(max_length=254, blank=True, null=True)
     password = models.CharField(max_length=128, blank=True, null=True)
+    # registerd_date = models.DateTimeField(auto_now_add=True)
+    registerd_date = models.DateTimeField(default=timezone.now)
     signature = models.ImageField(
         upload_to="signatures/",  # folder inside MEDIA_ROOT
         blank=True,
         null=True)
+    
+    class Meta:
+        ordering = ["-registerd_date"]
 
     def __str__(self):
         return f"{self.first_name} {self.middle_name} {self.last_name}"
@@ -73,6 +79,9 @@ class PhoneNumber(models.Model):
     number = models.CharField(max_length=60)
     owner = models.CharField(max_length=30, choices=[('father', 'Father'), ('mother', 'Mother'), ('uncle', 'Uncle'), ('other', 'Other') ])
     number_type = models.CharField(max_length=30, choices=[('personal', 'Personal'), ('work phone', 'Work Phone'), ('other', 'Other')])
+
+    class Meta:
+        ordering = ["-id"]
 
     def __str__(self):
         """ To print out the values.

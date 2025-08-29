@@ -8,4 +8,6 @@ urlpatterns = [
     path("dashboards", views.dashboards, name="dashboard"),
     path("registration", views.register_student, name="register"),
     path("success", views.success, name="succ"),
+    path("academy", views.academicYear_register, name="A_year"),
+    
 ]

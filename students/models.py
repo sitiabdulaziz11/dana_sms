@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import pycountry
 from datetime import datetime
+from django.utils import timezone
 
 
 # Create your models here.
@@ -30,7 +31,7 @@ class StudentRegistration(models.Model):
     section = models.ForeignKey("common.Section", on_delete=models.SET_NULL, null=True, related_name="students")
     
     image_file = models.ImageField()
-    registration_date = models.DateField(auto_now_add=True)
+    registration_date = models.DateTimeField(default=timezone.now)
     city = models.CharField(max_length=50)
     kfle_ketema = models.CharField(max_length=50)
     wereda= models.CharField(max_length=50)
@@ -55,6 +56,7 @@ class StudentRegistration(models.Model):
         """Meta class to custemize student registration class.
         """
         ordering = ['first_name']
+        ordering = ['-registration_date']
     
     def custom_id(self):
         """To customize id

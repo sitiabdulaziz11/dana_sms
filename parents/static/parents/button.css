@@ -1,0 +1,17 @@
+
+.back-btn {
+  display: inline-block;        /* makes it behave like a button */
+  padding: 10px 20px;           /* space inside */
+  background-color: #0b6cc1;    /* gray background (like Bootstrap secondary) */
+  color: white;                 /* text color */
+  text-decoration: none;        /* remove underline */
+  border-radius: 5px;           /* rounded corners */
+  border: none;                 /* no border */
+  font-size: 16px;              /* text size */
+  cursor: pointer;              /* show pointer on hover */
+  transition: background 0.3s;  /* smooth hover effect */
+}
+
+.back-btn:hover {
+  background-color: #495966;    /* darker on hover */
+}

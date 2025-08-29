@@ -1,0 +1,24 @@
+
+{% load static %}
+
+{% block content %}
+{% include "includes/messages.html" %}
+
+{% comment %} {% if messages %}
+    <section>
+        {% for message in messages %}
+            <span>{{ message }}</span>
+        {% endfor%}
+    </section>
+    {% endif %} {% endcomment %}
+
+    <h2>Review Your Enrollment</h2>
+
+    <h3>Parent Info</h3>
+    <ul>
+        {% for field in parent.meta.fields %}
+            <li>{{ field.verbose_name }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock content %}

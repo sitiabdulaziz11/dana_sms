@@ -83,3 +83,22 @@ form .required label::after {
     color: rgb(255, 9, 9);
     font-weight: bold;
 }
+
+/* Django's default error list */
+.errorlist {
+    color: red;                /* make error text red */
+    font-size: 14px;
+    margin: 5px 0;
+    padding-left: 0;
+    list-style: none;          /* remove bullet points */
+}
+
+/* Extra styling if you want red border around the inputs with errors */
+.errorlist + input,
+.errorlist + select,
+.errorlist + textarea {
+    border: 2px solid red;
+    background: #ffe6e6;
+    border-radius: 6px;
+    padding: 6px;
+}

@@ -1,6 +1,7 @@
 # import os
 import uuid
 import requests
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.http import Http404, HttpResponse
@@ -10,6 +11,7 @@ from django.http import Http404, HttpResponse
 from .models import Payment
 # from .models import MONTH_CHOICES
 from students.models import StudentRegistration
+from parents.models import Parent, PhoneNumber, EmergencyContact
 from .forms import PaymentForm
 
 # Create your views here.
@@ -35,13 +37,83 @@ def make_payment(request, student_id=None):
          payment = payment_form.save(commit=False)
          payment.student = student
          payment.save()
-         # return redirect("succes")
+         request.session["payment_id"] = payment.id
+         messages.success(request, "Payment success")
+         return redirect("review")
    else:
       payment_form = PaymentForm()
    return render(request, "payments/make_payment.html", {
       "form": payment_form,
       "student": student
    })
+
+def review_all_enrollment(request):
+   """ Review all entered information before final submission.
+   """
+   request.session["review_mode"] = True  # mark review mode
+
+   parent_ids = request.session.get("parent_ids", [])
+   phone_ids = request.session.get("phone_ids", [])
+   emergency_ids = request.session.get("emergency_ids", [] )
+   student_id = request.session.get("student_id")
+   payment_id = request.session.get("payment_id")
+
+   # Ensure it's always iterable
+   # if isinstance(parent_ids, int):
+   #  parent_ids = [parent_ids]
+
+   if not parent_ids:
+      messages.error(request, "No parent ID provided.")
+      # request.session["review_mode"] = True
+      return redirect("prnt_info")
+   if not phone_ids:
+      messages.error(request, "No phone ID provided.")
+      return redirect("phone_info")
+   if not emergency_ids:
+      messages.error(request, "No emergency ID provided.")
+      return redirect("emrgncy_info")
+   if not student_id:
+      messages.error(request, "No student ID provided.")
+      return redirect("register")
+   if not payment_id:
+      messages.error(request, "No payment ID provided.")
+      return redirect("pay_with_id", student_id)
+   
+   parent = Parent.objects.filter(id__in=parent_ids)
+   phones = PhoneNumber.objects.filter(id__in=phone_ids)
+   emergencies = EmergencyContact.objects.filter(id__in=emergency_ids)
+   student = StudentRegistration.objects.get(id=student_id)
+   payment = Payment.objects.get(id=payment_id)
+
+   if request.method == "POST":
+      # clear review_mode after final submit
+      request.session.pop("review_mode", None)
+      return redirect("success_page")
+   
+   return render(request, "payments/review_all.html", {
+      "parent": parent,
+      "phones": phones,
+      "emergencies": emergencies,
+      "student": student,
+      "payment": payment
+   })
+
+# required_steps = {
+#       "parent_id": ("prnt_info", "No parent ID provided."),
+#       "phone_id": ("phone_info", "No phone ID provided."),
+#       "emergency_id": ("emrgncy_info", "No emergency ID provided."),
+#       "student_id": ("register", "No student ID provided."),
+#       "payment_id": ("prnt_info", "No payment ID provided."),
+#    }
+
+   # for key, (redirect_url, error_message) in required_steps.items():
+   #    if not request.session.get(key):
+   #       messages.error(request, error_message)
+   #       return redirect(redirect_url)
+   # return render(request, "payments/review.html", {
+   #    "required_sp": required_steps
+   # })
+
 
 
 # def initialize_payment(request, student_id):
@@ -138,12 +210,6 @@ def payment_success(request):
    #  }
 
    #  return render(request, "your_template.html", context)
-
-
-
-
-
-
 
 
 # def unpaid_monthly_payments(request):

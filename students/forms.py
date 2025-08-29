@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from .models import StudentRegistration, Enrollment
+from .models import StudentRegistration, Enrollment, AcademicYear
 
 
 class StudentRegistrationForm(forms.ModelForm):
@@ -51,3 +51,10 @@ EnrollmentFormSet = inlineformset_factory(
     extra=1,  # Number of empty forms to display
     can_delete=False,
 )
+
+class AcademicYearForm(forms.ModelForm):
+    """Forms to register academic year.
+    """
+    class Meta:
+        model = AcademicYear
+        fields = '__all__'

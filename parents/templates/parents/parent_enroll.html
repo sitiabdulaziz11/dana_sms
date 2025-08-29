@@ -1,5 +1,7 @@
 
 {% block content %}
+{% include "includes/messages.html" %}
+
 <h2>Step 1: Parent Information</h2>
 <form method="post">
     {% csrf_token %}

@@ -1,13 +1,22 @@
 
 {% block content %}
+{% include "includes/messages.html" %}
+
 <h2>Step 2: Phone Number</h2>
 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-
-     <button type="submit" name="add_another">Save & Add Another</button>
-    <button type="submit">Next</button>
+    <div>
+        {% if back_url %}
+            <a href="{{ back_url }}">
+            <button type="button" class="back-btn">Back</button>
+            </a>
+        {% endif %}
+        <button type="submit" name="add_another">Save & Add Another</button>
+        <button type="submit">Next</button> 
+    </div>
+     
 </form>
 
 {% comment %} <h3>Saved Phone Numbers:</h3>

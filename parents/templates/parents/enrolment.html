@@ -1,5 +1,8 @@
 {% load static %}
 
+{% block content %}
+{% include "includes/messages.html" %}
+
 <form method="post">
     {% csrf_token %}
     {{ wizard.management_form }}
@@ -8,3 +11,5 @@
     {% if wizard.step.last %}submit{% else %}Next{% endif%}
     </button>
 </form>
+
+{% endblock content %}

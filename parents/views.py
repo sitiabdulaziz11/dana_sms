@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from formtools.wizard.views import SessionWizardView
 from django.forms import modelformset_factory
 from django.http import Http404, HttpResponse
+from django.utils import timezone
+from django.urls import reverse
 
 
 from .forms import ParentForm, PhoneNumberForm, EmergencyContactForm
@@ -57,20 +59,29 @@ class ParentEnrollmentWizard(SessionWizardView):
 def parent_info(request):
     """Views for parent information.
     """
+    # reset review mode when starting fresh
+    if "review_mode" in request.session:
+        del request.session["review_mode"]
+
     if request.method == "POST":
         form = ParentForm(request.POST)
+
         if form.is_valid():
             parent = form.save()  # commit to DB
-            request.session["parent_id"] = parent.id  # store for next steps
+            request.session["parent_ids"] = [parent.id]  # store for next steps
+
+            if "review_mode" in request.session:
+                return redirect("review")
 
             if "add_another" in request.POST:
                 return redirect("prnt_info")
             else:
                 return redirect("phone_info")  # go to next step
+            
     else:
         form = ParentForm()
     return render(request, "parents/parent_enroll.html", {
-        "form": form
+        "form": form,
     })
 
 # PhoneFormSet = modelformset_factory(PhoneNumber, fields=("parent", "number", "owner", "number_type"), extra=2)
@@ -87,7 +98,10 @@ def phoneNum_info(request):
             phone = form.save(commit=False)
             phone.parent = parent
             phone.save()
-            request.session["phone_id"] = phone.id
+            request.session["phone_ids"] = [phone.id]
+
+            if "review_mode" in request.session:
+                return redirect("review")
 
             # Check which button was clicked
             if "add_another" in request.POST:
@@ -102,7 +116,8 @@ def phoneNum_info(request):
     # Display all saved phones for this parent
     # phones = PhoneNumber.objects.filter(parent=parent)
     return render(request, "parents/phone_enroll.html", {
-        "form": form
+        "form": form,
+        "back_url": reverse("prnt_info")
         # "phones": phones
         })
 
@@ -113,12 +128,12 @@ def emergency_info(request):
     if not parent_id:
         return HttpResponse("no parent id")
     
-    parent = get_object_or_404(Parent, id=parent_id)
-
     student_id = request.session.get("student_id")
     if not student_id:
-        return HttpResponse("no student id")
+        # return HttpResponse("no student id")
+        return redirect("register")  # Redirect to student registration
     
+    parent = get_object_or_404(Parent, id=parent_id)
     student = get_object_or_404(StudentRegistration, id=student_id)
 
     if request.method == "POST":
@@ -127,6 +142,10 @@ def emergency_info(request):
             emergency = form.save(commit=False)
             emergency.parent = parent
             emergency.save()
+            request.session["emergency_ids"] = [emergency.id]
+
+            if "review_mode" in request.session:
+                return redirect("review")
 
             # Check which button was clicked
             if "add_another" in request.POST:

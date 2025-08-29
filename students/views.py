@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from .forms import StudentRegistrationForm, EnrollmentFormSet
+from .forms import StudentRegistrationForm, EnrollmentFormSet, AcademicYearForm
 from .models import AcademicYear, Enrollment
 
 # Create your views here.
@@ -25,7 +25,6 @@ def register_student(request):
         student_form = StudentRegistrationForm(request.POST, request.FILES)
         enrollment_formset = EnrollmentFormSet(request.POST, prefix='enroll')
 
-        # if student_form.is_valid() and enrollment_formset.is_valid():
         if student_form.is_valid():
             student = student_form.save()
             # enrollment_formset.instance = students
@@ -36,21 +35,6 @@ def register_student(request):
                 instance=student,
                 prefix="enroll",
             )
-            # for enroll in enrollments:
-            #     enroll.students = students
-            #     enroll.save()
-
-            # Get the current active academic year
-            # current_year = AcademicYear.objects.filter(is_active=True).first()
-
-            # # Create enrollment record
-            # Enrollment.objects.create(
-            #     student=students,
-            #     grade=students.grade,
-            #     section=students.section,
-            #     academic_year=current_year
-            # )
-            # return redirect("succ")
 
             if enrollment_formset.is_valid():
                 enrollment_formset.save()
@@ -69,6 +53,23 @@ def register_student(request):
         "form": student_form,
         "enrollment_formset": enrollment_formset
         })
+
+def academicYear_register(request):
+    """ Academic Year registration.
+    """
+    # form = AcademicYearForm()
+
+    if request.method == "POST":
+        form = AcademicYearForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("succes")
+    else:
+        form = AcademicYearForm()
+
+    return render(request, "students/academy.html", {
+        "form": form
+    })
 
 def success(request):
     """Display success message after registration.

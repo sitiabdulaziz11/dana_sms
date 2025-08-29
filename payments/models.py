@@ -47,6 +47,7 @@ class Payment(models.Model):
         default='pending',
         blank=True,
         null=True)  # payid or not payid
+    payment_receipt_image = models.ImageField(upload_to="receipts/")
     email = models.EmailField(null=True, blank=True)
  
     # Relation with student model 

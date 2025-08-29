@@ -1,11 +1,18 @@
 
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'parents/button.css' %}">
+
 {% block content %}
+{% include "includes/messages.html" %}
+
 <h2>Step 3: Emergency Contact</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
 
     {% comment %} <button type="submit">Finish</button> {% endcomment %}
+    <a href="{% url 'phone_info' %}" class="back-btn">Back</a>
     <button type="submit">Continue to Payment</button>
 </form>
 {% endblock %}
