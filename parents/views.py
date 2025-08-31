@@ -4,6 +4,7 @@ from django.forms import modelformset_factory
 from django.http import Http404, HttpResponse
 from django.utils import timezone
 from django.urls import reverse
+from django.contrib import messages
 
 
 from .forms import ParentForm, PhoneNumberForm, EmergencyContactForm
@@ -62,13 +63,22 @@ def parent_info(request):
     # reset review mode when starting fresh
     if "review_mode" in request.session:
         del request.session["review_mode"]
+    # or only clear review_mode if we are not coming from review
+    # if not request.session.get("review_mode"):
+    #     request.session.pop("review_mode", None)
 
     if request.method == "POST":
         form = ParentForm(request.POST)
 
         if form.is_valid():
             parent = form.save()  # commit to DB
-            request.session["parent_ids"] = [parent.id]  # store for next steps
+            # request.session["parent_ids"] = [parent.id]  # store for next steps
+            parent_ids = request.session.get("parent_ids", [])
+            parent_ids.append(parent.id)
+            request.session["parent_ids"] = parent_ids
+
+            # Set the current parent ID to the newly added parent
+            request.session["current_parent_id"] = parent.id
 
             if "review_mode" in request.session:
                 return redirect("review")
@@ -89,16 +99,38 @@ def parent_info(request):
 def phoneNum_info(request):
     """For phone number
     """
-    parent_id = request.session.get("parent_id")
-    parent = get_object_or_404(Parent, id=parent_id)
+    # request.session["phone_ids"] = []
+
+    # parent_ids = request.session.get("parent_ids", [])
+    current_parent_id = request.session.get("current_parent_id")
+    if not current_parent_id:
+        messages.error(request, "No parent found in session. Please register a parent first.")
+        # messages.error(request, "No parent selected for phone number")
+        return redirect("prnt_info")
+    
+    # parent_id = parent_ids[-1]
+    parent = get_object_or_404(Parent, id=current_parent_id)
+
+    # When starting new parent phone registration.
+    # request.session["phone_ids"] = []
+
+    # If not already set for this session, create empty list
+    # request.session.setdefault("phone_ids", [])
 
     if request.method == "POST":
         form = PhoneNumberForm(request.POST)
         if form.is_valid():
             phone = form.save(commit=False)
+            # form.save()
             phone.parent = parent
             phone.save()
-            request.session["phone_ids"] = [phone.id]
+            messages.success(request, f"Phone number added for {parent.first_name}.successfully.")
+            # request.session["phone_ids"] = [phone.id]
+            # When adding phone numbers for that parent
+            # request.session.setdefault("phone_ids", [])
+            # phone_ids = request.session["phone_ids", ]
+            # phone_ids.append(phone.id)
+            # request.session["phone_ids"] = phone_ids
 
             if "review_mode" in request.session:
                 return redirect("review")
@@ -114,35 +146,43 @@ def phoneNum_info(request):
         form = PhoneNumberForm()
 
     # Display all saved phones for this parent
-    # phones = PhoneNumber.objects.filter(parent=parent)
+    phones = PhoneNumber.objects.filter(parent=parent)
     return render(request, "parents/phone_enroll.html", {
         "form": form,
-        "back_url": reverse("prnt_info")
-        # "phones": phones
+        # "back_url": reverse("prnt_info")
+        "phones": phones
         })
 
 def emergency_info(request):
     """For phone number
     """
-    parent_id = request.session.get("parent_id")
-    if not parent_id:
-        return HttpResponse("no parent id")
+    # request.session["emergency_ids"] = []
+
+    parent_ids = request.session.get("parent_ids", [])
+    if not parent_ids:
+        messages.error(request, "No parent found. Please register a parent first.")
+        return redirect("prnt_info")
     
     student_id = request.session.get("student_id")
     if not student_id:
+        messages.error(request, "No student found. Please register a student first.")
         # return HttpResponse("no student id")
         return redirect("register")  # Redirect to student registration
     
-    parent = get_object_or_404(Parent, id=parent_id)
+    # parent_id = parent_ids[-1]
+    # parent = get_object_or_404(Parent, id=parent_ids)
     student = get_object_or_404(StudentRegistration, id=student_id)
 
     if request.method == "POST":
         form = EmergencyContactForm(request.POST)
         if form.is_valid():
             emergency = form.save(commit=False)
-            emergency.parent = parent
+            emergency.student = student
             emergency.save()
-            request.session["emergency_ids"] = [emergency.id]
+
+            emergency_ids= request.session.get("emergency_ids", [])
+            request.session["emergency_ids"].append(emergency.id)
+            request.session["emergency_ids"] = emergency_ids
 
             if "review_mode" in request.session:
                 return redirect("review")

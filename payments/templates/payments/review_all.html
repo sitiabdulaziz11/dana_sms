@@ -16,9 +16,39 @@
 
     <h3>Parent Info</h3>
     <ul>
+        {% for paren in parents %}
+        <li>{{paren.first_name }} {{ paren.middle_name }}</li>
+        {% endfor %}
+    </ul>
+    {% comment %} <ul>
         {% for field in parent.meta.fields %}
             <li>{{ field.verbose_name }}</li>
         {% endfor %}
+    </ul> {% endcomment %}
+    <h3>Phone Numbers</h3>
+    <ul>
+        {% for phone in phones %}
+        <li>{{ phone.parent }} {{ phone.number }} ({{ phone.owner }} - {{ phone.number_type }})</li>
+        {% endfor %}
     </ul>
 
+    <h3>Student Info</h3>
+    <p>Name: {{ student.first_name }} {{ student.last_name }}</p>
+    <p>Grade: {{ student.grade }}</p>
+    <p>Section: {{ student.section }}</p>
+
+    <h3>Emergency Contacts</h3>
+    <ul>
+        {% for emr in emergencies %}
+            <li>{{ emr.parent }} - {{ emr.student }} {{ emr.phone }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Payment</h3>
+        <p>payment amount: {{ payment.amount}}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirm & Proceed to Payment</button>
+    </form>
 {% endblock content %}

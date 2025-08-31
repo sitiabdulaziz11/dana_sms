@@ -30,7 +30,7 @@ class StudentRegistration(models.Model):
     grade = models.ForeignKey("common.Grade", on_delete=models.SET_NULL, null=True, related_name="students")
     section = models.ForeignKey("common.Section", on_delete=models.SET_NULL, null=True, related_name="students")
     
-    image_file = models.ImageField()
+    image_file = models.ImageField(upload_to="photos/")
     registration_date = models.DateTimeField(default=timezone.now)
     city = models.CharField(max_length=50)
     kfle_ketema = models.CharField(max_length=50)

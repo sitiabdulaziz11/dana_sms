@@ -65,6 +65,7 @@ class Parent(models.Model):
         null=True)
     
     class Meta:
+        # ordering = ["-registerd_date"]
         ordering = ["-registerd_date"]
 
     def __str__(self):
@@ -79,9 +80,10 @@ class PhoneNumber(models.Model):
     number = models.CharField(max_length=60)
     owner = models.CharField(max_length=30, choices=[('father', 'Father'), ('mother', 'Mother'), ('uncle', 'Uncle'), ('other', 'Other') ])
     number_type = models.CharField(max_length=30, choices=[('personal', 'Personal'), ('work phone', 'Work Phone'), ('other', 'Other')])
+    registerd_date = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ["-id"]
+        ordering = ["-registerd_date"]
 
     def __str__(self):
         """ To print out the values.
@@ -115,3 +117,12 @@ class EmergencyContact(models.Model):
         null=True)
     email = models.EmailField(max_length=254, blank=True, null=True, unique=True)
     password = models.CharField(max_length=128, blank=True, null=True, unique=True)
+
+    class Meta:
+        ordering = ["-registration_date"]
+
+
+    def __str__(self):
+        """ To print out the values.
+        """
+        return f"{self.student} {self.parent}: {self.phone_num}"

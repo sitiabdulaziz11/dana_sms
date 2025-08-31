@@ -7,7 +7,7 @@
     <title>Make Payment for {{ student.first_name}} {{ student.middle_name}}</title>
 </head>
 <body>
-    <h2>Make Payment for {{ student.first_name}} {{ student.last_name}}</h2>
+    <h2>Make Payment for {{ student.first_name}} {{ student.middle_name}}</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p}}

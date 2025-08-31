@@ -67,7 +67,7 @@ def review_all_enrollment(request):
       # request.session["review_mode"] = True
       return redirect("prnt_info")
    if not phone_ids:
-      messages.error(request, "No phone ID provided.")
+      messages.error(request, "No phone ID provided.")  #for what dad or mom? add that logic
       return redirect("phone_info")
    if not emergency_ids:
       messages.error(request, "No emergency ID provided.")
@@ -91,7 +91,7 @@ def review_all_enrollment(request):
       return redirect("success_page")
    
    return render(request, "payments/review_all.html", {
-      "parent": parent,
+      "parents": parent,
       "phones": phones,
       "emergencies": emergencies,
       "student": student,
