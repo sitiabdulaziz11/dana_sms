@@ -80,7 +80,12 @@ def review_all_enrollment(request):
       return redirect("pay_with_id", student_id)
    
    parent = Parent.objects.filter(id__in=parent_ids)
-   phones = PhoneNumber.objects.filter(id__in=phone_ids)
+
+   all_phone_ids = []
+   for p_phones in phone_ids.values():
+      all_phone_ids.extend(p_phones)
+   phones = PhoneNumber.objects.filter(id__in=all_phone_ids)
+
    emergencies = EmergencyContact.objects.filter(id__in=emergency_ids)
    student = StudentRegistration.objects.get(id=student_id)
    payment = Payment.objects.get(id=payment_id)

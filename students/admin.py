@@ -81,8 +81,8 @@ class StudentRegistrationAdmin(admin.ModelAdmin):
     """
     list_filter = (PaymentStatusFilter, PaymentTypeFilter, PaymentMonthFilter, )
     list_display = (
-        'custom_id', 'first_name', 'middle_name', 'last_name', 
-        'gender', 'birth_date', 'age', 'image_file',
+        'custom_id', 'first_name', 'middle_name', 'last_name', 'parent',
+        'gender', 'age', 'grade', 'section', 'registration_date', 'city', 'kfle_ketema', 'wereda', 'hous_number', 'image_file', 'birth_date','nationality', 'email', 'password', 'join_year'
     )
     list_display_links = ('custom_id',)
     search_fields = ('first_name', 'last_name',)

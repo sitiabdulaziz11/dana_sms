@@ -122,8 +122,20 @@ def phoneNum_info(request):
         if form.is_valid():
             phone = form.save(commit=False)
             # form.save()
-            phone.parent = parent
+            # phone.parent = parent
+            parent_id = request.POST.get("parent")
+            phone.parent_id = parent_id
             phone.save()
+
+            phone_ids = request.session.get("phone_ids", {})
+            phone_ids = request.session.get("phone_ids", {})
+            if not isinstance(phone_ids, dict):
+                phone_ids = {}
+            if parent_id not in phone_ids:
+                phone_ids[parent_id] = []
+                phone_ids[parent_id].append(phone.id)
+                request.session["phone_ids"] = phone_ids
+
             messages.success(request, f"Phone number added for {parent.first_name}.successfully.")
             # request.session["phone_ids"] = [phone.id]
             # When adding phone numbers for that parent
