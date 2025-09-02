@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 
 from .forms import StudentRegistrationForm, EnrollmentFormSet, AcademicYearForm
 from .models import AcademicYear, Enrollment
+from parents.models import Parent
 
 # Create your views here.
 
@@ -29,6 +30,10 @@ def register_student(request):
             student = student_form.save()
             # enrollment_formset.instance = students
             request.session["student_id"] = student.id  # store for next steps
+
+            parent_ids = request.session.get("parent_ids", [])
+            student.parents.set(Parent.objects.filter(id__in=parent_ids))
+            student.save()
             
             enrollment_formset = EnrollmentFormSet(
                 request.POST,

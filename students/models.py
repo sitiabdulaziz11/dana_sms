@@ -45,7 +45,7 @@ class StudentRegistration(models.Model):
     # prefix = models.CharField(max_length=10, default="A/D")  # editable
 
     # Relations
-    parent = models.ManyToManyField("parents.Parent", related_name="children")
+    parents = models.ManyToManyField("parents.Parent", related_name="children")
 
     # phone_no from parent or? grade, section other separet table or?, email , password good or?
     # result, teachers, subjects, admin and parent.

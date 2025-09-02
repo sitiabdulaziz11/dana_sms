@@ -60,22 +60,19 @@ class ParentEnrollmentWizard(SessionWizardView):
 def parent_info(request):
     """Views for parent information.
     """
-    # reset review mode when starting fresh
     if "review_mode" in request.session:
-        del request.session["review_mode"]
-    # or only clear review_mode if we are not coming from review
-    # if not request.session.get("review_mode"):
-    #     request.session.pop("review_mode", None)
+        del request.session["review_mode"]   # reset review mode when starting fresh
+    if "parent_ids" not in request.session:
+        request.session["parent_ids"] = []  # reset in a new student registration.
 
     if request.method == "POST":
-        form = ParentForm(request.POST)
-
+        form = ParentForm(request.POST, request.FILES)
         if form.is_valid():
             parent = form.save()  # commit to DB
-            # request.session["parent_ids"] = [parent.id]  # store for next steps
             parent_ids = request.session.get("parent_ids", [])
-            parent_ids.append(parent.id)
-            request.session["parent_ids"] = parent_ids
+            if parent.id not in parent_ids:
+                parent_ids.append(parent.id)
+            request.session["parent_ids"] = parent_ids  # store for next steps
 
             # Set the current parent ID to the newly added parent
             request.session["current_parent_id"] = parent.id
@@ -87,47 +84,37 @@ def parent_info(request):
                 return redirect("prnt_info")
             else:
                 return redirect("phone_info")  # go to next step
-            
     else:
         form = ParentForm()
+        # optional to print session ?
+    parent_ids = request.session.get("parent_ids", [])
+    parents_added = Parent.objects.filter(id__in=parent_ids)
+
     return render(request, "parents/parent_enroll.html", {
         "form": form,
+        "parents_added": parents_added,
     })
-
-# PhoneFormSet = modelformset_factory(PhoneNumber, fields=("parent", "number", "owner", "number_type"), extra=2)
 
 def phoneNum_info(request):
     """For phone number
     """
-    # request.session["phone_ids"] = []
-
-    # parent_ids = request.session.get("parent_ids", [])
+    if "phone_ids" not in request.session:
+        request.session["phone_ids"] = []
     current_parent_id = request.session.get("current_parent_id")
     if not current_parent_id:
         messages.error(request, "No parent found in session. Please register a parent first.")
-        # messages.error(request, "No parent selected for phone number")
         return redirect("prnt_info")
     
-    # parent_id = parent_ids[-1]
     parent = get_object_or_404(Parent, id=current_parent_id)
-
-    # When starting new parent phone registration.
-    # request.session["phone_ids"] = []
-
-    # If not already set for this session, create empty list
-    # request.session.setdefault("phone_ids", [])
-
     if request.method == "POST":
         form = PhoneNumberForm(request.POST)
         if form.is_valid():
             phone = form.save(commit=False)
-            # form.save()
-            # phone.parent = parent
-            parent_id = request.POST.get("parent")
+            parent_id = request.POST.get("parent")  # parent's ID from the form
             phone.parent_id = parent_id
             phone.save()
+            parent = get_object_or_404(Parent, id=parent_id)  # To get current selected parent.
 
-            phone_ids = request.session.get("phone_ids", {})
             phone_ids = request.session.get("phone_ids", {})
             if not isinstance(phone_ids, dict):
                 phone_ids = {}
@@ -135,14 +122,7 @@ def phoneNum_info(request):
                 phone_ids[parent_id] = []
                 phone_ids[parent_id].append(phone.id)
                 request.session["phone_ids"] = phone_ids
-
             messages.success(request, f"Phone number added for {parent.first_name}.successfully.")
-            # request.session["phone_ids"] = [phone.id]
-            # When adding phone numbers for that parent
-            # request.session.setdefault("phone_ids", [])
-            # phone_ids = request.session["phone_ids", ]
-            # phone_ids.append(phone.id)
-            # request.session["phone_ids"] = phone_ids
 
             if "review_mode" in request.session:
                 return redirect("review")
@@ -168,11 +148,12 @@ def phoneNum_info(request):
 def emergency_info(request):
     """For phone number
     """
-    # request.session["emergency_ids"] = []
+    if "emergency_ids" not in request.session:
+        request.session["emergency_ids"] = []
 
-    parent_ids = request.session.get("parent_ids", [])
-    if not parent_ids:
-        messages.error(request, "No parent found. Please register a parent first.")
+    current_parent_id = request.session.get("current_parent_id")
+    if not current_parent_id:
+        messages.error(request, "from emergency contact, No parent found in session. Please register a parent first.")
         return redirect("prnt_info")
     
     student_id = request.session.get("student_id")

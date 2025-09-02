@@ -69,7 +69,7 @@ class Parent(models.Model):
         ordering = ["-registerd_date"]
 
     def __str__(self):
-        return f"{self.first_name} {self.middle_name} {self.last_name}"
+        return f"{self.id} {self.first_name} {self.middle_name} {self.last_name} ({self.role})"
         
 
 class PhoneNumber(models.Model):
@@ -79,7 +79,7 @@ class PhoneNumber(models.Model):
     # student = models.ForeignKey(StudentRegistration, on_delete=models.SET_NULL, null=True)   #? required or not?
     number = models.CharField(max_length=60)
     owner = models.CharField(max_length=30, choices=[('father', 'Father'), ('mother', 'Mother'), ('uncle', 'Uncle'), ('other', 'Other') ])
-    number_type = models.CharField(max_length=30, choices=[('personal', 'Personal'), ('work phone', 'Work Phone'), ('other', 'Other')])
+    phone_type = models.CharField(max_length=30, choices=[('personal', 'Personal'), ('work phone', 'Work Phone'), ('other', 'Other')])
     registerd_date = models.DateTimeField(default=timezone.now)
 
     class Meta:

@@ -58,11 +58,8 @@ def review_all_enrollment(request):
    student_id = request.session.get("student_id")
    payment_id = request.session.get("payment_id")
 
-   # Ensure it's always iterable
-   # if isinstance(parent_ids, int):
-   #  parent_ids = [parent_ids]
-
    if not parent_ids:
+      print("SESSION parent_ids:", request.session.get("parent_ids"))
       messages.error(request, "No parent ID provided.")
       # request.session["review_mode"] = True
       return redirect("prnt_info")
@@ -88,6 +85,8 @@ def review_all_enrollment(request):
 
    emergencies = EmergencyContact.objects.filter(id__in=emergency_ids)
    student = StudentRegistration.objects.get(id=student_id)
+   # student = get_object_or_404(StudentRegistration, id=student_id)
+   #  parents = student.parents.all()  # # all parents linked to this student
    payment = Payment.objects.get(id=payment_id)
 
    if request.method == "POST":

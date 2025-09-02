@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import StudentRegistration, Enrollment
 from payments.models import Payment
+from parents.admin import ParentInline
 
 # Register your models here.
 
@@ -81,12 +82,25 @@ class StudentRegistrationAdmin(admin.ModelAdmin):
     """
     list_filter = (PaymentStatusFilter, PaymentTypeFilter, PaymentMonthFilter, )
     list_display = (
-        'custom_id', 'first_name', 'middle_name', 'last_name', 'parent',
+        'custom_id', 'first_name', 'middle_name', 'last_name', 'get_parents', 'get_parent_ids',
         'gender', 'age', 'grade', 'section', 'registration_date', 'city', 'kfle_ketema', 'wereda', 'hous_number', 'image_file', 'birth_date','nationality', 'email', 'password', 'join_year'
     )
     list_display_links = ('custom_id',)
     search_fields = ('first_name', 'last_name',)
+    inlines = [ParentInline]
 
+    def get_parent_ids(self, obj):
+        """ To get parent id on student table.
+        """
+        return ", ".join(str(p.id) for p in obj.parents.all())
+    get_parent_ids.short_description = "Parent ids"
+
+    def get_parents(self, obj):
+        """ To get both parents of a student.
+        """
+        return ", ".join([str(parent.first_name + " " + parent.last_name) for parent in obj.parents.all()])
+    get_parents.short_description = "parents"
+    
     def custom_id(self, obj):
         """ To coustomize student id.
         """
