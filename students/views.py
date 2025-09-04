@@ -6,6 +6,8 @@ from parents.models import Parent
 
 # Create your views here.
 
+STEPS = [ "parent", "phone", "student", "emergency", "payment"]
+
 def main_page(request):
     """To display main or home page
     """
@@ -20,11 +22,17 @@ def dashboards(request):
 def register_student(request):
     """To register students
     """
+    total_step = len(STEPS)
+    current_step = STEPS.index("student") + 1
+
     student_form = StudentRegistrationForm()
     enrollment_formset = EnrollmentFormSet(request.POST, prefix='enroll')
     if request.method == "POST":
         student_form = StudentRegistrationForm(request.POST, request.FILES)
         enrollment_formset = EnrollmentFormSet(request.POST, prefix='enroll')
+
+        request.session["current_step"] = request.session.get("current_step", 1) + 1
+        request.session.modified = True
 
         if student_form.is_valid():
             student = student_form.save()
@@ -53,10 +61,17 @@ def register_student(request):
             })
     else:
         student_form = StudentRegistrationForm()
+        request.session["current_step"] = 3
+        request.session.modified = False
+
         enrollment_formset = EnrollmentFormSet(prefix='enroll')
+        
+
     return render(request, "students/registration.html", {
         "form": student_form,
-        "enrollment_formset": enrollment_formset
+        "enrollment_formset": enrollment_formset,
+        "current_step": current_step,
+        "total_step": total_step,
         })
 
 def academicYear_register(request):

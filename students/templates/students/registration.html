@@ -1,23 +1,36 @@
 {% comment %} {% extends "base.html" %} {% endcomment %}
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{%block title %} Student Regisrtation{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static "" %}">
-    
+        
     {% block css_file %}
-    <link rel="stylesheet" href="{% static "students/registration.css" %}" >
+        <link rel="stylesheet" href="{% static "students/registration.css" %}" >
+        <link rel="stylesheet" href="{% static "parents/parent.css" %}" >
     {% endblock %}
     <link rel="shortcut icon" href="{% static "images/dana_logo1.PNG"%}">
     
 </head>
 <body>
 {% comment %} {% block content%} {% endcomment %}
+{% include "includes/messages.html" %}
+
+<div class="progress-container">
+    <div
+        class="progress-bar"
+        role="progressbar"
+        style="width: {{ progress_percent }}%;"
+        aria-valuenow="{{ current_step }}"
+        aria-valuemin="0"
+        aria-valuemax="{{ total_steps }}"
+    ></div>
+</div>
+<p>Step {{ current_step }} of {{ total_steps }}</p>
+
 <section id="all">
     <h1>Welcome Dear Parents!</h1>
     <h3>Register your children here</h3>

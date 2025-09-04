@@ -25,6 +25,8 @@ TEMPLATES = {
     "emergencyContact_info": "parents/contact_enroll.html",
 }
 
+STEPS = ["parent", "phone", "student", "emergency", "payment"]
+
 class ParentEnrollmentWizard(SessionWizardView):
     """ Views to handel different form step of registration.
     """
@@ -73,9 +75,13 @@ def parent_info(request):
             if parent.id not in parent_ids:
                 parent_ids.append(parent.id)
             request.session["parent_ids"] = parent_ids  # store for next steps
+            print("SESSION parent_ids:", request.session.get("parent_ids"))
 
             # Set the current parent ID to the newly added parent
             request.session["current_parent_id"] = parent.id
+
+            request.session["current_step"] = request.session.get("current_step", 0) + 1
+            request.session.modified = True
 
             if "review_mode" in request.session:
                 return redirect("review")
@@ -86,6 +92,9 @@ def parent_info(request):
                 return redirect("phone_info")  # go to next step
     else:
         form = ParentForm()
+        request.session["current_step"] = 1
+        request.session.modified = False
+
         # optional to print session ?
     parent_ids = request.session.get("parent_ids", [])
     parents_added = Parent.objects.filter(id__in=parent_ids)
@@ -93,11 +102,18 @@ def parent_info(request):
     return render(request, "parents/parent_enroll.html", {
         "form": form,
         "parents_added": parents_added,
+        # "current_step": current_step,
+        # "total_step": total_step
     })
 
 def phoneNum_info(request):
     """For phone number
     """
+    # current_step = request.session.get("current_step", 1)
+    # total_step = request.session.get("total_steps", 5)
+    # # total_step = len(STEPS)
+    # # current_step = STEPS.index("phone") + 1
+
     if "phone_ids" not in request.session:
         request.session["phone_ids"] = []
     current_parent_id = request.session.get("current_parent_id")
@@ -109,6 +125,7 @@ def phoneNum_info(request):
     if request.method == "POST":
         form = PhoneNumberForm(request.POST)
         if form.is_valid():
+            print("SESSION parent_ids:", request.session.get("parent_ids"), "phone ids", request.session.get("phone_ids"))
             phone = form.save(commit=False)
             parent_id = request.POST.get("parent")  # parent's ID from the form
             phone.parent_id = parent_id
@@ -124,6 +141,9 @@ def phoneNum_info(request):
                 request.session["phone_ids"] = phone_ids
             messages.success(request, f"Phone number added for {parent.first_name}.successfully.")
 
+            request.session["current_step"] = request.session.get("current_step", 1) + 1
+            request.session.modified = True
+
             if "review_mode" in request.session:
                 return redirect("review")
 
@@ -136,13 +156,17 @@ def phoneNum_info(request):
                 return redirect("register")
     else:
         form = PhoneNumberForm()
+        request.session["current_step"] = 2
+        request.session.modified = False
 
     # Display all saved phones for this parent
     phones = PhoneNumber.objects.filter(parent=parent)
     return render(request, "parents/phone_enroll.html", {
         "form": form,
         # "back_url": reverse("prnt_info")
-        "phones": phones
+        "phones": phones,
+        # "current_step": current_step,
+        # "total_step": total_step,
         })
 
 def emergency_info(request):
@@ -177,6 +201,9 @@ def emergency_info(request):
             request.session["emergency_ids"].append(emergency.id)
             request.session["emergency_ids"] = emergency_ids
 
+            request.session["current_step"] = request.session.get("current_step", 1) + 1
+            request.session.modified = True
+
             if "review_mode" in request.session:
                 return redirect("review")
 
@@ -189,7 +216,11 @@ def emergency_info(request):
                 return redirect("pay_with_id", student_id=student.id)
     else:
         form = EmergencyContactForm()
+        request.session["current_step"] = 4
+        request.session.modified = False
 
     # Display all saved phones for this parent
     # phones = PhoneNumber.objects.filter(parent=parent)
-    return render(request, "parents/emergency_enroll.html", {"form": form}) #"phones": phones})
+    return render(request, "parents/emergency_enroll.html", {
+        "form": form,
+       }) #"phones": phones})

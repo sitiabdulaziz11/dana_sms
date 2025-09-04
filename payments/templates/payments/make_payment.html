@@ -1,3 +1,4 @@
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -5,8 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Make Payment for {{ student.first_name}} {{ student.middle_name}}</title>
+    <link rel="stylesheet" href="{% static "parents/parent.css" %}" >
+
 </head>
 <body>
+
+    <div class="progress-container">
+    <div
+        class="progress-bar"
+        role="progressbar"
+        style="width: {{ progress_percent }}%;"
+        aria-valuenow="{{ current_step }}"
+        aria-valuemin="0"
+        aria-valuemax="{{ total_steps }}"
+    ></div>
+</div>
+<p>Step {{ current_step }} of {{ total_steps }}</p>
+
+
     <h2>Make Payment for {{ student.first_name}} {{ student.middle_name}}</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}

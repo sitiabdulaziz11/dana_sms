@@ -1,6 +1,28 @@
+{% load static %}
+
+{% block css_file %}
+    <link rel="stylesheet" href="{% static "parents/parent.css" %}" >
+{% endblock %}
 
 {% block content %}
 {% include "includes/messages.html" %}
+
+ {% comment %} <div class="progress">
+    <p>Step {{ current_step }} Of {{ total_step }}</p>
+    <progress value="{{ curent_step }}" max="{{ tetal_step }}"></progress>
+</div>  {% endcomment %}
+
+<div class="progress-container">
+    <div
+        class="progress-bar"
+        role="progressbar"
+        style="width: {{ progress_percent }}%;"
+        aria-valuenow="{{ current_step }}"
+        aria-valuemin="0"
+        aria-valuemax="{{ total_steps }}"
+    ></div>
+</div>
+<p>Step {{ current_step }} of {{ total_steps }}</p>
 
 <h2>Step 1: Parent Information</h2>
 <form method="post">

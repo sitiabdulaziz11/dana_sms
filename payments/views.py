@@ -42,9 +42,12 @@ def make_payment(request, student_id=None):
          return redirect("review")
    else:
       payment_form = PaymentForm()
+      request.session["current_step"] = 5
+      request.session.modified = False
+      
    return render(request, "payments/make_payment.html", {
       "form": payment_form,
-      "student": student
+      "student": student,
    })
 
 def review_all_enrollment(request):
@@ -92,6 +95,10 @@ def review_all_enrollment(request):
    if request.method == "POST":
       # clear review_mode after final submit
       request.session.pop("review_mode", None)
+      request.session.pop("student_id", None)
+      request.session.pop("parent_ids", None)
+      request.session.pop("phone_ids", None)
+      request.session.pop("emergency_ids", None)
       return redirect("success_page")
    
    return render(request, "payments/review_all.html", {
@@ -101,6 +108,8 @@ def review_all_enrollment(request):
       "student": student,
       "payment": payment
    })
+
+
 
 # required_steps = {
 #       "parent_id": ("prnt_info", "No parent ID provided."),

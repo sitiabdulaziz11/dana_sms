@@ -1,10 +1,26 @@
 
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'parents/button.css' %}">
+{% block css_file %}
+    <link rel="stylesheet" href="{% static "parents/parent.css" %}" >
+    <link rel="stylesheet" href="{% static 'parents/button.css' %}">
+{% endblock %}
+
 
 {% block content %}
 {% include "includes/messages.html" %}
+
+<div class="progress-container">
+    <div
+        class="progress-bar"
+        role="progressbar"
+        style="width: {{ progress_percent }}%;"
+        aria-valuenow="{{ current_step }}"
+        aria-valuemin="0"
+        aria-valuemax="{{ total_steps }}"
+    ></div>
+</div>
+<p>Step {{ current_step }} of {{ total_steps }}</p>
 
 <h2>Step 3: Emergency Contact</h2>
 <form method="post">
