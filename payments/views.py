@@ -13,8 +13,17 @@ from .models import Payment
 from students.models import StudentRegistration
 from parents.models import Parent, PhoneNumber, EmergencyContact
 from .forms import PaymentForm
+from students.forms import StudentRegistrationForm
+from parents.forms import ParentForm, PhoneNumberForm, EmergencyContactForm
 
 # Create your views here.
+
+def review(request, pk):
+   """ To review all filled datas.
+   """
+   student = get_object_or_404(StudentRegistration, pk=pk)
+
+
 
 def make_payment(request, student_id=None):
    """views to make student payment.

@@ -22,9 +22,11 @@
 
 <h2>Step 2: Phone Number</h2>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    {% comment %} {{ form.as_p }} {% endcomment %}
+    {{ wizard.management_form }}
+    {{ wizard.form.as_p }}
     <p>Adding phone for: {{ current_parent.first_name }}</p>
     <div>
         {% if back_url %}
@@ -32,7 +34,7 @@
             <button type="button" class="back-btn">Back</button>
             </a>
         {% endif %}
-        <button type="submit" name="add_another">Save & Add Another</button>
+        {% comment %} <button type="submit" name="add_another">Save & Add Another</button> {% endcomment %}
         <button type="submit">Next</button>
     </div>
      

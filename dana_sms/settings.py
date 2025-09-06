@@ -36,7 +36,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.199.230']
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.path.join(BASE_DIR / "media")
 
 # Application definition
 

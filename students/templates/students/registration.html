@@ -44,7 +44,9 @@
             {# Student form error#}
             {% if form.non_field_errors%}
                 <div class="error">
-                    {{ form.non_field_errors }}
+                    {% comment %} {{ form.non_field_errors }} {% endcomment %}
+                    {{ wizard.management_form }}   
+                    {{ wizard.form.as_p }}
                 </div>
                 {% endif %}
 

@@ -5,32 +5,41 @@ from django.http import Http404, HttpResponse
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib import messages
+from django.core.files.storage import FileSystemStorage
+import os
+from django.conf import settings
 
 
 from .forms import ParentForm, PhoneNumberForm, EmergencyContactForm
 from .models import Parent, PhoneNumber
 from students.models import StudentRegistration
+from students.forms import StudentRegistrationForm
 
 # Create your views here.
 
 FORMS = [
     ("parent_info", ParentForm),
     ("phoneNumber_info", PhoneNumberForm),
+    ("register_student", StudentRegistrationForm),
     ("emergencyContact_info", EmergencyContactForm),
 ]
 
 TEMPLATES = {
     "parent_info": "parents/parent_enroll.html",
     "phoneNumber_info": "parents/phone_enroll.html",
+    "register_student": "students/registration.html",
     "emergencyContact_info": "parents/contact_enroll.html",
 }
 
 STEPS = ["parent", "phone", "student", "emergency", "payment"]
 
+file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'tmp'))
+
 class ParentEnrollmentWizard(SessionWizardView):
     """ Views to handel different form step of registration.
     """
     form_list = FORMS
+    file_storage = file_storage
     # template_name = "parents/enrollment.html"
 
     def get_template_names(self):
@@ -43,7 +52,8 @@ class ParentEnrollmentWizard(SessionWizardView):
         """
         parent_form = form_list[0]
         phoneNum_form = form_list[1]
-        emergencyCon_form = form_list[2]
+        student_form = form_list[2]
+        emergencyCon_form = form_list[3]
 
         parent = parent_form.save(commit=False)
         parent.save()
@@ -51,6 +61,10 @@ class ParentEnrollmentWizard(SessionWizardView):
         phone = phoneNum_form.save(commit=False)
         phone.parent = parent
         phone.save()
+
+        student = student_form.save(commit=False)
+        student.parent = parent
+        student.save()
 
         emergency = emergencyCon_form.save(commit=False)
         emergency.parent = parent
