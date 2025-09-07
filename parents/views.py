@@ -14,6 +14,8 @@ from .forms import ParentForm, PhoneNumberForm, EmergencyContactForm
 from .models import Parent, PhoneNumber
 from students.models import StudentRegistration
 from students.forms import StudentRegistrationForm
+from payments.forms import PaymentForm
+from payments.models import Payment
 
 # Create your views here.
 
@@ -21,14 +23,16 @@ FORMS = [
     ("parent_info", ParentForm),
     ("phoneNumber_info", PhoneNumberForm),
     ("register_student", StudentRegistrationForm),
-    ("emergencyContact_info", EmergencyContactForm),
+    ("emergency_info", EmergencyContactForm),
+    ("make_payment", PaymentForm),
 ]
 
 TEMPLATES = {
     "parent_info": "parents/parent_enroll.html",
     "phoneNumber_info": "parents/phone_enroll.html",
     "register_student": "students/registration.html",
-    "emergencyContact_info": "parents/contact_enroll.html",
+    "emergency_info": "parents/emergency_enroll.html",
+    "make_payment": "payments/make_payment.html",
 }
 
 STEPS = ["parent", "phone", "student", "emergency", "payment"]
@@ -54,6 +58,7 @@ class ParentEnrollmentWizard(SessionWizardView):
         phoneNum_form = form_list[1]
         student_form = form_list[2]
         emergencyCon_form = form_list[3]
+        Payment_form = form_list[4]
 
         parent = parent_form.save(commit=False)
         parent.save()
@@ -69,6 +74,10 @@ class ParentEnrollmentWizard(SessionWizardView):
         emergency = emergencyCon_form.save(commit=False)
         emergency.parent = parent
         emergency.save()
+
+        Payment_form = Payment_form.save(commit=False)
+        Payment_form.parent = parent
+        Payment_form.save()
         
         return redirect("success_page")
 

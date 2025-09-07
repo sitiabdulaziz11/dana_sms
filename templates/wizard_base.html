@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wizard Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</title>
+</head>
+<body>
+    <h2>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h2>
+
+    <!-- Progress bar (optional) -->
+    <div class="progress-container">
+        <div
+            class="progress-bar"
+            style="width: {{ wizard.steps.step1|divisibleby:wizard.steps.count }}%;"
+        ></div>
+    </div>
+
+    <!-- ✅ The main form -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+
+        <!-- Child template puts its own fields here -->
+        {% block wizard_fields %}
+            {{ wizard.form.as_p }}
+        {% endblock %}
+
+        <div>
+            {% if wizard.steps.prev %}
+                <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">
+                    Back
+                </button>
+            {% endif %}
+
+            <button type="submit">
+                {% if wizard.steps.last %} Finish {% else %} Next {% endif %}
+            </button>
+        </div>
+    </form>
+</body>
+</html>

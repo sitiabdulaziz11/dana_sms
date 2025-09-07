@@ -1,4 +1,7 @@
 {% comment %} {% extends "base.html" %} {% endcomment %}
+
+{% comment %} {% extends "wizard_base.html" %} {% endcomment %}
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -44,9 +47,7 @@
             {# Student form error#}
             {% if form.non_field_errors%}
                 <div class="error">
-                    {% comment %} {{ form.non_field_errors }} {% endcomment %}
-                    {{ wizard.management_form }}   
-                    {{ wizard.form.as_p }}
+                    {{ form.non_field_errors }}
                 </div>
                 {% endif %}
 
