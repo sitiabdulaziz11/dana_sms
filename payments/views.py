@@ -17,7 +17,7 @@ from parents.forms import ParentFormSet, PhoneFormSet, EmergencyContactForm
 # Create your views here.
 
 def review(request, pk):
-   """ To review all filled datas.
+   """ Review and edit all data for a student (student, parents, phones, emergency, payment).
    """
    try:
       # student = StudentRegistration.objects.get(pk=pk) 
@@ -46,36 +46,21 @@ def review(request, pk):
       student_form = StudentRegistrationForm(request.POST, instance=student)
       parent_formset = ParentFormSet(request.POST, queryset=parents, prefix="parents")
 
-      if parent_formset.is_valid():
-         parents_saved = parent_formset.save()
-         student.parents.set(parents_saved)
+      phone_formsets = [PhoneFormSet(request.POST or None, instance=parent, prefix=f"phone_{parent.id}") for parent in parents]
+      parent_phone_pairs = zip(parent_formset, phone_formsets)
 
-      # phone_formsets = [PhoneFormSet(request.POST, instance=parent, prefix=f"phone_{parent.id}") for parent in parents]
-      # parent_phone_pairs = zip(parent_formset, phone_formsets)
+      emergency_form = EmergencyContactForm(request.POST, instance=emergency)
+      payment_form = PaymentForm(request.POST, instance=payment)
 
-      parent_phone_pairs = []
-      for parent in parents:
-         parent_form = ParentFormSet(instance=parent, prefix=f"parent_{parent.id}")
-         phone_formset = PhoneFormSet(instance=parent, prefix=f"phone_{parent.id}")
-         parent_phone_pairs.append((parent_form, phone_formset))
-
-
-      # parent_phone_pairs = [
-         # (parent_form, PhoneFormSet(instance=parent_form.instance, prefix=f"phone_{parent_form.instance.id}"))
-         # for parent_form in parent_formset
-      # ]
-      emergency_form = EmergencyContactForm(request.POST, inst=emergency)
-      payment_form = PaymentForm(request.POST, inst=payment)
-
-      if (student_form.is_valid() and emergency_form.is_valid() and payment_form.is_valid()
+      if (student_form.is_valid() and emergency_form.is_valid() and parent_formset.is_valid() and payment_form.is_valid()
          and all(pf.is_valid() for pf in phone_formsets)):
          student_form.save()
-         # parent_formset.save()
+         parent_formset.save()
          emergency_form.save()
          payment_form.save()
          for pf in phone_formsets:
             pf.save()
-         return redirect("success")
+         return redirect("success_page")
    else:
       student_form = StudentRegistrationForm(instance=student)
       parent_formset = ParentFormSet(queryset=parents)
