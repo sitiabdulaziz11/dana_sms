@@ -46,6 +46,7 @@ class StudentRegistration(models.Model):
 
     # Relations
     parents = models.ManyToManyField("parents.Parent", related_name="children")
+    # parents = models.ForeignKey("parents.Parent", on_delete=models.SET_NULL, null=True, blank=True,related_name="children")
 
     # phone_no from parent or? grade, section other separet table or?, email , password good or?
     # result, teachers, subjects, admin and parent.

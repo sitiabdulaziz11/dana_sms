@@ -87,7 +87,7 @@ class StudentRegistrationAdmin(admin.ModelAdmin):
     )
     list_display_links = ('custom_id',)
     search_fields = ('first_name', 'last_name',)
-    inlines = [ParentInline]
+    inlines = [ParentInline]   #  to edit related objects (like Parents) directly inside the Student form
 
     def get_parent_ids(self, obj):
         """ To get parent id on student table.

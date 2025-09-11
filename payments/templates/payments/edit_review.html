@@ -1,0 +1,55 @@
+
+{% include "includes/messages.html" %}
+
+
+<form method="post">
+  {% csrf_token %}
+
+  <h3>Student Information</h3>
+      <fieldset>
+        {{ student_form.as_p }}
+      </fieldset>
+
+  {% comment %} <h3>Parents</h3>
+  {{ parent_formset.management_form }}
+  {% for form in parent_formset %}
+      <fieldset>
+        {{ form.as_p }}
+phone_formsets
+        <h4>Phones</h4>
+        {% with phone_formset=phone_formsets.forloop.counter0 %}
+            {{ phone_formsets.phone_formset.management_form }}
+            {% for pf in phone_formsets.phone_formset %}
+                {{ pf.as_p }}
+            {% endfor %}
+        {% endwith %}
+      </fieldset>
+  {% endfor %} {% endcomment %}
+
+  <h3>Parents</h3>
+{{ parent_formsets.management_form }}
+
+{% for parent_form, phone_formset in parent_phone_pairs %}
+  <fieldset>
+    {{ parent_form.as_p }}
+
+    <h4>Phones</h4>
+    {{ phone_formset.management_form }}
+    {% for pf in phone_formset %}
+      {{ pf.as_p }}
+    {% endfor %}
+  </fieldset>
+{% endfor %}
+  
+  <h3>Emergency</h3>
+      <fieldset>
+        {{ emergency_form.as_p }}
+      </fieldset>
+
+  <h3>Payment</h3>
+      <fieldset>
+        {{ payment_form.as_p }}
+      </fieldset>
+
+  <button type="submit">Confirm & Save</button>
+</form>

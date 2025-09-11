@@ -9,7 +9,8 @@ class PaymentForm(forms.ModelForm):
         """Specifies the model associated with the form (Payment)
         """
         model = Payment
-        exclude = ["student"]
+        # exclude = ["student"]
+        fields = '__all__'
         labels = {
             "payer_name": "Payer Name"
         }
