@@ -25,22 +25,26 @@ def register_student(request):
     total_step = len(STEPS)
     current_step = STEPS.index("student") + 1
 
-    student_form = StudentRegistrationForm()
+    # student_form = StudentRegistrationForm()
     enrollment_formset = EnrollmentFormSet(request.POST, prefix='enroll')
     if request.method == "POST":
         student_form = StudentRegistrationForm(request.POST, request.FILES)
+        print(request.POST)  # Debug: Check submitted data
+        print(student_form.errors)  # Debug: Check form errors
         enrollment_formset = EnrollmentFormSet(request.POST, prefix='enroll')
 
         request.session["current_step"] = request.session.get("current_step", 1) + 1
         request.session.modified = True
 
+        # if current_step == 1 and student_form.is_valid():
         if student_form.is_valid():
             student = student_form.save()
             # enrollment_formset.instance = students
             request.session["student_id"] = student.id  # store for next steps
 
             parent_ids = request.session.get("parent_ids", [])
-            student.parents.set(Parent.objects.filter(id__in=parent_ids))
+            # student.parents.set(Parent.objects.filter(id__in=parent_ids))
+            student.parents.set(parent_ids)
             student.save()
             
             enrollment_formset = EnrollmentFormSet(
@@ -55,10 +59,12 @@ def register_student(request):
                 return redirect("emrgncy_info")
         else:
             # re-render with errors
-            return render(request, "students/registration.html", {
-                "form": student_form,
-                "enrollment_formset": enrollment_formset,
-            })
+            print(student_form.errors)
+
+            # return render(request, "students/registration.html", {
+            #     "form": student_form,
+            #     "enrollment_formset": enrollment_formset,
+            # })
     else:
         student_form = StudentRegistrationForm()
         request.session["current_step"] = 3

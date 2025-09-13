@@ -22,7 +22,8 @@ class ParentForm(forms.ModelForm):
 ParentFormSet = modelformset_factory(
     Parent,
     form=ParentForm,  # to reuse custom forms
-    extra=0   # no empty form
+    extra=0,   # no empty form
+    can_delete=True
 )
 
 
@@ -51,5 +52,6 @@ PhoneFormSet = inlineformset_factory(
     Parent,         # parent model
     PhoneNumber,    # child model
     form=PhoneNumberForm,
-    extra=0
+    extra=0,
+    can_delete=True
 )

@@ -148,12 +148,12 @@ def phoneNum_info(request):
     if request.method == "POST":
         form = PhoneNumberForm(request.POST)
         if form.is_valid():
-            print("SESSION parent_ids:", request.session.get("parent_ids"), "phone ids", request.session.get("phone_ids"))
             phone = form.save(commit=False)
             parent_id = request.POST.get("parent")  # parent's ID from the form
             phone.parent_id = parent_id
             phone.save()
-            parent = get_object_or_404(Parent, id=parent_id)  # To get current selected parent.
+            
+            parent = get_object_or_404(Parent, id=parent_id)  # To get current selected/saved parent.
 
             phone_ids = request.session.get("phone_ids", {})
             if not isinstance(phone_ids, dict):
@@ -162,6 +162,9 @@ def phoneNum_info(request):
                 phone_ids[parent_id] = []
                 phone_ids[parent_id].append(phone.id)
                 request.session["phone_ids"] = phone_ids
+                
+                print("SESSION parent_ids:", request.session.get("parent_ids"), "phone ids", request.session.get("phone_ids"))
+
             messages.success(request, f"Phone number added for {parent.first_name}.successfully.")
 
             request.session["current_step"] = request.session.get("current_step", 1) + 1

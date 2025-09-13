@@ -2,29 +2,13 @@
 {% include "includes/messages.html" %}
 
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
   {% csrf_token %}
 
   <h3>Student Information</h3>
       <fieldset>
         {{ student_form.as_p }}
       </fieldset>
-
-  {% comment %} <h3>Parents</h3>
-  {{ parent_formset.management_form }}
-  {% for form in parent_formset %}
-      <fieldset>
-        {{ form.as_p }}
-phone_formsets
-        <h4>Phones</h4>
-        {% with phone_formset=phone_formsets.forloop.counter0 %}
-            {{ phone_formsets.phone_formset.management_form }}
-            {% for pf in phone_formsets.phone_formset %}
-                {{ pf.as_p }}
-            {% endfor %}
-        {% endwith %}
-      </fieldset>
-  {% endfor %} {% endcomment %}
 
   <h3>Parents</h3>
 {{ parent_formsets.management_form }}
@@ -51,5 +35,5 @@ phone_formsets
         {{ payment_form.as_p }}
       </fieldset>
 
-  <button  type="submit">Confirm & Save</button>
+  <button type="submit">Confirm & Save</button>
 </form>
