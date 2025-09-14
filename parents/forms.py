@@ -41,6 +41,14 @@ class EmergencyContactForm(forms.ModelForm):
                 "nationality": "Nationality"
             }
 
+EmergencyContactFormSet = modelformset_factory(
+    EmergencyContact,
+    form=EmergencyContactForm,  # to reuse custom forms
+    extra=0,   # no empty form
+    can_delete=True
+)
+
+
 class PhoneNumberForm(forms.ModelForm):
     """ Phone number form.
     """

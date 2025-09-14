@@ -34,20 +34,20 @@ class Payment(models.Model):
         ('after_class', 'After Class Reading'),
     ]
 
-    payer_name = models.CharField(max_length=120)   #?
+    payer_name = models.CharField(max_length=120, null=True, blank=True)   #?
     amount = models.FloatField()
     debited_date_time = models.DateTimeField(default=timezone.now)
     # debited_date = models.DateField(auto_now_add=True)
     debited_month = models.CharField(max_length=120, choices=MONTH_CHOICES,
         blank=True,
         null=True)
-    payment_type = models.CharField(max_length=120, choices=PAYMENT_TYPE_CHOICES)  # monthly or for after class redding
+    payment_type = models.CharField(max_length=120, choices=PAYMENT_TYPE_CHOICES, null=True, blank=True)  # monthly or for after class redding
     payment_status = models.CharField(max_length=20,
         choices=PAYMENT_STATUS_CHOICES,
         default='pending',
         blank=True,
         null=True)  # payid or not payid
-    payment_receipt_image = models.ImageField(upload_to="receipts/")
+    payment_receipt_image = models.ImageField(upload_to="receipts/", null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
  
     # Relation with student model 

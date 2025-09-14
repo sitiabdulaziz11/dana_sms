@@ -44,9 +44,9 @@ class Parent(models.Model):
     middle_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     age = models.IntegerField(null=True, blank=True)
-    education_level = models.CharField(max_length=100, choices=EDUCATION_LEVEL_CHOICES)
-    ocupation = models.CharField(max_length=100)
-    work_place = models.CharField(max_length=50)
+    education_level = models.CharField(max_length=100, choices=EDUCATION_LEVEL_CHOICES, null=True, blank=True)
+    ocupation = models.CharField(max_length=100, null=True, blank=True)
+    work_place = models.CharField(max_length=50, null=True, blank=True)
     # father_phone_no = models.IntegerField()
     image_file = models.ImageField(null=True, blank=True, upload_to="pic", default="knowledge1_aFn8hfk.jpg")
     registration_date = models.DateField(auto_now_add=True)
@@ -78,8 +78,8 @@ class PhoneNumber(models.Model):
     parent = models.ForeignKey('Parent', on_delete=models.CASCADE, related_name='phone_numbers')
     # student = models.ForeignKey(StudentRegistration, on_delete=models.SET_NULL, null=True)   #? required or not?
     number = models.CharField(max_length=60)
-    owner = models.CharField(max_length=30, choices=[('father', 'Father'), ('mother', 'Mother'), ('uncle', 'Uncle'), ('other', 'Other') ])
-    phone_type = models.CharField(max_length=30, choices=[('personal', 'Personal'), ('work phone', 'Work Phone'), ('other', 'Other')])
+    owner = models.CharField(max_length=30, choices=[('father', 'Father'), ('mother', 'Mother'), ('uncle', 'Uncle'), ('other', 'Other') ], null=True, blank=True)
+    phone_type = models.CharField(max_length=30, choices=[('personal', 'Personal'), ('work phone', 'Work Phone'), ('other', 'Other')], null=True, blank=True)
     registerd_date = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -102,7 +102,7 @@ class EmergencyContact(models.Model):
     first_name = models.CharField(max_length=100, null=True, blank=True)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
-    relationship = models.CharField(max_length=100, choices=RELATION_CHOICES)
+    relationship = models.CharField(max_length=100, choices=RELATION_CHOICES, null=True, blank=True)
     phone_number = models.CharField(max_length=100, null=True, blank=True)
     registration_date = models.DateField(auto_now_add=True)
     image_file = models.ImageField(null=True, blank=True, upload_to="images/", default="jp.png")

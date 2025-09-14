@@ -31,6 +31,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p}}
+        <button type="submit" name="add_another">Save & Add Another</button>
         <button type="submit">Review</button>
     </form>
 </body>

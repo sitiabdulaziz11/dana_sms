@@ -11,7 +11,7 @@
       </fieldset>
 
   <h3>Parents</h3>
-{{ parent_formsets.management_form }}
+{{ parent_formset.management_form }}
 
 {% for parent_form, phone_formset in parent_phone_pairs %}
   <fieldset>
@@ -26,14 +26,16 @@
 {% endfor %}
   
   <h3>Emergency</h3>
-      <fieldset>
-        {{ emergency_form.as_p }}
-      </fieldset>
+{{ emergency_formset.management_form }}
+{% for form in emergency_formset %}
+    {{ form.as_p }}
+{% endfor %}
 
-  <h3>Payment</h3>
-      <fieldset>
-        {{ payment_form.as_p }}
-      </fieldset>
+<h3>Payment</h3>
+{{ payment_formset.management_form }}
+{% for form in payment_formset %}
+    {{ form.as_p }}
+{% endfor %}
 
   <button type="submit">Confirm & Save</button>
 </form>

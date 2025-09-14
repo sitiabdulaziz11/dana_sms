@@ -10,111 +10,11 @@ from .models import Payment
 # from .models import MONTH_CHOICES
 from students.models import StudentRegistration
 from parents.models import Parent, PhoneNumber, EmergencyContact
-from .forms import PaymentForm
+from .forms import PaymentForm, PaymentFormSet
 from students.forms import StudentRegistrationForm
-from parents.forms import ParentFormSet, PhoneFormSet, EmergencyContactForm
+from parents.forms import ParentFormSet, PhoneFormSet, EmergencyContactForm, EmergencyContactFormSet
 
 # Create your views here.
-
-def review(request):
-    """
-    Review and edit all data for a student (student, parents, phones, emergency, payment).
-    Uses session['student_id'] instead of pk from URL.
-    """
-    student_id = request.session.get("student_id")
-    if not student_id:
-        messages.error(request, "Session expired or student not found. Please restart the registration.")
-        return redirect("register")
-    student = get_object_or_404(StudentRegistration, pk=student_id)
-    parents = student.parents.all()
-
-    try:
-        emergency = EmergencyContact.objects.get(student=student)
-    except EmergencyContact.DoesNotExist:
-       return HttpResponse("No emergency contact")
-    try:
-        payment = Payment.objects.get(student=student)
-    except Payment.DoesNotExist:
-       return HttpResponse("No payment")
-    
-    if request.method == "POST":
-        student_form = StudentRegistrationForm(request.POST, request.FILES, instance=student)
-        parent_formset = ParentFormSet(request.POST, request.FILES, queryset=parents, prefix="parents")
-        emergency_form = EmergencyContactForm(request.POST, request.FILES, instance=emergency)
-        payment_form = PaymentForm(request.POST, request.FILES, instance=payment)
-
-        phone_formsets = [
-            PhoneFormSet(
-                request.POST,
-                instance=parent_form.instance,
-                prefix=f"phone_{i}",
-            )
-            for i, parent_form in enumerate(parent_formset.forms)
-        ]
-        parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
-
-        # Debugging logs
-        print("Student form errors:", student_form.errors)
-        print("Emergency form errors:", emergency_form.errors)
-        print("Parent formset errors:", parent_formset.errors)
-        for i, pf in enumerate(phone_formsets):
-            print(f"Phone formset {i} errors:", pf.errors)
-        print("Payment form errors:", payment_form.errors)
-
-        if (
-            student_form.is_valid()
-            and emergency_form.is_valid()
-            and parent_formset.is_valid()
-            and payment_form.is_valid()
-            and all(pf.is_valid() for pf in phone_formsets)
-        ):
-           student_form.save()
-           request.session["student_id"] = student.id  # keep in session
-           
-           parents_saved = parent_formset.save()
-           student.parents.set(parents_saved)  # link only these parents
-           
-           emergency_form.save()
-           payment_form.save()
-           for pf in phone_formsets:
-               pf.save()
-
-           messages.success(request, "All data updated successfully!")
-           request.session.pop("parent_ids", None)
-           return redirect("success_page")
-        else:
-            messages.error(request, "Please correct the errors below.")
-
-    else:  # GET
-        student_form = StudentRegistrationForm(instance=student)
-        parent_formset = ParentFormSet(queryset=parents, prefix="parents")
-        phone_formsets = [
-            PhoneFormSet(
-                instance=parent_form.instance,
-                prefix=f"phone_{i}",
-            )
-            for i, parent_form in enumerate(parent_formset.forms)
-        ]
-
-        parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
-        emergency_form = EmergencyContactForm(instance=emergency)
-        payment_form = PaymentForm(instance=payment)
-        for key in ["parent_id", "phone_ids", "student_id"]:
-           request.session.pop(key,None)
-        request.session.modified = True
-        return redirect("success_page")
-
-    return render(
-        request,
-        "payments/edit_review.html",
-        {
-            "student_form": student_form,
-            "parent_formset": parent_formset,
-            "parent_phone_pairs": parent_phone_pairs,
-            "emergency_form": emergency_form,
-            "payment_form": payment_form,
-        },
-    )
 
 
 def make_payment(request, student_id=None):
@@ -126,14 +26,11 @@ def make_payment(request, student_id=None):
       try:
          student = StudentRegistration.objects.get(id=student_id)
       except StudentRegistration.DoesNotExist:
-         # return HttpResponse("Sorry, no student exists")
-         return render(request, "payments/student_not_found.html", {
-            "student_id": student_id
-         })
+         messages.error(request,"Sorry, no student exists")
+         return redirect("register")
       
    payment_form = PaymentForm(request.POST or None, request.FILES or None)
    if request.method == "POST" and student:
-      # payment_form = PaymentForm(request.POST, request.FILES)
       if payment_form.is_valid():
          try:
             payment = payment_form.save(commit=False)
@@ -143,10 +40,15 @@ def make_payment(request, student_id=None):
             messages.success(request, "Payment success")
             # return redirect("review")
             # return redirect("edit", pk=student_id)
+
+            if "add_another" in request.POST:
+               #  return redirect("pay", student_id=student_id)
+                return redirect("pay_with_id", student_id=student.id)
+            
             return redirect("edit")
          except ValidationError:
             messages.error(request, "⚠️ Duplicate payment: This student already paid for this month and type.")
-            return redirect("pay", student_id=student_id)
+            return redirect("pay_with_id", student_id=student_id)
    else:
       payment_form = PaymentForm()
       request.session["current_step"] = 5
@@ -157,7 +59,10 @@ def make_payment(request, student_id=None):
       "student": student,
    })
 
-def review_all_enrollment(request):
+
+
+
+def review_all(request):
    """ Review all entered information before final submission.
    """
    request.session["review_mode"] = True  # mark review mode
@@ -186,35 +91,187 @@ def review_all_enrollment(request):
       messages.error(request, "No payment ID provided.")
       return redirect("pay_with_id", student_id)
    
-   parent = Parent.objects.filter(id__in=parent_ids)  #? what this filter?
+   parents = Parent.objects.filter(id__in=parent_ids)  #? what this filter?
 
-   all_phone_ids = []
-   for p_phones in phone_ids.values():
-      all_phone_ids.extend(p_phones)
-   phones = PhoneNumber.objects.filter(id__in=all_phone_ids)
-
-   emergencies = EmergencyContact.objects.filter(id__in=emergency_ids)
+   emergency = EmergencyContact.objects.filter(id__in=emergency_ids)
    student = StudentRegistration.objects.get(id=student_id)
    # student = get_object_or_404(StudentRegistration, id=student_id)
    #  parents = student.parents.all()  # # all parents linked to this student
-   payment = Payment.objects.get(id=payment_id)
+   payments = Payment.objects.filter(id=payment_id)
 
    if request.method == "POST":
-      # clear review_mode after final submit
-      request.session.pop("review_mode", None)
-      request.session.pop("student_id", None)
-      request.session.pop("parent_ids", None)
-      request.session.pop("phone_ids", None)
-      request.session.pop("emergency_ids", None)
-      return redirect("success_page")
+      student_form = StudentRegistrationForm(request.POST, request.FILES, instance=student)
+      parent_formset = ParentFormSet(request.POST, request.FILES, queryset=parents, prefix="parents")
+      emergency_formset = EmergencyContactFormSet(request.POST, request.FILES, queryset=emergency, prefix="Emergency")
+      payment_formset = PaymentFormSet(request.POST, request.FILES, queryset=payments, prefix="Payments")
+      phone_formsets = [
+            PhoneFormSet(
+                request.POST,
+                instance=parent_form.instance,
+                prefix=f"phone_{i}",
+            )
+            for i, parent_form in enumerate(parent_formset.forms)
+        ]
+      parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
+      
+      if(
+         student_form.is_valid()
+         and emergency_formset.is_valid()
+         and parent_formset.is_valid()
+         and payment_formset.is_valid()
+         and all(pf.is_valid() for pf in phone_formsets)
+        ):
+        student_form.save()
+           
+        parents_saved = parent_formset.save()
+        student.parents.set(parents_saved)  # link only these parents
+           
+        emergency_formset.save()
+        payment_formset.save()
+        for pf in phone_formsets:
+         pf.save()
+
+         messages.success(request, "All data registered successfully!")
+         request.session.pop("review_mode", None)
+         request.session.pop("student_id", None)
+         request.session.pop("parent_ids", None)
+         request.session.pop("phone_ids", None)
+         request.session.pop("emergency_ids", None)
+         return redirect("success_page")
+        
+        else:
+         messages.error(request, "Please correct the errors below.")
+   else:  # GET
+      student_form = StudentRegistrationForm(instance=student)
+      parent_formset = ParentFormSet(queryset=parents, prefix="parents")
+      phone_formsets = [
+         PhoneFormSet(
+               instance=parent_form.instance,
+               prefix=f"phone_{i}",
+         )
+         for i, parent_form in enumerate(parent_formset.forms)
+      ]
+
+      parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
+      emergency_formset = EmergencyContactFormSet(queryset=emergency, prefix="Emergency")
+      payment_formset = PaymentFormSet(queryset=payments, prefix="Payments")
+
+
+   return render(
+      request,
+      "payments/edit_review.html",
+      {
+         "student_form": student_form,
+         "parent_formset": parent_formset,
+         "parent_phone_pairs": parent_phone_pairs,
+         "emergency_formset": emergency_formset,
+         "payment_formset": payment_formset,
+      },
+   )
+      
+
+
+def review(request):
+    """
+    Review and edit all data for a student (student, parents, phones, emergency, payment).
+    """
+    student_id = request.session.get("student_id")
+    if not student_id:
+        messages.error(request, "Session expired or student not found. Please select from the list oor restart the registration.") # how to make to select?
+        return redirect("register")
+    student = get_object_or_404(StudentRegistration, pk=student_id)
+    parents = student.parents.all()
+    print(parents)  # debug
+    
+    emergency = EmergencyContact.objects.filter(student=student)
+
    
-   return render(request, "payments/review_all.html", {
-      "parents": parent,
-      "phones": phones,
-      "emergencies": emergencies,
-      "student": student,
-      "payment": payment
-   })
+      #   payment = Payment.objects.get(student=student
+    payments = Payment.objects.filter(student=student)
+    if not payments.exists():
+      return HttpResponse("No payment record found for this student.")
+    
+    if request.method == "POST":
+        student_form = StudentRegistrationForm(request.POST, request.FILES, instance=student)
+        parent_formset = ParentFormSet(request.POST, request.FILES, queryset=parents, prefix="parents")
+        emergency_formset = EmergencyContactFormSet(request.POST, request.FILES, queryset=emergency, prefix="Emergency")
+      #   payment_form = PaymentForm(request.POST, request.FILES, instance=payment)
+        payment_formset = PaymentFormSet(request.POST, request.FILES, queryset=payments, prefix="Payments")
+
+        # phone_formsets = [PhoneFormSet(request.POST or None, instance=parent, prefix=f"phone_{parent.id}") for parent in parents]
+
+        phone_formsets = [
+            PhoneFormSet(
+                request.POST,
+                instance=parent_form.instance,
+                prefix=f"phone_{i}",
+            )
+            for i, parent_form in enumerate(parent_formset.forms)
+        ]
+        parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
+
+        # Debugging logs
+        print("Student form errors:", student_form.errors)
+        print("Emergency form errors:", emergency_formset.errors)
+        print("Parent formset errors:", parent_formset.errors)
+        for i, pf in enumerate(phone_formsets):
+            print(f"Phone formset {i} errors:", pf.errors)
+        print("Payment form errors:", payment_formset.errors)
+
+        if (
+            student_form.is_valid()
+            and emergency_formset.is_valid()
+            and parent_formset.is_valid()
+            and payment_formset.is_valid()
+            and all(pf.is_valid() for pf in phone_formsets)
+        ):
+           student_form.save()
+           request.session["student_id"] = student.id  # keep in session  ?
+           
+           parents_saved = parent_formset.save()
+           student.parents.set(parents_saved)  # link only these parents
+           
+           emergency_formset.save()
+           payment_formset.save()
+           for pf in phone_formsets:
+               pf.save()
+
+           messages.success(request, "All data updated successfully!")
+           for key in ["parent_id", "phone_ids", "emergency_ids", "student_id"]:
+              request.session.pop(key,None)
+           request.session.modified = True
+           return redirect("success_page")
+        else:
+            messages.error(request, "Please correct the errors below.")
+
+    else:  # GET
+        student_form = StudentRegistrationForm(instance=student)
+        parent_formset = ParentFormSet(queryset=parents, prefix="parents")
+        phone_formsets = [
+            PhoneFormSet(
+                instance=parent_form.instance,
+                prefix=f"phone_{i}",
+            )
+            for i, parent_form in enumerate(parent_formset.forms)
+        ]
+
+        parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
+        emergency_formset = EmergencyContactFormSet(queryset=emergency)
+        payment_formset = PaymentFormSet(queryset=payments)
+
+
+    return render(
+        request,
+        "payments/edit_review.html",
+        {
+            "student_form": student_form,
+            "parent_formset": parent_formset,
+            "parent_phone_pairs": parent_phone_pairs,
+            "emergency_form": emergency_formset,
+            "payment_form": payment_formset,
+        },
+    )
+
 
 def payment_success(request):
    """To handle successful request.

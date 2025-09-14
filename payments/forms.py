@@ -1,5 +1,6 @@
 from django import forms
 from .models import Payment
+from django.forms import modelformset_factory
 
 
 class PaymentForm(forms.ModelForm):
@@ -14,3 +15,5 @@ class PaymentForm(forms.ModelForm):
         labels = {
             "payer_name": "Payer Name"
         }
+
+PaymentFormSet = modelformset_factory(Payment, form=PaymentForm, extra=0)

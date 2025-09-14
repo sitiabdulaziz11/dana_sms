@@ -27,10 +27,10 @@ class StudentRegistration(models.Model):
     birth_date = models.DateField(null=True, blank=True)
     age = models.IntegerField()
 
-    grade = models.ForeignKey("common.Grade", on_delete=models.SET_NULL, null=True, related_name="students")
-    section = models.ForeignKey("common.Section", on_delete=models.SET_NULL, null=True, related_name="students")
+    grade = models.ForeignKey("common.Grade", on_delete=models.SET_NULL, null=True, blank=True, related_name="students")
+    section = models.ForeignKey("common.Section", on_delete=models.SET_NULL, null=True, blank=True, related_name="students")
     
-    image_file = models.ImageField(upload_to="photos/", default="knowledge1_aFn8hfk.jpg")
+    image_file = models.ImageField(upload_to="photos/", default="knowledge1_aFn8hfk.jpg", null=True, blank=True)
     registration_date = models.DateTimeField(default=timezone.now)
     city = models.CharField(max_length=50, default="Sheger")
     kfle_ketema = models.CharField(max_length=50, default="Gelanguda")
