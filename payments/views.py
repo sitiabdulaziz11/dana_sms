@@ -198,16 +198,21 @@ def review(request):
       #   payment_form = PaymentForm(request.POST, request.FILES, instance=payment)
         payment_formset = PaymentFormSet(request.POST, request.FILES, queryset=payments, prefix="Payments")
 
-        # phone_formsets = [PhoneFormSet(request.POST or None, instance=parent, prefix=f"phone_{parent.id}") for parent in parents]
+        phone_formsets = [PhoneFormSet(request.POST or None, instance=parent, prefix=f"phone_{parent.id}") for parent in parents]
 
-        phone_formsets = [
-            PhoneFormSet(
-                request.POST,
-                instance=parent_form.instance,
-                prefix=f"phone_{i}",
-            )
-            for i, parent_form in enumerate(parent_formset.forms)
-        ]
+        #  all_phone_ids = []
+   # for p_phones in phone_ids.values():
+   #    all_phone_ids.extend(p_phones)
+   # phones = PhoneNumber.objects.filter(id__in=all_phone_ids)
+
+      #   phone_formsets = [
+      #       PhoneFormSet(
+      #           request.POST,
+      #           instance=parent_form.instance,
+      #           prefix=f"phone_{i}",
+      #       )
+      #       for i, parent_form in enumerate(parent_formset.forms)
+      #   ]
         parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
 
         # Debugging logs
