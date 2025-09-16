@@ -61,9 +61,8 @@ def make_payment(request, student_id=None):
 
 
 
-
 def review_all(request):
-   """ Review all entered information before final submission.
+   """ To review and edit all entered information before final submission.
    """
    request.session["review_mode"] = True  # mark review mode
 
@@ -176,9 +175,15 @@ def review(request):
     Review and edit all data for a student (student, parents, phones, emergency, payment).
     """
     student_id = request.session.get("student_id")
+    parent_ids = request.session.get("parent_ids", [])
+    phone_ids = request.session.get("phone_ids", [])
+    emergency_ids = request.session.get("emergency_ids", [] )
+    payment_id = request.session.get("payment_id")
+    
     if not student_id:
         messages.error(request, "Session expired or student not found. Please select from the list oor restart the registration.") # how to make to select?
         return redirect("register")
+    
     student = get_object_or_404(StudentRegistration, pk=student_id)
     parents = student.parents.all()
     print(parents)  # debug
@@ -200,19 +205,6 @@ def review(request):
 
         phone_formsets = [PhoneFormSet(request.POST or None, instance=parent, prefix=f"phone_{parent.id}") for parent in parents]
 
-        #  all_phone_ids = []
-   # for p_phones in phone_ids.values():
-   #    all_phone_ids.extend(p_phones)
-   # phones = PhoneNumber.objects.filter(id__in=all_phone_ids)
-
-      #   phone_formsets = [
-      #       PhoneFormSet(
-      #           request.POST,
-      #           instance=parent_form.instance,
-      #           prefix=f"phone_{i}",
-      #       )
-      #       for i, parent_form in enumerate(parent_formset.forms)
-      #   ]
         parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
 
         # Debugging logs
@@ -231,10 +223,7 @@ def review(request):
             and all(pf.is_valid() for pf in phone_formsets)
         ):
            student_form.save()
-           request.session["student_id"] = student.id  # keep in session  ?
-           
-           parents_saved = parent_formset.save()
-           student.parents.set(parents_saved)  # link only these parents
+           parent_formset.save()
            
            emergency_formset.save()
            payment_formset.save()
@@ -242,9 +231,9 @@ def review(request):
                pf.save()
 
            messages.success(request, "All data updated successfully!")
-           for key in ["parent_id", "phone_ids", "emergency_ids", "student_id"]:
-              request.session.pop(key,None)
-           request.session.modified = True
+           request.session.pop("parent_ids", None)
+           request.session.pop("phone_ids", None)
+           request.session.pop("emergency_ids", None)
            return redirect("success_page")
         else:
             messages.error(request, "Please correct the errors below.")
@@ -252,18 +241,12 @@ def review(request):
     else:  # GET
         student_form = StudentRegistrationForm(instance=student)
         parent_formset = ParentFormSet(queryset=parents, prefix="parents")
-        phone_formsets = [
-            PhoneFormSet(
-                instance=parent_form.instance,
-                prefix=f"phone_{i}",
-            )
-            for i, parent_form in enumerate(parent_formset.forms)
-        ]
+
+        phone_formsets = [PhoneFormSet(request.POST or None, instance=parent, prefix=f"phone_{parent.id}") for parent in parents]
 
         parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
-        emergency_formset = EmergencyContactFormSet(queryset=emergency)
-        payment_formset = PaymentFormSet(queryset=payments)
-
+        emergency_formset = EmergencyContactFormSet(queryset=emergency, prefix="Emergency")
+        payment_formset = PaymentFormSet(queryset=payments, prefix="Payments")
 
     return render(
         request,
@@ -272,8 +255,8 @@ def review(request):
             "student_form": student_form,
             "parent_formset": parent_formset,
             "parent_phone_pairs": parent_phone_pairs,
-            "emergency_form": emergency_formset,
-            "payment_form": payment_formset,
+            "emergency_formset": emergency_formset,
+            "payment_formset": payment_formset,
         },
     )
 

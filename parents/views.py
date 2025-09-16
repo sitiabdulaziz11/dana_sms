@@ -94,7 +94,8 @@ def parent_info(request):
         form = ParentForm(request.POST, request.FILES)
         if form.is_valid():
             parent = form.save()  # commit to DB
-            parent_ids = request.session.get("parent_ids", [])
+            parent_ids = request.session.get("parent_ids", [])  # ?
+
             if parent.id not in parent_ids:
                 parent_ids.append(parent.id)
             request.session["parent_ids"] = parent_ids  # store for next steps
@@ -119,12 +120,12 @@ def parent_info(request):
         request.session.modified = False
 
         # optional to print session ?
-    parent_ids = request.session.get("parent_ids", [])
-    parents_added = Parent.objects.filter(id__in=parent_ids)
+    # parent_ids = request.session.get("parent_ids", [])
+    # parents_added = Parent.objects.filter(id__in=parent_ids)
 
     return render(request, "parents/parent_enroll.html", {
         "form": form,
-        "parents_added": parents_added,
+        # "parents_added": parents_added,
         # "current_step": current_step,
         # "total_step": total_step
     })
