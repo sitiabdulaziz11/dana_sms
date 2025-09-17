@@ -81,204 +81,101 @@ class ParentEnrollmentWizard(SessionWizardView):
         
         return redirect("success_page")
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import ParentForm
-from .models import Parent
 
 def parent_info(request):
+    """Views for parent information.
+       Select existing parents or add new ones for the student
     """
-    Parent info step:
-    - select existing parents (checkbox/multiselect named 'existing_parents')
-    - or add a new parent via ParentForm
-    Behavior:
-      * If existing parents selected → accept them (no new-parent validation required)
-      * If new-parent fields filled → validate & save the new parent
-      * If both → do both
-      * If neither → show non-field error and re-render form
-    """
-    # Reset review mode when starting fresh (keeps earlier behavior)
     if "review_mode" in request.session:
-        del request.session["review_mode"]
-
-    # Ensure session key
+        del request.session["review_mode"]   # reset review mode when starting fresh
     if "parent_ids" not in request.session:
-        request.session["parent_ids"] = []
-    parent_ids = list(request.session.get("parent_ids", []))  # work on a local copy
+        request.session["parent_ids"] = []  # reset in a new student registration.
 
+    parent_ids = request.session.get("parent_ids", [])
+    
     if request.method == "POST":
-        selected_parents = request.POST.getlist("existing_parents")  # list of ids (strings)
+        # 2️⃣ Add selected existing parents
+        selected_parents = request.POST.getlist("existing_parents")
+        fields_to_check = [
+            name for name, field in ParentForm().fields.items() if field.required
+            ]
+        filled_new_parent = any(request.POST.get(f, '').strip() for f in fields_to_check)
         form = ParentForm(request.POST, request.FILES)
-        form_field_names = list(form.fields.keys())
-
-        # Detect whether user filled anything in the new-parent form (strip whitespace)
-        filled_new_parent = any(request.POST.get(name, "").strip() for name in form_field_names)
-
-        # If user only selected existing parents, make form fields optional to avoid validation noise
-        if selected_parents and not filled_new_parent:
-            for name in form_field_names:
-                form.fields[name].required = False
-
-        # --- Handle adding a new parent if any new-parent fields were filled ---
+        
+        # if selected_parents and not filled_new_parent :
+        #     for f in form.fields:
+        #         form.fields[f].required = False
+        
+        # 1️⃣ Add new parent
         if filled_new_parent:
             if form.is_valid():
-                # try to avoid creating duplicate by checking common unique fields (optional)
-                cd = form.cleaned_data
-                existing = None
-                # try a few likely unique fields if they exist in the form
-                for uf in ("phone", "phone_number", "mobile", "email", "id_number"):
-                    if uf in cd and cd.get(uf):
-                        existing = Parent.objects.filter(**{uf: cd.get(uf)}).first()
-                        if existing:
-                            break
-
-                if existing:
-                    new_parent = existing
-                else:
-                    new_parent = form.save()
-
+                new_parent = form.save()  # commit to DB
                 if new_parent.id not in parent_ids:
                     parent_ids.append(new_parent.id)
-                request.session["current_parent_id"] = new_parent.id
             else:
-                # invalid new-parent input → show errors and let user correct
+                # invalid form, re-render
                 all_parents = Parent.objects.all()
-                return render(
-                    request,
-                    "your_app/prnt_info.html",  # <-- replace with your template path
-                    {"form": form, "all_parents": all_parents, "parent_ids": parent_ids},
-                )
+                return render(request, "your_app/prnt_info.html", {
+                "form": form,
+                "all_parents": all_parents,
+                # "parent_ids": parent_ids,
+            })
+            # Set the current parent ID to the newly added parent
+            request.session["current_parent_id"] = new_parent.id
 
-        # --- Handle selected existing parents (add to session list) ---
-        if selected_parents:
+        elif selected_parents:
             for pid in selected_parents:
-                try:
-                    pid_int = int(pid)
-                except (TypeError, ValueError):
-                    continue
-                if pid_int not in parent_ids:
-                    parent_ids.append(pid_int)
+                pid = int(pid)
+                if int(pid) not in parent_ids:
+                    parent_ids.append(int(pid))
+        else:
+            messages.error(request, "Please add a new parent or select an existing one")
+            return redirect("prnt_info")
+        
+        request.session["parent_ids"] = parent_ids  # store for next steps
+        print("SESSION parent_ids:", request.session.get("parent_ids"))
 
-        # --- If nothing done, show a non-field error and re-render ---
-        if not selected_parents and not filled_new_parent:
-            form.add_error(None, "Please add a new parent or select an existing one.")
-            all_parents = Parent.objects.all()
-            return render(
-                request,
-                "your_app/prnt_info.html",
-                {"form": form, "all_parents": all_parents, "parent_ids": parent_ids},
-            )
-
-        # Persist session changes
-        request.session["parent_ids"] = parent_ids
-        request.session.modified = True
         request.session["current_step"] = request.session.get("current_step", 0) + 1
+        request.session.modified = True
 
-        # Redirect priority
         if "review_mode" in request.session:
             return redirect("review")
+
         if "add_another" in request.POST:
             return redirect("prnt_info")
-        return redirect("phone_info")
-
-    # GET: render blank form + list of existing parents
+        else:
+            # Add form-level error if nothing selected/filled
+            if not selected_parents and not filled_new_parent:
+                messages.error(request, "Please add a new parent or select an existing one")
+            return redirect("phone_info")  # go to next step
     else:
         form = ParentForm()
+        
+        # Fetch existing parents for dropdown/multi-select
         all_parents = Parent.objects.all()
-        return render(
-            request,
-            "parents/parent_enroll.html",
-            {"form": form, "all_parents": all_parents, "parent_ids": parent_ids},
-        )
 
+        request.session["current_step"] = 1
+        request.session.modified = False
 
+        #    messages.error(request, "Please add a new parent or select an existing one .")
+        #     form = ParentForm()  # so form is rendered
+        #     all_parents = Parent.objects.all()
+        #     return render(request, "parents/parent_enroll.html", {
+        #         "form": form,
+        #         "all_parents": all_parents,
+        #         })
 
-# def parent_info(request):
-#     """Views for parent information.
-#        Select existing parents or add new ones for the student
-#     """
-#     if "review_mode" in request.session:
-#         del request.session["review_mode"]   # reset review mode when starting fresh
-#     if "parent_ids" not in request.session:
-#         request.session["parent_ids"] = []  # reset in a new student registration.
+        # optional to print session ?
+    # parent_ids = request.session.get("parent_ids", [])
+    # parents_added = Parent.objects.filter(id__in=parent_ids)
 
-#     parent_ids = request.session.get("parent_ids", [])
-    
-#     if request.method == "POST":
-#         # 2️⃣ Add selected existing parents
-#         selected_parents = request.POST.getlist("existing_parents")
-#         fields_to_check = [
-#             name for name, field in ParentForm().fields.items() if field.required
-#             ]
-#         filled_new_parent = any(request.POST.get(f, '').strip() for f in fields_to_check)
-#         form = ParentForm(request.POST, request.FILES)
-        
-#         if selected_parents and not filled_new_parent :
-#             for f in form.fields:
-#                 form.fields[f].required = False
-        
-#         # 1️⃣ Add new parent
-#         if filled_new_parent and form.is_valid():
-#             new_parent = form.save()  # commit to DB
-#             if new_parent.id not in parent_ids:
-#                 parent_ids.append(new_parent.id)
-
-#             # Set the current parent ID to the newly added parent
-#             request.session["current_parent_id"] = new_parent.id
-
-#         if selected_parents:
-#             for pid in selected_parents:
-#                 pid = int(pid)
-#                 if int(pid) not in parent_ids:
-#                     parent_ids.append(int(pid))
-#         if not filled_new_parent and not selected_parents:
-#             messages.error(request, "Please add a new parent or select an existing one")
-#             return redirect("prnt_info")
-        
-#         request.session["parent_ids"] = parent_ids  # store for next steps
-#         print("SESSION parent_ids:", request.session.get("parent_ids"))
-
-#         request.session["current_step"] = request.session.get("current_step", 0) + 1
-#         request.session.modified = True
-
-#         if "review_mode" in request.session:
-#             return redirect("review")
-
-#         if "add_another" in request.POST:
-#             return redirect("prnt_info")
-#         else:
-#             # Add form-level error if nothing selected/filled
-#             if not selected_parents and not filled_new_parent:
-#                 messages.error(request, "Please add a new parent or select an existing one")
-#             return redirect("phone_info")  # go to next step
-#     else:
-#         form = ParentForm()
-        
-#         # Fetch existing parents for dropdown/multi-select
-#         all_parents = Parent.objects.all()
-
-#         request.session["current_step"] = 1
-#         request.session.modified = False
-
-#         #    messages.error(request, "Please add a new parent or select an existing one .")
-#         #     form = ParentForm()  # so form is rendered
-#         #     all_parents = Parent.objects.all()
-#         #     return render(request, "parents/parent_enroll.html", {
-#         #         "form": form,
-#         #         "all_parents": all_parents,
-#         #         })
-
-#         # optional to print session ?
-#     # parent_ids = request.session.get("parent_ids", [])
-#     # parents_added = Parent.objects.filter(id__in=parent_ids)
-
-#     return render(request, "parents/parent_enroll.html", {
-#         "form": form,
-#         "all_parents": all_parents,
-#         # "parents_added": parents_added,
-#         # "current_step": current_step,
-#         # "total_step": total_step
-#     })
+    return render(request, "parents/parent_enroll.html", {
+        "form": form,
+        "all_parents": all_parents,
+        # "parents_added": parents_added,
+        # "current_step": current_step,
+        # "total_step": total_step
+    })
 
 def phoneNum_info(request):
     """For phone number
