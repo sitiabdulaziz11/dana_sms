@@ -90,11 +90,11 @@ def parent_info(request):
         del request.session["review_mode"]   # reset review mode when starting fresh
     if "parent_ids" not in request.session:
         # request.session["parent_ids"] = []  # reset in a new student registration.
-        request.session.pop("parent_ids", None)
-
-    parent_ids = request.session.get("parent_ids", [])
+        request.session.pop("parent_ids", None)   # if the key is not in session, pop() won’t remove anything anyway.
 
     if request.method == "POST":
+        parent_ids = request.session.get("parent_ids", [])
+
         # 1️⃣ Add new parent
         form = ParentForm(request.POST, request.FILES)
         if form.is_valid():
@@ -113,10 +113,6 @@ def parent_info(request):
         
         request.session["parent_ids"] = parent_ids  # store for next steps
         print("SESSION parent_ids:", request.session.get("parent_ids"))
-
-        # ✅ If existing parents selected, set current to last one picked
-        # if selected_parents:
-        #     request.session["current_parent_id"] = int(selected_parents[-1])
 
         request.session["current_step"] = request.session.get("current_step", 0) + 1
         request.session.modified = True

@@ -36,20 +36,6 @@
 
     <!-- Existing Parents -->
     <h3>Select Existing Parents</h3>
-    {% comment %} {% for parent in all_parents %}
-      <label>
-        <input 
-          type="checkbox" 
-          name="existing_parents" 
-          value="{{ parent.id }}"
-          {% if parent in selected_parents %}checked{% endif %}
-        >
-        {{ parent.first_name }} {{ parent.last_name }}
-      </label><br>
-    {% empty %}
-      <p>No parents found in database.</p>
-    {% endfor %} {% endcomment %}
-
      <select name="existing_parents" multiple size="5">
         {% for parent in all_parents %}
         <option value="{{ parent.id }}"
@@ -60,20 +46,7 @@
         {% empty %}
             <option disabled>No parents found</option>
         {% endfor %}
-    </select> 
-
-    {% comment %} <select name="existing_parents">
-        <option value="">-- Choose a parent --</option>
-        {% for parent in all_parents %}
-            <option value="{{ parent.id }}"
-            {% if parent in selected_parents %}selected{% endif %}
-            >
-            {{ parent.first_name }} {{ parent.last_name }}
-            </option>
-        {% empty %}
-            <option disabled>No parents found</option>
-        {% endfor %}
-    </select> {% endcomment %}
+    </select>   
 
     <button type="submit" name="add_another">Save & Add Another</button>
     <button type="submit">Next</button>
