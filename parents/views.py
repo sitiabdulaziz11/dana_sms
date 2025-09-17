@@ -96,40 +96,33 @@ def parent_info(request):
     if request.method == "POST":
         # 2️⃣ Add selected existing parents
         selected_parents = request.POST.getlist("existing_parents")
-
-        fields_to_check = [
-            name for name, field in ParentForm().fields.items() if field.required
-            ]
-        filled_new_parent = (
-            any(request.POST.get(f, '').strip() for f in fields_to_check)
-            or bool(request.FILES.get('image_file'))
-            )
-
-        if not filled_new_parent and not selected_parents:
-            messages.error(request, "Please add a new parent or select an existing one .")
-            form = ParentForm()  # so form is rendered
-            all_parents = Parent.objects.all()
-            return render(request, "parents/parent_enroll.html", {
-                "form": form,
-                "all_parents": all_parents,
-                })
-
-        # 1️⃣ Add new parent
-        if filled_new_parent:
-            form = ParentForm(request.POST, request.FILES)
-            if form.is_valid():
-                new_parent = form.save()  # commit to DB
-                if new_parent.id not in parent_ids:
-                    parent_ids.append(new_parent.id)
-
-                # Set the current parent ID to the newly added parent
-                request.session["current_parent_id"] = new_parent.id
-        # else:
-        #     form = ParentForm()   #  # If no new parent data was filled → skip form validation
+        # fields_to_check = [
+        #     name for name, field in ParentForm().fields.items() if field.required
+        #     ]
+        filled_new_parent = any(request.POST.get(f, '').strip() for f in ParentForm().fields)
+        form = ParentForm(request.POST, request.FILES)
         
-        for pid in selected_parents:
-            if int(pid) not in parent_ids:
-                parent_ids.append(int(pid))
+        if selected_parents and not filled_new_parent :
+            for f in form.fields:
+                form.fields[f].required = False
+        
+        # 1️⃣ Add new parent
+        if filled_new_parent and form.is_valid():
+            new_parent = form.save()  # commit to DB
+            if new_parent.id not in parent_ids:
+                parent_ids.append(new_parent.id)
+
+            # Set the current parent ID to the newly added parent
+            request.session["current_parent_id"] = new_parent.id
+            
+        elif selected_parents:
+            for pid in selected_parents:
+                pid = int(pid)
+                if int(pid) not in parent_ids:
+                    parent_ids.append(int(pid))
+        else:
+            messages.error(request, "Please add a new parent or select an existing one")
+            return redirect("prnt_info")
         
         request.session["parent_ids"] = parent_ids  # store for next steps
         print("SESSION parent_ids:", request.session.get("parent_ids"))
@@ -143,14 +136,26 @@ def parent_info(request):
         if "add_another" in request.POST:
             return redirect("prnt_info")
         else:
+            # Add form-level error if nothing selected/filled
+            if not selected_parents and not filled_new_parent:
+                messages.error(request, "Please add a new parent or select an existing one")
             return redirect("phone_info")  # go to next step
     else:
         form = ParentForm()
+        
         # Fetch existing parents for dropdown/multi-select
         all_parents = Parent.objects.all()
 
         request.session["current_step"] = 1
         request.session.modified = False
+
+        #    messages.error(request, "Please add a new parent or select an existing one .")
+        #     form = ParentForm()  # so form is rendered
+        #     all_parents = Parent.objects.all()
+        #     return render(request, "parents/parent_enroll.html", {
+        #         "form": form,
+        #         "all_parents": all_parents,
+        #         })
 
         # optional to print session ?
     # parent_ids = request.session.get("parent_ids", [])
