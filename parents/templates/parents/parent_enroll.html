@@ -30,10 +30,6 @@
 <form method="post">
     {% csrf_token %}
 
-    <!-- New Parent Form -->
-    <h3>Add New Parent</h3>
-    {{ form.as_p }}
-
     <!-- Existing Parents -->
     <h3>Select Existing Parents</h3>
      <select name="existing_parents" multiple size="5">
@@ -46,7 +42,11 @@
         {% empty %}
             <option disabled>No parents found</option>
         {% endfor %}
-    </select>   
+    </select>  
+
+    <!-- New Parent Form -->
+    <h3>Add New Parent</h3>
+    {{ form.as_p }} 
 
     <button type="submit" name="add_another">Save & Add Another</button>
     <button type="submit">Next</button>

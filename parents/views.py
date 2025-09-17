@@ -89,24 +89,44 @@ def parent_info(request):
     if "review_mode" in request.session:
         del request.session["review_mode"]   # reset review mode when starting fresh
     if "parent_ids" not in request.session:
-        # request.session["parent_ids"] = []  # reset in a new student registration.
-        request.session.pop("parent_ids", None)   # if the key is not in session, pop() won’t remove anything anyway.
+        request.session["parent_ids"] = []  # reset in a new student registration.
 
+    parent_ids = request.session.get("parent_ids", [])
+    
     if request.method == "POST":
-        parent_ids = request.session.get("parent_ids", [])
+        # 2️⃣ Add selected existing parents
+        selected_parents = request.POST.getlist("existing_parents")
+
+        fields_to_check = [
+            name for name, field in ParentForm().fields.items() if field.required
+            ]
+        filled_new_parent = (
+            any(request.POST.get(f, '').strip() for f in fields_to_check)
+            or bool(request.FILES.get('image_file'))
+            )
+
+        if not filled_new_parent and not selected_parents:
+            messages.error(request, "Please add a new parent or select an existing one .")
+            form = ParentForm()  # so form is rendered
+            all_parents = Parent.objects.all()
+            return render(request, "parents/parent_enroll.html", {
+                "form": form,
+                "all_parents": all_parents,
+                })
 
         # 1️⃣ Add new parent
-        form = ParentForm(request.POST, request.FILES)
-        if form.is_valid():
-            new_parent = form.save()  # commit to DB
-            if new_parent.id not in parent_ids:
-                parent_ids.append(new_parent.id)
+        if filled_new_parent:
+            form = ParentForm(request.POST, request.FILES)
+            if form.is_valid():
+                new_parent = form.save()  # commit to DB
+                if new_parent.id not in parent_ids:
+                    parent_ids.append(new_parent.id)
 
-        # Set the current parent ID to the newly added parent
-        request.session["current_parent_id"] = new_parent.id
-
-        # 2️⃣ Add selected existing 
-        selected_parents = request.POST.getlist("existing_parents")
+                # Set the current parent ID to the newly added parent
+                request.session["current_parent_id"] = new_parent.id
+        # else:
+        #     form = ParentForm()   #  # If no new parent data was filled → skip form validation
+        
         for pid in selected_parents:
             if int(pid) not in parent_ids:
                 parent_ids.append(int(pid))
