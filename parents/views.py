@@ -114,13 +114,13 @@ def parent_info(request):
 
             # Set the current parent ID to the newly added parent
             request.session["current_parent_id"] = new_parent.id
-            
-        elif selected_parents:
+
+        if selected_parents:
             for pid in selected_parents:
                 pid = int(pid)
                 if int(pid) not in parent_ids:
                     parent_ids.append(int(pid))
-        else:
+        if not filled_new_parent and not selected_parents:
             messages.error(request, "Please add a new parent or select an existing one")
             return redirect("prnt_info")
         
