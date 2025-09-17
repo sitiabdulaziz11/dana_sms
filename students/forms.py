@@ -37,20 +37,16 @@ class EnrollmentForm(forms.ModelForm):
         # exclude = ["enrollment_date"]
         fields = ['grade', 'section', 'academic_year']
 
-# EnrollmentFormSet = inlineformset_factory(
-#     StudentRegistration,
-#     Enrollment,
-#     form=EnrollmentForm,
-#     extra=1,   # show at least one enrollment form
-#     can_delete=False  # enrollment should not be skipped
-# )
 EnrollmentFormSet = inlineformset_factory(
-    StudentRegistration,  # Parent model
-    Enrollment,  # Related model
-    fields=('student', 'grade', 'section', 'academic_year'),  # Fields to include
-    extra=1,  # Number of empty forms to display
-    can_delete=False,
+    StudentRegistration,
+    Enrollment,
+    form=EnrollmentForm,
+    extra=0,   # show number o  enrollment form
+    can_delete=False,  # enrollment should not be skipped
+    validate_min=True,  # ✅ require minimum number
+    min_num=1          # ✅ must have at least 1 enrollment
 )
+
 
 class AcademicYearForm(forms.ModelForm):
     """Forms to register academic year.
