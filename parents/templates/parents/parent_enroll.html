@@ -30,7 +30,28 @@
 <form method="post">
     {% csrf_token %}
 
-    <!-- Existing Parents -->
+    <label>
+    <input type="radio" name="parent_choice" value="existing" checked>
+    Select From Existing Parent
+    </label>
+    <label>
+        <input type="radio" name="parent_choice" value="new">
+        Add New Parent
+    </label>
+
+    <div id="existing-parents-section">
+        <select name="existing_parents" multiple size="5">
+            {% for parent in all_parents %}
+            <option value="{{parent.id}}"> {{ parent.first_name }} {{ parent.middle_name }} {{ parent.last_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div id="new-parent-section">
+        {{ form.as_p }}
+    </div>
+
+    {% comment %} <!-- Existing Parents -->
     <h3>Select Existing Parents</h3>
      <select name="existing_parents" multiple size="5">
         {% for parent in all_parents %}
@@ -46,7 +67,7 @@
 
     <!-- New Parent Form -->
     <h3>Add New Parent</h3>
-    {{ form.as_p }} 
+    {{ form.as_p }}  {% endcomment %}
 
     <button type="submit" name="add_another">Save & Add Another</button>
     <button type="submit">Next</button>

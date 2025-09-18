@@ -94,15 +94,19 @@ def parent_info(request):
     parent_ids = request.session.get("parent_ids", [])
 
     if request.method == "POST":
-        selected_parents = request.POST.getlist("existing_parents")
-        fields_to_check = [
+        choice = request.POST.get("parent_choice")
+        if choice == "existing":
+            selected_parents = request.POST.getlist("existing_parents")
+            filled_new_parent = False
+        elif choice == "new":
+            fields_to_check = [
             name for name, field in ParentForm().fields.items() if field.required
             ]
-        filled_new_parent = any(request.POST.get(f, '').strip() for f in fields_to_check)
-
-        # if not selected_parents and not filled_new_parent:
-        #     messages.error(request, "Please add a new parent or select an existing one")
-        #     return redirect("prnt_info")
+            filled_new_parent = any(request.POST.get(f, '').strip() for f in fields_to_check)
+        
+        else:  # or if choice not new and exi
+            messages.error(request, "Please add a new parent or select an existing one")
+            return redirect("prnt_info")        
 
         # 1️⃣ Add selected existing 
         if not filled_new_parent and selected_parents:
