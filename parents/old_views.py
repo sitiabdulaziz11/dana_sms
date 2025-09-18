@@ -84,70 +84,38 @@ class ParentEnrollmentWizard(SessionWizardView):
 
 def parent_info(request):
     """Views for parent information.
-       Select existing parents or add new ones for the student
     """
     if "review_mode" in request.session:
         del request.session["review_mode"]   # reset review mode when starting fresh
     if "parent_ids" not in request.session:
         request.session["parent_ids"] = []  # reset in a new student registration.
 
-    parent_ids = request.session.get("parent_ids", [])
-
     if request.method == "POST":
-        selected_parents = request.POST.getlist("existing_parents")
-        fields_to_check = [
-            name for name, field in ParentForm().fields.items() if field.required
-            ]
-        filled_new_parent = any(request.POST.get(f, '').strip() for f in fields_to_check)
+        form = ParentForm(request.POST, request.FILES)
+        if form.is_valid():
+            parent = form.save()  # commit to DB
+            parent_ids = request.session.get("parent_ids", [])
 
-        if not selected_parents and not filled_new_parent:
-            messages.error(request, "Please add a new parent or select an existing one")
-            return redirect("prnt_info")
+            if parent.id not in parent_ids:
+                parent_ids.append(parent.id)
+            request.session["parent_ids"] = parent_ids  # store for next steps
+            print("SESSION parent_ids:", request.session.get("parent_ids"))
 
-        # 1️⃣ Add selected existing 
-        if not filled_new_parent and selected_parents:
-            form = ParentForm()
-            # for f in form.fields:
-            #     form.fields[f].required = False
+            # Set the current parent ID to the newly added parent
+            request.session["current_parent_id"] = parent.id
 
-            for pid in selected_parents:
-                pid = int(pid)
-                if int(pid) not in parent_ids:
-                    parent_ids.append(int(pid))
-            return redirect("register")
-            
-        # 2️⃣ Add new parent
-        elif filled_new_parent:
-            form = ParentForm(request.POST, request.FILES)
-            if form.is_valid():
-                new_parent = form.save()  # commit to DB
-                if new_parent.id not in parent_ids:
-                    parent_ids.append(new_parent.id)
+            request.session["current_step"] = request.session.get("current_step", 0) + 1
+            request.session.modified = True
 
-                request.session["current_parent_id"] = new_parent.id
-            
-        # elif not selected_parents or not filled_new_parent:
-        #     messages.error(request, "Please add a new parent or select an existing one")
-        #     return redirect("prnt_info")
-            
-        request.session["parent_ids"] = parent_ids  # store for next steps
-        print("SESSION parent_ids:", request.session.get("parent_ids"))
+            if "review_mode" in request.session:
+                return redirect("review")
 
-        request.session["current_step"] = request.session.get("current_step", 0) + 1
-        request.session.modified = True
-
-        if "review_mode" in request.session:
-            return redirect("review")
-
-        if "add_another" in request.POST:
-            return redirect("prnt_info")
-        else:
-            return redirect("phone_info")  # go to next step
+            if "add_another" in request.POST:
+                return redirect("prnt_info")
+            else:
+                return redirect("phone_info")  # go to next step
     else:
         form = ParentForm()
-        all_parents = Parent.objects.all()  # Fetch existing parents for dropdown/multi-select
-        selected_parents = Parent.objects.filter(id__in=parent_ids)  # Pass previously selected parents
-
         request.session["current_step"] = 1
         request.session.modified = False
 
@@ -157,8 +125,6 @@ def parent_info(request):
 
     return render(request, "parents/parent_enroll.html", {
         "form": form,
-        "all_parents": all_parents,
-        "selected_parents": selected_parents,
         # "parents_added": parents_added,
         # "current_step": current_step,
         # "total_step": total_step
@@ -174,22 +140,17 @@ def phoneNum_info(request):
 
     if "phone_ids" not in request.session:
         request.session["phone_ids"] = []
-
     current_parent_id = request.session.get("current_parent_id")
     if not current_parent_id:
         messages.error(request, "No parent found in session. Please register a parent first.")
         return redirect("prnt_info")
     
-    parent_c = get_object_or_404(Parent, id=current_parent_id)
-
+    parent = get_object_or_404(Parent, id=current_parent_id)
     if request.method == "POST":
         form = PhoneNumberForm(request.POST)
         if form.is_valid():
             phone = form.save(commit=False)
             parent_id = request.POST.get("parent")  # parent's ID from the form
-            # # Make sure parent belongs to this student’s session
-            # if int(phone.parent_id) in request.session.get("parent_ids", []):
-            #     phone.save()  to check for existing parent
             phone.parent_id = parent_id
             phone.save()
             
@@ -226,7 +187,7 @@ def phoneNum_info(request):
         request.session.modified = False
 
     # Display all saved phones for this parent
-    phones = PhoneNumber.objects.filter(parent=parent_c)
+    phones = PhoneNumber.objects.filter(parent=parent)
     return render(request, "parents/phone_enroll.html", {
         "form": form,
         # "back_url": reverse("prnt_info")
@@ -241,10 +202,10 @@ def emergency_info(request):
     if "emergency_ids" not in request.session:
         request.session["emergency_ids"] = []
 
-    # current_parent_id = request.session.get("current_parent_id")
-    # if not current_parent_id:
-    #     messages.error(request, "from emergency contact, No parent found in session. Please register a parent first.")
-    #     return redirect("prnt_info")
+    current_parent_id = request.session.get("current_parent_id")
+    if not current_parent_id:
+        messages.error(request, "from emergency contact, No parent found in session. Please register a parent first.")
+        return redirect("prnt_info")
     
     student_id = request.session.get("student_id")
     if not student_id:
@@ -257,14 +218,14 @@ def emergency_info(request):
     student = get_object_or_404(StudentRegistration, id=student_id)
 
     if request.method == "POST":
-        form = EmergencyContactForm(request.POST, request.FILES)
+        form = EmergencyContactForm(request.POST)
         if form.is_valid():
             emergency = form.save(commit=False)
             emergency.student = student
             emergency.save()
 
             emergency_ids= request.session.get("emergency_ids", [])
-            emergency_ids.append(emergency.id)
+            request.session["emergency_ids"].append(emergency.id)
             request.session["emergency_ids"] = emergency_ids
 
             request.session["current_step"] = request.session.get("current_step", 1) + 1

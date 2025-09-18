@@ -19,6 +19,17 @@ class ParentForm(forms.ModelForm):
                 "nationality": "Nationality"
             }
     
+    def __init__(self, *args, require_fields=True, **kwargs):
+        """
+        require_fields=True → mandatory fields enforced (new parent case)
+        require_fields=False → all fields optional (existing parent case)
+        """
+        super().__init__(*args, **kwargs)
+
+        if not require_fields:
+            for field in self.fields.values():
+                field.required = False
+    
 ParentFormSet = modelformset_factory(
     Parent,
     form=ParentForm,  # to reuse custom forms

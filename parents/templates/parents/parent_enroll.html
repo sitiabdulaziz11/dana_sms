@@ -37,7 +37,7 @@
         <option value="{{ parent.id }}"
         {% if parent in selected_parents %}selected{% endif %}
         >
-        {{ parent.first_name }} {{ parent.last_name }}
+        {{parent.id}} {{ parent.first_name }} {{ parent.middle_name }} {{ parent.last_name }}
         </option>
         {% empty %}
             <option disabled>No parents found</option>

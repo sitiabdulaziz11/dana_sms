@@ -98,7 +98,12 @@ class StudentRegistrationAdmin(admin.ModelAdmin):
     def get_parents(self, obj):
         """ To get both parents of a student.
         """
-        return ", ".join([str(parent.first_name + " " + parent.last_name) for parent in obj.parents.all()])
+        # return ", ".join([str(parent.first_name + " " + parent.last_name) for parent in obj.parents.all()])
+
+        return ", ".join(
+            f"{parent.first_name or ''} {parent.middle_name or ''} {parent.last_name or ''}".strip()
+            for parent in obj.parents.all())
+    
     get_parents.short_description = "parents"
     
     def custom_id(self, obj):
