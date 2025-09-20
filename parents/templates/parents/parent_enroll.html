@@ -19,7 +19,7 @@
         aria-valuemax="{{ total_steps }}"
     ></div>
 </div>
-<p>Step {{ current_step }} of {{ total_steps }}</p>
+<h4 id="hh4">Step {{ current_step }} of {{ total_steps }}</h4>
 
 <h2>Step 1: Parent Information</h2>
 
@@ -30,11 +30,16 @@
     This step allows you to register parent information for the student.
   </h4>
   <ul>
-    <li>👉 If the parent is <strong>already registered</strong>,<strong><em> Choose Select From Existing Parents</strong></em> and select them from the list.</li>
-    <li>👉 If the parent is <strong>new</strong>, <strong><em>choose Add New Parent</em></strong> and fill in the form.</li>
+    <li>👉 If the parent is <strong>already registered</strong>, Choose<strong><em> Select From Existing Parents</strong></em> and select them from the list.</li>
+    <li>👉 If the parent is <strong>new</strong>, choose <strong><em>Add New Parent</em></strong> and fill in the form.</li>
     {% comment %} <li>👉 You can add multiple parents. Use <strong>Save & Add Another</strong> to register more.</li> on form {% endcomment %} 
   </ul>
 </div>
+
+<div class="form-actions">
+        <button type="submit" name="add_another">Your effort today will shine in your child’s tomorrow. Inshaallah!</button>
+        <button type="submit">Thank you for being here. Let's Get Started</button>
+    </div> 
 
 <!-- Choice cards -->
 <div class="choice-container">
@@ -94,15 +99,6 @@
   </form>
  </div>
 
- <div class="form-actions">
-  <form method="post">
-    {% csrf_token %}
-          <input type="hidden" name="form_type" value="">
-        <button type="submit" name="add_another">💾 Save & Add Another</button>
-        <button type="submit">➡️  Next</button>
-        </form> 
-    </div> 
-   
     <!-- JS Toggle -->
     <script>
         // Toggle between sections

@@ -1,23 +1,34 @@
 
 
+body {
+  background-color: #28a745;
+  color: white;
+  margin: 2rem;
+  /* padding: 2rem; */
+}
+
 .intro-box {
   background: #f9f9f9;
-  padding: 1rem 1.5rem;
+  padding: 1rem ;
   border-radius: 10px;
   margin-bottom: 1.5rem;
   text-align: center;
   line-height: 1.6;
+  color: rgb(0, 0, 0);
+  font-size: 1.3rem;
+
 }
 
 .intro-box ul {
   /*text-align: left;    left-align the bullet points */
   margin: 2rem auto;
-  max-width: 500px;   /* optional: keep it neat */
+  max-width: 580px;   /* optional: keep it neat */
 }
 
 .choice-container {
   display: flex;
   gap: 1rem;
+  padding: 3rem 1rem 1rem;
   margin: 1.5rem 0;
   justify-content: center;
 }
@@ -28,13 +39,17 @@
 
 .choice-card {
   flex: 1;
-  border: 2px solid #ccc;
+  /* border: 2px solid #ccc; */
+  border: 6px solid #f2eeee;
   border-radius: 10px;
-  padding: 1rem;
+  padding: 0.8rem;
   cursor: pointer;
   transition: border-color 0.3s, background 0.3s;
   max-width: 300px;
   text-align: center;
+  font-weight: bold;
+  font-size: 1.3rem;
+
 }
 
 .choice-card:hover {
@@ -65,13 +80,19 @@
 }
 
 .form-actions button[name="add_another"] {
-  background: #28a745;
-  color: white;
+  background: #f6fef8;
+  color: rgb(158, 10, 158);
+  font-weight: bold;
+  font-size: 1.5rem;
+
 }
 
 .form-actions button[type="submit"]:not([name]) {
   background: #9d067d;
   color: white;
+  font-weight: bold;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.5rem;
 }
 
 .progress-container {
@@ -95,10 +116,13 @@
     background: linear-gradient(
     45deg,
     #65af4c 25%,
+    
     #76d96f 25%,
     #7dd96f 50%,
+
     #74af4c 50%,
     #66af4c 75%,
+
     #9dd96f 75%,
     #99d96f
 );
