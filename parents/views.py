@@ -92,32 +92,36 @@ def parent_info(request):
         request.session["parent_ids"] = []  # reset in a new student registration.
 
     parent_ids = request.session.get("parent_ids", [])
+    selected_parents = []
+    all_parents = Parent.objects.all()  # Fetch existing parents for dropdown/multi-select
 
     if request.method == "POST":
-        selected_parents = request.POST.getlist("existing_parents")
-        fields_to_check = [
-            name for name, field in ParentForm().fields.items() if field.required
-            ]
-        filled_new_parent = any(request.POST.get(f, '').strip() for f in fields_to_check)
+        choice = request.POST.get("parent_choice")
 
-        # if not selected_parents and not filled_new_parent:
-        #     messages.error(request, "Please add a new parent or select an existing one")
-        #     return redirect("prnt_info")
+        # 1️⃣ Add selected existing
+        if choice == "existing":
+            selected_parents = request.POST.getlist("existing_parents[]")
+            print("Selected parents:", selected_parents)
+            if selected_parents:
+                for pid in selected_parents:
+                    pid = int(pid)
+                    if int(pid) not in parent_ids:
+                        parent_ids.append(int(pid))
+                request.session["parent_ids"] = parent_ids
+                print("SESSION parent_ids:", request.session.get("parent_ids"))
 
-        # 1️⃣ Add selected existing 
-        if not filled_new_parent and selected_parents:
-            form = ParentForm()
-            # for f in form.fields:
-            #     form.fields[f].required = False
-
-            for pid in selected_parents:
-                pid = int(pid)
-                if int(pid) not in parent_ids:
-                    parent_ids.append(int(pid))
-            return redirect("register")
+                if "review_mode" in request.session:
+                    return redirect("review")
+                if "add_another" in request.POST:
+                    return redirect("prnt_info")
+                else:
+                    return redirect("register")
+            else:
+                messages.error(request, "Please select at least one parent")
+                return redirect("prnt_info")
             
         # 2️⃣ Add new parent
-        elif filled_new_parent:
+        elif choice == "new":
             form = ParentForm(request.POST, request.FILES)
             if form.is_valid():
                 new_parent = form.save()  # commit to DB
@@ -125,44 +129,42 @@ def parent_info(request):
                     parent_ids.append(new_parent.id)
 
                 request.session["current_parent_id"] = new_parent.id
-            
-        else:
-            messages.error(request, "Please add a new parent or select an existing one")
-            return redirect("prnt_info")
+                request.session["parent_ids"] = parent_ids
+                
+                # print("SESSION parent_ids:", request.session.get("parent_ids"))
+
+                if "review_mode" in request.session:
+                    return redirect("review")
+
+                if "add_another" in request.POST:
+                    return redirect("prnt_info")
+                
+                return redirect("phone_info")
+            else:
+                messages.error(request, "Please fill all required fields for the new parent")
+        
+        else:  # or if choice not new and exi
+            messages.error(request, "Please add a New Parent Or Select From Existing One")
+            return redirect("prnt_info")                   
             
         request.session["parent_ids"] = parent_ids  # store for next steps
-        print("SESSION parent_ids:", request.session.get("parent_ids"))
 
         request.session["current_step"] = request.session.get("current_step", 0) + 1
         request.session.modified = True
 
-        if "review_mode" in request.session:
-            return redirect("review")
-
-        if "add_another" in request.POST:
-            return redirect("prnt_info")
-        else:
-            return redirect("phone_info")  # go to next step
     else:
         form = ParentForm()
-        all_parents = Parent.objects.all()  # Fetch existing parents for dropdown/multi-select
         selected_parents = Parent.objects.filter(id__in=parent_ids)  # Pass previously selected parents
 
         request.session["current_step"] = 1
         request.session.modified = False
 
-        # optional to print session ?
-    # parent_ids = request.session.get("parent_ids", [])
-    # parents_added = Parent.objects.filter(id__in=parent_ids)
-
     return render(request, "parents/parent_enroll.html", {
         "form": form,
         "all_parents": all_parents,
         "selected_parents": selected_parents,
-        # "parents_added": parents_added,
-        # "current_step": current_step,
-        # "total_step": total_step
     })
+
 
 def phoneNum_info(request):
     """For phone number

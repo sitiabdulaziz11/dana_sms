@@ -1,4 +1,79 @@
 
+
+.intro-box {
+  background: #f9f9f9;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.intro-box ul {
+  /*text-align: left;    left-align the bullet points */
+  margin: 2rem auto;
+  max-width: 500px;   /* optional: keep it neat */
+}
+
+.choice-container {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  justify-content: center;
+}
+
+.intro-box li {
+  list-style: none;
+}
+
+.choice-card {
+  flex: 1;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+  max-width: 300px;
+  text-align: center;
+}
+
+.choice-card:hover {
+  border-color: #c90cc9;
+}
+
+.choice-card input:checked + div {
+  /* border-color: #007bff; */
+  border-color: #a5079b;
+  background: #eef6ff;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.form-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.form-actions button[name="add_another"] {
+  background: #28a745;
+  color: white;
+}
+
+.form-actions button[type="submit"]:not([name]) {
+  background: #9d067d;
+  color: white;
+}
+
 .progress-container {
     width: 100%;
     background-color: #e0e0e0; /* Light gray background */
