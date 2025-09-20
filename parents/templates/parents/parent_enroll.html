@@ -36,30 +36,73 @@
   </ul>
 </div>
 
-<!-- Main form -->
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+<!-- Choice cards -->
+<div class="choice-container">
+    <label class="choice-card">
+        <input type="radio" name="parent_choice" value="existing">
+        Select From Existing Parents
+    </label>
 
-    <!-- Choice cards -->
-    <div class="choice-container">
-            <label class="choice-card">
-                <input type="radio" name="parent_choice" value="existing">
-                Select From Existing Parents
-            </label>
+    <label class="choice-card">
+        <input type="radio" name="parent_choice" value="new">
+        Add New Parents
+    </label>
+</div> 
 
-            <label class="choice-card">
-                <input type="radio" name="parent_choice" value="new">
-                Add New Parents
-            </label>
-    </div>
+<!-- Existing Parents Section  (hidden by default)  -->
+ <div id="existing-parents-section" style="display:none; margin-top: 1rem;">
+    <form method="post" action="{% url 'prnt_info' %}">
+        {% csrf_token %}
+        
+         <h3>Choose parents from already in the system:</h3>
+        <input type="hidden" name="form_type" value="existing">
+        <select name="existing_parents" multiple size="5">
+        {% for parent in all_parents %}
+        {% comment %} <option value="{{ parent.id }}" {% if parent in selected_parents %}selected{% endif %}>
+            {{parent.id}}  {{ parent.first_name }} {{ parent.middle_name }} {{ parent.last_name }}
+        </option> {% endcomment %}
+        <option value="{{ parent.id }}" >
+            {{parent.id}}  {{ parent.first_name }} {{ parent.middle_name }} {{ parent.last_name }}
+        </option>
+        {% empty %}
+        <option disabled>No parents found</option>
+        {% endfor %}
+    </select>
 
-    <!-- New Parent Section (hidden by default) -->
-    <div id="new-parent-section" style="display:none;">
+        <!-- Form actions -->
+    <div class="form-actions">
+        <button type="submit" name="add_another">💾 Save & Add Another</button>
+        <button type="submit">➡️  Next</button>
+    </div> 
+</form>
+</div>
+
+<!-- New Parent Section (hidden by default) -->
+<div id="new-parent-section" style="display:none;">
+  <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
         <h3>Add New Parent</h3>
-        <p>Fill out details for a new parent who is not yet registered.</p>
-        {{ form.as_p }}
-    </div>
+          <h4>Fill out details for a new parent who is not yet registered.</h4>
+          <input type="hidden" name="form_type" value="new">
+          {{ form.as_p }}
+          
+          <!-- Form actions -->
+      <div class="form-actions">
+          <button type="submit" name="add_another">💾 Save & Add Another</button>
+          <button type="submit">➡️  Next</button>
+      </div>
+  </form>
+ </div>
 
+ <div class="form-actions">
+  <form method="post">
+    {% csrf_token %}
+          <input type="hidden" name="form_type" value="">
+        <button type="submit" name="add_another">💾 Save & Add Another</button>
+        <button type="submit">➡️  Next</button>
+        </form> 
+    </div> 
+   
     <!-- JS Toggle -->
     <script>
         // Toggle between sections
@@ -116,31 +159,5 @@
             toggleSections();
         });
    </script>
-</form>
 
-<!-- Main form -->
-<form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <!-- Existing Parents Section -->
-        <div id="existing-parents-section" >
-            <h3>Select Existing Parents</h3>
-            <h4>Choose from parents already in the system.</h4>
-            <select name="existing_parents[]" multiple size="5">
-                {% for parent in all_parents %}
-                <option value="{{parent.id}}"
-                {% if parent in selected_parents %}selected{% endif %}>
-                    {{parent.id}}  {{ parent.first_name }} {{ parent.middle_name }} {{ parent.last_name }}
-                </option>
-                {% empty %}
-                <option disabled>No parents found</option>
-                {% endfor %}
-            </select>
-        </div>
-        <!-- Form actions -->
-    <div class="form-actions">
-        <button type="submit" name="add_another">💾 Save & Add Another</button>
-        <button type="submit">➡️  Next</button>
-    </div>
-</form>
 {% endblock %}
