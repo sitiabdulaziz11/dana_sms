@@ -1,28 +1,117 @@
 
 
 body {
-  background-color: #28a745;
+  background: linear-gradient(to right top, #021105, #09ab47);
+  /* background-color: #073a11; */
   color: white;
-  margin: 2rem;
+  margin: 3rem;
   /* padding: 2rem; */
+}
+
+#existing-parents-section {
+  justify-self: center;
+  font-size: 2rem;
+}
+
+#existing-parents-section h3 {
+  text-align: justify;
+}
+
+#existing-parents-section p {
+  text-align: justify;
+  color: #eb90c0;
+}
+
+#p-list{
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.con {
+  justify-items: center;
+  /* text-align: center; */
+  margin-top: 3rem;
+}
+
+.con h3 {
+  font-size: 2rem;
+  color: rgb(7, 190, 231);
+}
+
+.con h4 {
+  font-size: 1.5rem;
+  color: rgb(204, 211, 11);
+}
+
+#hh4 {
+  color: rgb(231, 149, 7);
+  /* color: rgb(153, 161, 163); */  
+}
+
+.form_control {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 2rem;
+  padding: 2rem;
+  margin: 2rem;
+  max-width: 33rem;
+  justify-self: center;  /* make the form center*/
+}
+
+.form_control p {
+  /* display: block; to make in two column */
+  display: contents;
+}
+
+.form_control label {
+  font-weight: bold;
+  font-size:1.4rem;
+}
+
+.form_control input,
+.form_control select,
+.form_control textarea {
+    display: block;
+    padding: 0.4rem;
+    border-radius: 6px;
+    outline: none;
+    border-width: medium;
+    text-align: left;
+    font-size: 1.4rem;
+    max-width: 20rem;
+}
+
+.form_control input:focus,
+.form_control select:focus,
+.form_control textarea:focus {
+    border-color: #09022b;
+    box-shadow: 0 0 5px rgba(14, 187, 230, 0.6);
+    background-color: #a1b6db;
 }
 
 .intro-box {
   background: #f9f9f9;
-  padding: 1rem ;
+  padding: 0.5rem ;
   border-radius: 10px;
   margin-bottom: 1.5rem;
   text-align: center;
   line-height: 1.6;
   color: rgb(0, 0, 0);
-  font-size: 1.3rem;
-
+  font-size: 1.5rem;
 }
 
 .intro-box ul {
   /*text-align: left;    left-align the bullet points */
   margin: 2rem auto;
-  max-width: 580px;   /* optional: keep it neat */
+  max-width: 90%;   /* optional: keep it neat */
+  text-align: justify;
+}
+
+.intro-box h4 {
+  margin: 2rem auto;
+  max-width: 90%;   /* optional: keep it neat */
+  text-align: justify;
 }
 
 .choice-container {
@@ -49,7 +138,7 @@ body {
   text-align: center;
   font-weight: bold;
   font-size: 1.3rem;
-
+  background-color: #0a0619;
 }
 
 .choice-card:hover {
@@ -59,14 +148,14 @@ body {
 .choice-card input:checked + div {
   /* border-color: #007bff; */
   border-color: #a5079b;
-  background: #eef6ff;
+  background: #eaf3fd;
   border-radius: 10px;
   padding: 1rem;
 }
 
 .form-actions {
   display: flex;
-  gap: 1rem;
+  gap: 3rem;
   justify-content: center;
   margin-top: 1.5rem;
 }
@@ -80,8 +169,8 @@ body {
 }
 
 .form-actions button[name="add_another"] {
-  background: #f6fef8;
-  color: rgb(158, 10, 158);
+  background: #01090c;
+  color: white;
   font-weight: bold;
   font-size: 1.5rem;
 
