@@ -1,0 +1,95 @@
+
+
+/* .form-actions {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.form-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.form-actions button[name="add_another"] {
+  background: #01090c;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.form-actions button[type="submit"]:not([name]) {
+  background: #9d067d;
+  color: white;
+  font-weight: bold;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.5rem;
+} */
+
+.progress-container {
+    width: 100%;
+    background-color: #e0e0e0; /* Light gray background */
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden; /* makes sure inner bar doesn't overflow rounded corners */
+}
+
+.progress-bar {
+    height: 20px;
+    /* background-color: #4CAF50; Green color for visibility */
+    background-color: #4CAF50; /* Green color for visibility */
+    border-radius: 4px;
+    transition: width 0.3s;
+}
+
+.progress-bar {
+    height: 20px;
+    background: linear-gradient(
+    45deg,
+    #65af4c 25%,
+    
+    #76d96f 25%,
+    #7dd96f 50%,
+
+    #74af4c 50%,
+    #66af4c 75%,
+
+    #9dd96f 75%,
+    #99d96f
+);
+background-size: 20px 20px;
+    border-radius: 4px;
+    transition: width 0.3s;
+    animation: moveStripes 1s linear infinite;
+}
+
+/* Animation for moving stripes */
+@keyframes moveStripes {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 20px 0;
+    }
+}
+
+.back-btn {
+  display: inline-block;        /* makes it behave like a button */
+  padding: 15px 10px 20px;           /* space inside */
+  background-color: #0b6cc1;    /* gray background (like Bootstrap secondary) */
+  color: white;                 /* text color */
+  text-decoration: none;        /* remove underline */
+  border-radius: 5px;           /* rounded corners */
+  border: none;                 /* no border */
+  font-size: 27px;              /* text size */
+  cursor: pointer;              /* show pointer on hover */
+  transition: background 0.3s;  /* smooth hover effect */
+}
+
+.back-btn:hover {
+  background-color: #3f0505;    /* darker on hover */
+}

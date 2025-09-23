@@ -5,7 +5,6 @@ body {
   /* background-color: #073a11; */
   color: white;
   margin: 3rem;
-  /* padding: 2rem; */
 }
 
 #existing-parents-section {
@@ -173,7 +172,6 @@ body {
   color: white;
   font-weight: bold;
   font-size: 1.5rem;
-
 }
 
 .form-actions button[type="submit"]:not([name]) {
@@ -184,87 +182,10 @@ body {
   font-size: 1.5rem;
 }
 
-.progress-container {
-    width: 100%;
-    background-color: #e0e0e0; /* Light gray background */
-    border-radius: 4px;
-    margin: 10px 0;
-    overflow: hidden; /* makes sure inner bar doesn't overflow rounded corners */
+.form-actions button:hover {
+  background-color: #37f153;
 }
 
-.progress-bar {
-    height: 20px;
-    /* background-color: #4CAF50; Green color for visibility */
-    background-color: #4CAF50; /* Green color for visibility */
-    border-radius: 4px;
-    transition: width 0.3s;
-}
-
-.progress-bar {
-    height: 20px;
-    background: linear-gradient(
-    45deg,
-    #65af4c 25%,
-    
-    #76d96f 25%,
-    #7dd96f 50%,
-
-    #74af4c 50%,
-    #66af4c 75%,
-
-    #9dd96f 75%,
-    #99d96f
-);
-background-size: 20px 20px;
-    border-radius: 4px;
-    transition: width 0.3s;
-    animation: moveStripes 1s linear infinite;
-}
-
-/* Animation for moving stripes */
-@keyframes moveStripes {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 20px 0;
-    }
-}
-
-
-/* Progress container */
-/*
-.progress {
-  margin: 20px 0;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-/* Style the progress element */
-/*
-progress {
-  width: 100%;
-  height: 20px;
-  appearance: none; /* reset default browser style */
-  /*-webkit-appearance: none;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-/* For WebKit browsers (Chrome, Edge, Safari) */
-/*progress::-webkit-progress-bar {
-  background-color: #eee;
-  border-radius: 10px;
-}
-
-progress::-webkit-progress-value {
-  background-color: #4caf50; /* green fill */
- /* border-radius: 10px;
-  transition: width 0.3s ease; /* smooth animation */
-/*}
-
-/* For Firefox */
-/*progress::-moz-progress-bar {
-  background-color: #4caf50;
-  border-radius: 10px;
+.form-actions button[type="submit"]:not([name]):hover {
+  background-color: #acac07;
 }

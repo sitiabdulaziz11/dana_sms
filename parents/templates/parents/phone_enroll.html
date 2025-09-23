@@ -3,18 +3,12 @@
 {% load static %}
 
 {% block css_file %}
-    <link rel="stylesheet" href="{% static "parents/parent.css" %}" >
-    <link rel="stylesheet" href="{% static 'parents/button.css' %}">
-
+    <link rel="stylesheet" href="{% static "parents/common.css" %}" >
+    <link rel="stylesheet" href="{% static 'parents/phone.css' %}">
 {% endblock %}
 
 {% block content %}
 {% include "includes/messages.html" %}
-
-{% comment %} <div class="progress">
-    <p>Step {{ current_step }} Of {{ total_step }}</p>
-    <progress value="{{ curent_step }}" max="{{ tetal_step }}"></progress>
-</div> {% endcomment %}
 
 <div class="progress-container">
     <div
@@ -32,18 +26,16 @@
 
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div id="forms">
+      {{ form.as_p }}  
+    </div>
+    
     <p>Adding phone for: {{ current_parent.first_name }}</p>
-    <div>
-        {% if back_url %}
-            <a href="{{ back_url }}">
-            <button type="button" class="back-btn">Back</button>
-            </a>
-        {% endif %}
+    <div id="form_action">
+        <a href="{% url 'prnt_info' %}" class="back-btn">Back</a>
         <button type="submit" name="add_another">Save & Add Another</button>
         <button type="submit">Next</button>
-    </div>
-     
+    </div>   
 </form>
 
 {% comment %} <!-- Optional: Add a way to switch parents -->

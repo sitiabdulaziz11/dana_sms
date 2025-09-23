@@ -5,6 +5,7 @@
 {% block css_file %}
     <link rel="stylesheet" href="{% static "parents/parent.css" %}" >
     <link rel="stylesheet" href="{% static 'parents/button.css' %}">
+    <link rel="stylesheet" href="{% static 'parents/common.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -26,19 +27,19 @@
 
 <!-- Welcome & Instructions -->
 <div class="intro-box">
-  <h2> Dear Parent, Welcome to Parent Registration Page!</h2>
+    <h2> Dear Parent, Welcome to Parent Registration Page!</h2>
 
-  <div class="form-actions">
-        <button type="submit" name="add_another">Your effort today will shine in your child’s tomorrow. Inshaallah!</button>
-        <button type="submit">Thank you for being here. Let's Get Started</button>
-</div>
-  <h4>
-    This step allows you to register parent information for the student.
-  </h4>
-  <ul>
-    <li>👉 If the parent is <strong>already registered</strong>, Choose<strong><em> Select From Existing Parents</strong></em> and select them from the list.</li>
-    <li>👉 If the parent is <strong>new</strong>, choose <strong><em>Add New Parent</em></strong> and fill in the form.</li>
-  </ul>
+    <div class="form-actions">
+          <button type="submit" name="add_another">Your effort today will shine in your child’s tomorrow. Inshaallah!</button>
+          <button type="submit">Thank you for being here. Let's Get Started</button>
+    </div>
+    <h4>
+      This step allows you to register parent information for the student.
+    </h4>
+    <ul>
+      <li>👉 If the parent is <strong>already registered</strong>, Choose<strong><em> Select From Existing Parents</strong></em> and select them from the list.</li>
+      <li>👉 If the parent is <strong>new</strong>, choose <strong><em>Add New Parent</em></strong> and fill in the form.</li>
+    </ul>
 </div> 
 
 <!-- Choice cards -->
@@ -52,7 +53,7 @@
         <input type="radio" name="parent_choice" value="new">
         Add New Parents
     </label>
-</div> 
+ </div> 
 
 <!-- Existing Parents Section  (hidden by default)  -->
  <div id="existing-parents-section" style="display:none; margin-top: 1rem;">
@@ -63,12 +64,11 @@
          <p><small>➡️ If you use <strong>Windows</strong>: Hold <kbd>CTRL</kbd> and click to select multiple parents.</small></p>
          <p><small>➡️ If you use <strong>Mac</strong>: Hold <kbd>CMD</kbd> and click to select multiple parents.</small></p>
          <p><small>➡️ If you use a <strong>phone/tablet</strong>: Just tap each parent you want to select multiple parents.</small></p>
+         <p><small> In Any Case, Also possible to use <strong>Save & Add Another</strong> Button, to select more.</small></p>
+
         <input type="hidden" name="form_type" value="existing">
         <select name="existing_parents" multiple size="5">
           {% for parent in all_parents %}
-          {% comment %} <option value="{{ parent.id }}" {% if parent in selected_parents %}selected{% endif %}>
-              {{parent.id}}  {{ parent.first_name }} {{ parent.middle_name }} {{ parent.last_name }}
-          </option> {% endcomment %}
           <div id="p-list">
           <option value="{{ parent.id }}" >
               {{parent.id}}  {{ parent.first_name }} {{ parent.middle_name }} {{ parent.last_name }}
@@ -77,7 +77,7 @@
           {% empty %}
           <option disabled>No parents found</option>
           {% endfor %}
-      </select>
+       </select>
 
         <!-- Form actions -->
       <div class="form-actions">
@@ -100,23 +100,17 @@
          <div class="form_control">
             {{ form.as_p }} 
           </div>
+      </div> 
 
-          {% comment %} <div class="form_control">
-        <table>
-          {{ form.as_table }}
-        </table>
-      </div> {% endcomment %}
-
-          <!-- Form actions -->
+      <!-- Form actions -->
       <div class="form-actions">
         <a href="{% url 'dashboard' %}" class="back-btn">Back</a>
           <button type="submit" name="add_another">💾 Save & Add Another</button>
           <button type="submit">➡️  Next</button>
       </div>
   </form>
- </div>
+</div>
 
- 
     <!-- JS Toggle -->
     <script>
         // Toggle between sections
@@ -124,15 +118,6 @@
             const existingSection = document.getElementById("existing-parents-section");
             const newSection = document.getElementById("new-parent-section");
             const radios = document.querySelectorAll("input[name='parent_choice']");
-
-           // function toggleSections() {
-                //if (document.querySelector("input[name='parent_choice']:checked").value === "existing") {
-                   // existingSection.style.display = "block";
-              //  } else {
-                 //   existingSection.style.display = "none";
-                  //  newSection.style.display = "block";
-               // }
-            //}
 
             let lastChecked = null;  // track the last clicked radio
 
@@ -153,9 +138,7 @@
             newSection.style.display = "block";
             }
         }
-
             radios.forEach(radio => {
-                // radio.addEventListener("change", toggleSections);
                 radio.addEventListener("click", function (e) {
                     if (lastChecked === this) {
                         this.checked = false;
