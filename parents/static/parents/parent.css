@@ -1,15 +1,49 @@
 
 
 body {
-  background: linear-gradient(to right top, #021105, #09ab47);
+  /* background: linear-gradient(to right top, #021105, #09ab47); */
   /* background-color: #073a11; */
+  background: linear-gradient(to right, rgb(6, 76, 133), rgb(4, 196, 4));
+    color:rgb(192, 197, 197);
   color: white;
-  margin: 3rem;
+  margin: 0;
+  padding: 0;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5rem;
+  background-color: rgb(28, 6, 6);
+  color: azure;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+}
+
+footer h1 {
+  padding: 1rem;
+}
+
+#hh2 {
+  margin: 0 0 2rem 2rem;
+}
+
+#new-parent-section h3 {
+  margin-top: 0;
 }
 
 #existing-parents-section {
   justify-self: center;
   font-size: 2rem;
+}
+
+select {
+  margin-bottom: 2rem;
+
 }
 
 #existing-parents-section h3 {
@@ -25,6 +59,7 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   font-family: 'Times New Roman', Times, serif;
+  margin-bottom: 0.3rem;
 }
 
 .con {
@@ -45,6 +80,8 @@ body {
 
 #hh4 {
   color: rgb(231, 149, 7);
+  /* font-size: 1.5rem; */
+  margin: 0 0 1rem 2rem;
   /* color: rgb(153, 161, 163); */  
 }
 
@@ -117,8 +154,10 @@ body {
   display: flex;
   gap: 1rem;
   padding: 3rem 1rem 1rem;
-  margin: 1.5rem 0;
+  margin: 3rem 0;
   justify-content: center;
+  margin: 1.5rem;
+  margin-bottom: 7rem;
 }
 
 .intro-box li {
@@ -156,7 +195,7 @@ body {
   display: flex;
   gap: 3rem;
   justify-content: center;
-  margin-top: 1.5rem;
+  margin: 0 0 6rem 0;
 }
 
 .form-actions button {
@@ -187,5 +226,43 @@ body {
 }
 
 .form-actions button[type="submit"]:not([name]):hover {
+  background-color: #acac07;
+}
+
+
+.forms-actions {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+}
+
+.forms-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.forms-actions button[name="add_another"] {
+  background: #01090c;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.forms-actions button[type="submit"]:not([name]) {
+  background: #9d067d;
+  color: white;
+  font-weight: bold;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.5rem;
+}
+
+.forms-actions button:hover {
+  background-color: #37f153;
+}
+
+.forms-actions button[type="submit"]:not([name]):hover {
   background-color: #acac07;
 }

@@ -21,19 +21,19 @@
         aria-valuemax="{{ total_steps }}"
     ></div>
 </div>
-<h4 id="hh4">Step {{ current_step }} of {{ total_steps }}</h4>
+<h3 id="hh4">Step {{ current_step }} of {{ total_steps }}</h3>
 
-<h2>Step 1: Parent Information</h2>
+<h2 id="hh2">Step 1: Parent Information</h2>
 
 <!-- Welcome & Instructions -->
 <div class="intro-box">
     <h2> Dear Parent, Welcome to Parent Registration Page!</h2>
 
-    <div class="form-actions">
+    <div class="forms-actions">
           <button type="submit" name="add_another">Your effort today will shine in your child’s tomorrow. Inshaallah!</button>
           <button type="submit">Thank you for being here. Let's Get Started</button>
     </div>
-    <h4>
+    <h4 id="hhh4">
       This step allows you to register parent information for the student.
     </h4>
     <ul>
@@ -108,7 +108,7 @@
           <button type="submit" name="add_another">💾 Save & Add Another</button>
           <button type="submit">➡️  Next</button>
       </div>
-  </form>
+  </form> 
 </div>
 
     <!-- JS Toggle -->
@@ -156,5 +156,11 @@
             toggleSections();
         });
    </script>
+
+   <footer>
+    <h1>Cleanliness is valuable!</h1>
+    <h1>ንፅህና ዋጋ አለው!</h1>
+    <h1>Safuun gatii qaba!</h1>
+  </footer>
 
 {% endblock %}

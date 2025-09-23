@@ -80,7 +80,7 @@ background-size: 20px 20px;
 .back-btn {
   display: inline-block;        /* makes it behave like a button */
   padding: 15px 10px 20px;           /* space inside */
-  background-color: #0b6cc1;    /* gray background (like Bootstrap secondary) */
+  background-color: #1f095f;    /* gray background (like Bootstrap secondary) */
   color: white;                 /* text color */
   text-decoration: none;        /* remove underline */
   border-radius: 5px;           /* rounded corners */

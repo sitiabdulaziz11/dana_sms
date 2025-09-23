@@ -1,10 +1,32 @@
 
 body {
-    background: linear-gradient(to right top, #106075, #02353c);
+  background: linear-gradient(to right, #025555, rgb(22, 183, 247));
+    /* background: linear-gradient(to right top, #106075, #02353c); */
     color: rgb(232, 237, 242);
-    margin: 2rem;
+    margin: 0;
 }
 
+h2, h3 {
+  margin: 1rem 2rem;
+}
+
+footer {
+  display: flex;
+  background-color: #013a3a; /*rgb(8, 8, 8); */
+  height: 5rem;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  position:fixed;
+  bottom: 0px;
+  left: 0px;
+  /* color: azure; */
+  padding: 4px 0;
+}
+
+footer h1 {
+  padding: 1rem;
+}
 
 #forms {
   display: grid;
@@ -17,7 +39,6 @@ body {
 }
 
 #forms p {
-  /* display: block; to make in two column */
   display: contents;
 }
 
@@ -47,7 +68,6 @@ body {
     background-color: #a1b6db;
 }
 
-
 #form_action {
   display: flex;
   gap: 4rem;
@@ -71,7 +91,7 @@ body {
 }
 
 #form_action button[type="submit"]:not([name]) {
-  background: #461204;
+  background: #acac07;
   color: white;
   font-weight: bold;
   font-family: 'Times New Roman', Times, serif;
@@ -79,9 +99,9 @@ body {
 }
 
 #form_action button:hover {
-  background-color: #7af28a;
+  background-color: #1b7227;
 }
 
 #form_action button[type="submit"]:not([name]):hover {
-  background-color: #acac07;
+  background-color: #461204;
 }

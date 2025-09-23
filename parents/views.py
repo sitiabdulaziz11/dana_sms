@@ -82,52 +82,6 @@ class ParentEnrollmentWizard(SessionWizardView):
         return redirect("success_page")
 
 
-# def parent_info(request):
-#     parent_ids = request.session.get("parent_ids", [])
-#     all_parents = Parent.objects.all()
-
-#     if request.method == "POST":
-#         form_type = request.POST.get("form_type")
-
-#         if form_type == "existing":
-#             selected_ids = request.POST.getlist("existing_parents")
-#             if not selected_ids:
-#                 messages.error(request, "Please select at least one parent.")
-#                 return redirect("prnt_info")
-
-#             parent_ids = request.session.get("parent_ids", [])
-#             for pid in selected_ids:
-#                 if pid not in parent_ids:
-#                     parent_ids.append(pid)
-#             request.session["parent_ids"] = parent_ids
-
-#             messages.success(request, "Existing parent(s) linked successfully.")
-#             return redirect("register")
-
-#         elif form_type == "new":
-#             form = ParentForm(request.POST)
-#             if form.is_valid():
-#                 new_parent = form.save()
-#                 parent_ids = request.session.get("parent_ids", [])
-#                 parent_ids.append(new_parent.id)
-#                 request.session["parent_ids"] = parent_ids
-
-#                 messages.success(request, "New parent added successfully.")
-#                 return redirect("phone_info")
-#     else:
-#         form = ParentForm()
-#         selected_parents = Parent.objects.filter(id__in=parent_ids)  # Pass previously selected parents
-
-#         request.session["current_step"] = 1
-#         request.session.modified = False
-
-#     return render(request, "parents/parent_enroll.html", {
-#         "form": form,
-#         "all_parents": all_parents,
-#         "selected_parents": selected_parents,
-#     })
-
-
 def parent_info(request):
     """Views for parent information.
        Select existing parents or add new ones for the student
@@ -178,7 +132,7 @@ def parent_info(request):
                 request.session["current_parent_id"] = new_parent.id
                 request.session["parent_ids"] = parent_ids
                 
-                # print("SESSION parent_ids:", request.session.get("parent_ids"))
+                print("SESSION parent_ids:", request.session.get("parent_ids"))
 
                 if "review_mode" in request.session:
                     return redirect("review")

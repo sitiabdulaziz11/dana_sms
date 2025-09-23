@@ -8,49 +8,50 @@
 {% endblock %}
 
 {% block content %}
-{% include "includes/messages.html" %}
+    {% include "includes/messages.html" %}
 
-<div class="progress-container">
-    <div
-        class="progress-bar"
-        role="progressbar"
-        style="width: {{ progress_percent }}%;"
-        aria-valuenow="{{ current_step }}"
-        aria-valuemin="0"
-        aria-valuemax="{{ total_steps }}"
-    ></div>
-</div>
-<p>Step {{ current_step }} of {{ total_steps }}</p>
-
-<h2>Step 2: Phone Number</h2>
-
-<form method="post">
-    {% csrf_token %}
-    <div id="forms">
-      {{ form.as_p }}  
+    <div class="progress-container">
+        <div
+            class="progress-bar"
+            role="progressbar"
+            style="width: {{ progress_percent }}%;"
+            aria-valuenow="{{ current_step }}"
+            aria-valuemin="0"
+            aria-valuemax="{{ total_steps }}"
+        ></div>
     </div>
-    
-    <p>Adding phone for: {{ current_parent.first_name }}</p>
-    <div id="form_action">
-        <a href="{% url 'prnt_info' %}" class="back-btn">Back</a>
-        <button type="submit" name="add_another">Save & Add Another</button>
-        <button type="submit">Next</button>
-    </div>   
-</form>
+    <h3>Step {{ current_step }} of {{ total_steps }}</h3>
 
-{% comment %} <!-- Optional: Add a way to switch parents -->
-<form method="get" action="{% url 'phone_info' %}">
-    <input type="hidden" name="switch_parent" value="1">
-    <button type="submit">Switch to Other Parent</button>
-</form> {% endcomment %}
+    <h2>Step 2: Phone Number</h2>
 
-{% comment %} <h3>Saved Phone Numbers:</h3>
-<ul>
-    {% for phone in phones %}
-        <li>{{ phone.owner }}: {{ phone.number }} ({{ phone.number_type }})</li>
-    {% empty %}
-        <li>No phone numbers added yet.</li>
-    {% endfor %}
-</ul> {% endcomment %}
+    <form method="post">
+        {% csrf_token %}
+
+        <div id="forms">
+            {{ form.as_p }}  
+        </div>
+        
+        {% comment %} <p>Adding phone for: {{ current_parent.first_name }}</p> {% endcomment %}
+        <div id="form_action">
+            <a href="{% url 'prnt_info' %}" class="back-btn">Back</a>
+            <button type="submit" name="add_another">Save & Add Another</button>
+            <button type="submit">Next</button>
+        </div>   
+    </form>
+
+    {% comment %} <h3>Saved Phone Numbers:</h3>
+    <ul>
+        {% for phone in phones %}
+            <li>{{ phone.owner }}: {{ phone.number }} ({{ phone.phone_type }})</li>
+        {% empty %}
+            <li>No phone numbers added yet.</li>
+        {% endfor %}
+    </ul> {% endcomment %}
+
+    <footer>
+    <h1>Cleanliness is valuable!</h1>
+    <h1>ንፅህና ዋጋ አለው!</h1>
+    <h1>Safuun gatii qaba!</h1>
+  </footer>
 
 {% endblock %}
