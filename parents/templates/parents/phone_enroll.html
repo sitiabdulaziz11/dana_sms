@@ -31,22 +31,23 @@
             {{ form.as_p }}  
         </div>
         
-        {% comment %} <p>Adding phone for: {{ current_parent.first_name }}</p> {% endcomment %}
+        <div class="phone">
+            <h3>Saved Phone Numbers For:{{ parent_c.first_name }} {{ parent_c.middle_name }}</h3>
+            <ul>
+                {% for phone in phones %}
+                    <li>{{ phone.owner|capfirst }}: {{ phone.number }} ({{ phone.phone_type|title }})</li>
+                {% empty %}
+                    <li>No phone numbers added yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
         <div id="form_action">
             <a href="{% url 'prnt_info' %}" class="back-btn">Back</a>
             <button type="submit" name="add_another">Save & Add Another</button>
             <button type="submit">Next</button>
         </div>   
     </form>
-
-    {% comment %} <h3>Saved Phone Numbers:</h3>
-    <ul>
-        {% for phone in phones %}
-            <li>{{ phone.owner }}: {{ phone.number }} ({{ phone.phone_type }})</li>
-        {% empty %}
-            <li>No phone numbers added yet.</li>
-        {% endfor %}
-    </ul> {% endcomment %}
 
     <footer>
     <h1>Cleanliness is valuable!</h1>

@@ -57,7 +57,7 @@
 
 <!-- Existing Parents Section  (hidden by default)  -->
  <div id="existing-parents-section" style="display:none; margin-top: 1rem;">
-    <form method="post" action="{% url 'prnt_info' %}">
+    <form method="post">
         {% csrf_token %}
         
          <h3>Choose parents from already in the system:</h3>

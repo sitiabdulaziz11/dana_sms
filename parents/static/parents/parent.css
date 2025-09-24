@@ -122,7 +122,7 @@ select {
 .form_control select:focus,
 .form_control textarea:focus {
     border-color: #09022b;
-    box-shadow: 0 0 5px rgba(14, 187, 230, 0.6);
+    box-shadow: 1px 1px 5px rgba(249, 232, 42, 0.6);
     background-color: #a1b6db;
 }
 

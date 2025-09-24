@@ -169,13 +169,8 @@ def parent_info(request):
 
 
 def phoneNum_info(request):
-    """For phone number
+    """For phone number handling.
     """
-    # current_step = request.session.get("current_step", 1)
-    # total_step = request.session.get("total_steps", 5)
-    # # total_step = len(STEPS)
-    # # current_step = STEPS.index("phone") + 1
-
     if "phone_ids" not in request.session:
         request.session["phone_ids"] = []
 
@@ -185,32 +180,38 @@ def phoneNum_info(request):
         return redirect("prnt_info")
     
     parent_c = get_object_or_404(Parent, id=current_parent_id)
+    print("current parent", parent_c)  # debug
 
     if request.method == "POST":
         form = PhoneNumberForm(request.POST)
         if form.is_valid():
             phone = form.save(commit=False)
             parent_id = request.POST.get("parent")  # parent's ID from the form
-            # # Make sure parent belongs to this student’s session
-            # if int(phone.parent_id) in request.session.get("parent_ids", []):
-            #     phone.save()  to check for existing parent
+            print(request.POST)  # debug
+            
+            # Make sure parent belongs to this student’s session
+            if not int(phone.parent_id) in request.session.get("parent_ids", []):
+                messages.error(request, "The selected parent is not associated with the current student. Please select the correct one.")
+                return redirect("phone_info")
+            
             phone.parent_id = parent_id
             phone.save()
-            
+
             parent = get_object_or_404(Parent, id=parent_id)  # To get current selected/saved parent.
+            messages.success(request, f"Phone number added for {parent.first_name}.successfully.")
 
             phone_ids = request.session.get("phone_ids", {})
             if not isinstance(phone_ids, dict):
                 phone_ids = {}
+
             if parent_id not in phone_ids:
                 phone_ids[parent_id] = []
-                phone_ids[parent_id].append(phone.id)
-                request.session["phone_ids"] = phone_ids
                 
-                print("SESSION parent_ids:", request.session.get("parent_ids"), "phone ids", request.session.get("phone_ids"))
-
-            messages.success(request, f"Phone number added for {parent.first_name}.successfully.")
-
+            phone_ids[parent_id].append(phone.id)
+            request.session["phone_ids"] = phone_ids
+                
+            print("SESSION parent_ids:", request.session.get("parent_ids"), "phone ids", request.session.get("phone_ids"))
+            
             request.session["current_step"] = request.session.get("current_step", 1) + 1
             request.session.modified = True
 
@@ -219,24 +220,21 @@ def phoneNum_info(request):
 
             # Check which button was clicked
             if "add_another" in request.POST:
-                # Reload the same page for adding another phone
-                return redirect("phone_info")
+                return redirect("phone_info")   # Reload the same page for adding another phone
             else:
-                # Move to the next step (emergency contact)
-                return redirect("register")
+                request.session.pop("current_parent_id", None) 
+                return redirect("register")   # Move to the next step (emergency contact)
     else:
         form = PhoneNumberForm()
         request.session["current_step"] = 2
         request.session.modified = False
 
-    # Display all saved phones for this parent
-    phones = PhoneNumber.objects.filter(parent=parent_c)
+    phones = PhoneNumber.objects.filter(parent=parent_c) # Display all saved phones for this parent
+
     return render(request, "parents/phone_enroll.html", {
         "form": form,
-        # "back_url": reverse("prnt_info")
         "phones": phones,
-        # "current_step": current_step,
-        # "total_step": total_step,
+        "parent_c": parent_c
         })
 
 def emergency_info(request):
