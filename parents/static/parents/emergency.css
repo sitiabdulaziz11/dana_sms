@@ -1,0 +1,95 @@
+
+body {
+  /* background: linear-gradient(to right top, #6305dd, #390281); */
+  /* padding: 6rem 12%; */
+  background-color:rgb(2, 77, 107);
+  color: aliceblue;
+}
+
+h2 {
+  text-align: center;
+  color: #f48b8f;
+}
+
+h3, h4 {
+  margin: 1rem 2rem;
+}
+
+.form_control {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 1.5rem;
+  padding: 2rem;
+  margin: 0.5rem 2rem 2rem;
+  max-width: 33rem;
+  justify-self: center;  /* make the form center*/
+}
+
+.form_control p {
+  display: contents;
+}
+
+.form_control label {
+  font-weight: bold;
+  font-size:1.4rem;
+}
+
+.form_control input,
+.form_control select,
+.form_control textarea {
+    display: block;
+    padding: 0.4rem;
+    border-radius: 6px;
+    outline: none;
+    border-width: medium;
+    text-align: left;
+    font-size: 1.4rem;
+    max-width: 20rem;
+}
+
+.form_control input:focus,
+.form_control select:focus,
+.form_control textarea:focus {
+    border-color: #09022b;
+    box-shadow: 1px 1px 5px rgba(249, 232, 42, 0.6);
+    background-color: #a1b6db;
+}
+
+
+.form-actions {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  margin: 0 0 6rem 0;
+}
+
+.form-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.form-actions button[name="add_another"] {
+  background: #d1cbc9;
+  color: rgb(16, 16, 16);
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.form-actions button[type="submit"]:not([name]) {
+  background: #acac07;
+  color: white;
+  font-weight: bold;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.5rem;
+}
+
+.form-actions button:hover {
+  background-color: #37f153;
+}
+
+.form-actions button[type="submit"]:not([name]):hover {
+  background-color: #0d91dd;
+}

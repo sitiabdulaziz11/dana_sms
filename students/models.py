@@ -79,7 +79,7 @@ class StudentRegistration(models.Model):
 
 
     def __str__(self):
-        return f"{self.first_name} {self.middle_name} {self.last_name}"
+        return f"{self.id} {self.first_name} {self.middle_name} {self.last_name}"
 
 class AcademicYear(models.Model):
     """ To set academic year.

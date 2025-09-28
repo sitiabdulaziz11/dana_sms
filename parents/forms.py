@@ -39,11 +39,12 @@ ParentFormSet = modelformset_factory(
 
 
 class EmergencyContactForm(forms.ModelForm):
-    """ Emergency contact form.
+    """ Form for new emergency contact.
     """
     class Meta:
         model = EmergencyContact
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ("student", "parent", "phone_num")
         labels = {
                 "city": "City/ከተማ",
                 "kfle_ketema": "Subcity/ክፍለ ከተማ",
@@ -58,6 +59,14 @@ EmergencyContactFormSet = modelformset_factory(
     extra=0,   # no empty form
     can_delete=True
 )
+
+class ExistingEmergencyContactForm(forms.ModelForm):
+    """ Form to link an already registered Parent/Phone as emergency contact.
+    """
+    class Meta:
+        model = EmergencyContact
+        fields = ("student", "parent", "phone_num",)
+
 
 
 class PhoneNumberForm(forms.ModelForm):

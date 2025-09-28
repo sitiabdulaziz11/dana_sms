@@ -10,8 +10,8 @@ import os
 from django.conf import settings
 
 
-from .forms import ParentForm, PhoneNumberForm, EmergencyContactForm
-from .models import Parent, PhoneNumber
+from .forms import ParentForm, PhoneNumberForm, EmergencyContactForm, ExistingEmergencyContactForm
+from .models import Parent, PhoneNumber, EmergencyContact
 from students.models import StudentRegistration
 from students.forms import StudentRegistrationForm
 from payments.forms import PaymentForm
@@ -188,6 +188,7 @@ def phoneNum_info(request):
             phone = form.save(commit=False)
             parent_id = request.POST.get("parent")  # parent's ID from the form
             print(request.POST)  # debug
+            print(parent_id)  # debug
             
             # Make sure parent belongs to this student’s session
             if not int(phone.parent_id) in request.session.get("parent_ids", []):
@@ -238,7 +239,7 @@ def phoneNum_info(request):
         })
 
 def emergency_info(request):
-    """For phone number
+    """For emergency handiling.
     """
     if "emergency_ids" not in request.session:
         request.session["emergency_ids"] = []
@@ -251,44 +252,85 @@ def emergency_info(request):
     student_id = request.session.get("student_id")
     if not student_id:
         messages.error(request, "No student found. Please register a student first.")
-        # return HttpResponse("no student id")
         return redirect("register")  # Redirect to student registration
     
     # parent_id = parent_ids[-1]
     # parent = get_object_or_404(Parent, id=parent_ids)
+
     student = get_object_or_404(StudentRegistration, id=student_id)
+    student_id_get = request.POST.get("student")
+    if student_id_get:
+        student_id_get = int(student_id_get)
+
+    print("_id", student_id_get)  #  debug
+    print(".id", student.id)  #  debug
+
+    parents = student.parents.all()
+    # phone = parent.phone_numbers.all() # works for one parent.
+    print("Parents queryset1:", list(parents))
+
+    phone = PhoneNumber.objects.filter(parent__in=parents)  # to get many parents phone no at once.
 
     if request.method == "POST":
-        form = EmergencyContactForm(request.POST, request.FILES)
-        if form.is_valid():
-            emergency = form.save(commit=False)
+        new_form = EmergencyContactForm(request.POST, request.FILES)
+        existing_form = ExistingEmergencyContactForm(request.POST)
+
+        saved_ids = []  # Keep track of what was saved this round
+
+        if new_form.is_valid():
+            emergency = new_form.save(commit=False)
             emergency.student = student
             emergency.save()
+            saved_ids.append(emergency.id)
 
+        if existing_form.is_valid():
+            parent = existing_form.cleaned_data.get("parent")
+            print("Chosen parent:", parent)  #  debug
+            print("Check:", parent in parents)  #  debug
+
+            phone = existing_form.cleaned_data.get("phone_num")
+            print(phone)  #  debug
+
+            if parent and phone:
+                
+                if parent in parents and phone.parent == parent and student_id_get == student.id:  # ✅ ensure phone really belongs to that parent
+                    emergency = EmergencyContact.objects.create(
+                    student=student,
+                    parent=parent,
+                    phone_num = phone
+                )
+                    saved_ids.append(emergency.id)
+                else:
+                    messages.error(request, "The selected phone or parent does not belong to the chosen student.")
+                    return redirect("emrgncy_info")
+
+        if saved_ids:
             emergency_ids= request.session.get("emergency_ids", [])
-            emergency_ids.append(emergency.id)
+            emergency_ids.extend(saved_ids)
             request.session["emergency_ids"] = emergency_ids
+        
+        request.session["current_step"] = request.session.get("current_step", 1) + 1
+        request.session.modified = True
 
-            request.session["current_step"] = request.session.get("current_step", 1) + 1
-            request.session.modified = True
+        if "review_mode" in request.session:
+            return redirect("review")
 
-            if "review_mode" in request.session:
-                return redirect("review")
-
-            # Check which button was clicked
-            if "add_another" in request.POST:
-                # Reload the same page for adding another phone
-                return redirect("emrgncy_info")
-            else: 
-                # Move to the next step (emergency contact)
-                return redirect("pay_with_id", student_id=student.id)
+        # Check which button was clicked
+        if "add_another" in request.POST:
+            # Reload the same page for adding another phone
+            return redirect("emrgncy_info")
+        else: 
+            # Move to the next step (emergency contact)
+            return redirect("pay_with_id", student_id=student.id)
     else:
-        form = EmergencyContactForm()
+        new_form = EmergencyContactForm()
+        existing_form = ExistingEmergencyContactForm()
         request.session["current_step"] = 4
         request.session.modified = False
 
     # Display all saved phones for this parent
     # phones = PhoneNumber.objects.filter(parent=parent)
     return render(request, "parents/emergency_enroll.html", {
-        "form": form,
+        "new_form": new_form,
+        "existing_form": existing_form,
        }) #"phones": phones})

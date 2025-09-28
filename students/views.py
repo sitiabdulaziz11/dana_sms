@@ -47,7 +47,7 @@ def register_student(request):
                 parents = Parent.objects.filter(id__in=parent_ids)
                 student.parents.set(parents)  # or with POST like phone
             else:
-                messages.error(request, "No parent id to link with student.")
+                messages.error(request, "No parent id to link with the student.")
       
             messages.success(request, "student registerd successfully!")
             request.session.pop("parent_ids", None)  # To clear previous parent for new student registration.
