@@ -115,7 +115,7 @@ def parent_info(request):
                 if "add_another" in request.POST:
                     return redirect("prnt_info")
                 else:
-                    messages.success(request, "Existing parent(s) linked successfully.")
+                    # messages.success(request, "Existing parent(s) linked successfully.")
                     return redirect("register")
             else:
                 messages.error(request, "Please select at least one parent")
@@ -277,12 +277,6 @@ def emergency_info(request):
 
         saved_ids = []  # Keep track of what was saved this round
 
-        if new_form.is_valid():
-            emergency = new_form.save(commit=False)
-            emergency.student = student
-            emergency.save()
-            saved_ids.append(emergency.id)
-
         if existing_form.is_valid():
             parent = existing_form.cleaned_data.get("parent")
             print("Chosen parent:", parent)  #  debug
@@ -292,17 +286,49 @@ def emergency_info(request):
             print(phone)  #  debug
 
             if parent and phone:
-                
-                if parent in parents and phone.parent == parent and student_id_get == student.id:  # ✅ ensure phone really belongs to that parent
-                    emergency = EmergencyContact.objects.create(
-                    student=student,
-                    parent=parent,
-                    phone_num = phone
-                )
-                    saved_ids.append(emergency.id)
-                else:
-                    messages.error(request, "The selected phone or parent does not belong to the chosen student.")
+                # if not parents.filter(id=parent.id).exists():
+                # # if parent not in parents  # and phone.parent == parent and student_id_get == student.id:
+                #     messages.error(request, "The selected parent is not registered for this student.")
+                if phone.parent_id != parent.id:  # ✅ ensure phone really belongs to that parent
+                    messages.error(request, "The selected phone number does not belong to the chosen parent.")
                     return redirect("emrgncy_info")
+
+                elif student_id_get != student.id:
+                    messages.error(request, "Selected student does not match the current student on registration.")
+                    return redirect("emrgncy_info")
+                else:
+                    all_exists = EmergencyContact.objects.filter(
+                        student=student,
+                        parent=parent,
+                        phone_num=phone
+                    ).exists()
+                    if all_exists:
+                        messages.warning(request, "This emergency contact is already registered for this student.")
+                        return redirect("emrgncy_info")
+                    else:
+                        emergency = EmergencyContact.objects.create(
+                            student=student,
+                            parent=parent,
+                            phone_num = phone
+                            )
+                        saved_ids.append(emergency.id)
+
+        if new_form.is_valid():
+            emergency = new_form.save(commit=False)
+            emergency.student = student
+
+            # prevent duplicates
+            exists = EmergencyContact.objects.filter(
+                student=student,
+                parent=emergency.parent,
+                phone_num=emergency.phone_num
+            ).exists()
+            if exists:
+                messages.warning(request, "This new emergency contact is already registered.")
+                return redirect("emrgncy_info")
+            
+            emergency.save()
+            saved_ids.append(emergency.id)
 
         if saved_ids:
             emergency_ids= request.session.get("emergency_ids", [])
