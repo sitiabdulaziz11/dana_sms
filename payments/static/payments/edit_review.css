@@ -1,28 +1,28 @@
 
 body {
-    background-color:  rgb(3, 92, 128);
+    /* background: linear-gradient(to right, #1e0442, #6104db); */
+    /* background-color:  rgb(3, 92, 128); */
     /* background-color:rgb(2, 77, 107); */
-    color: antiquewhite;
+    /* color: antiquewhite; */
+}
+
+h3 {
+  background-color: rgb(14, 133, 166);
+  font-size: 2rem;
+  color: white;
+  padding: 0.5rem;
 }
 
 form {
   max-width: 60rem;   /* limit width */
   margin: 0 auto;     /* center horizontally */
   padding: 2rem;
-  background: rgba(0,0,0,0.2);
+  /* background: rgba(0,0,0,0.2); */
   border-radius: 12px;
 }
 
-/* --- Student registration form --- */
 .form_control {
-  display: grid;
-  grid-template-columns: 1fr 1fr;   /* two columns */
-  gap: 0.5rem 1rem;                 /* spacing */
-  margin: 0;
-}
-
-.form_control {
-  column-count: 2;       /* two vertical columns */
+ /* column-count: 2;        two vertical columns */
   column-gap: 2rem; 
 }
 
@@ -64,3 +64,32 @@ form {
   margin: 0;
 }
 
+.form-actions {
+  display: flex;
+  gap: 6rem;
+  justify-content: center;
+  margin: 5rem 0 3rem 0;
+}
+
+.form-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  background:  rgb(8, 115, 129);
+  /* background:  blueviolet; */
+  color: white;
+  font-weight: bold;
+}
+
+.form-actions button:hover {
+  background-color: #37f153;
+}
+
+/* to hide djangos default */
+a[href*="delete"], /* hide delete link */
+input[type="checkbox"][name$="-clear"], /* hide clear checkbox */
+label[for$="-clear_id"] { /* hide clear label */
+  display: none !important;
+}

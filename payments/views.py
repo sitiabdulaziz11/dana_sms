@@ -230,7 +230,7 @@ def review(request):
            for pf in phone_formsets:
                pf.save()
 
-           messages.success(request, "All data updated successfully!")
+           messages.success(request, "All Data Saved successfully!")
            request.session.pop("parent_ids", None)
            request.session.pop("phone_ids", None)
            request.session.pop("emergency_ids", None)

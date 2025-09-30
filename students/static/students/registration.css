@@ -60,10 +60,11 @@ form {
 }
 
 /* --- Student registration form --- */
+
+
 .form_control.student-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;   /* two columns */
-  gap: 1.5rem 2rem;                 /* spacing */
+  column-count: 2;       /* two vertical columns */
+  column-gap: 6rem;
 }
 
 .form_control.student-form label {
@@ -99,7 +100,7 @@ form {
 .form_control.student-form p {
   display: flex;
   flex-direction: column;  /* label on top of input */
-  margin: 0;
+  margin: 1.5rem;
 }
 
 /* --- Enrollment formset --- */
