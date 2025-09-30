@@ -6,8 +6,12 @@ body {
   background: linear-gradient(to right, rgb(6, 76, 133), rgb(4, 196, 4));
     color:rgb(192, 197, 197);
   color: white;
-  margin: 0;
+  margin: 8px;
   padding: 0;
+}
+
+#hhh2pay {
+  text-align: center;
 }
 
 footer {
@@ -24,8 +28,9 @@ footer {
   padding: 0;
 }
 
-footer h1 {
+footer h2 {
   padding: 1rem;
+  font-weight: 1rem;
 }
 
 #hh2 {
@@ -38,12 +43,11 @@ footer h1 {
 
 #existing-parents-section {
   justify-self: center;
-  font-size: 2rem;
+  font-size: 1.9rem;
 }
 
 select {
   margin-bottom: 2rem;
-
 }
 
 #existing-parents-section h3 {
@@ -52,11 +56,13 @@ select {
 
 #existing-parents-section p {
   text-align: justify;
-  color: #eb90c0;
+  /* color: #f08dc2; */
+  color: #d0d1cb;
+  margin: 1rem;
 }
 
 #p-list{
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
   font-family: 'Times New Roman', Times, serif;
   margin-bottom: 0.3rem;
@@ -195,7 +201,7 @@ select {
   display: flex;
   gap: 3rem;
   justify-content: center;
-  margin: 0 0 6rem 0;
+  margin: 0 0 8rem 0;
 }
 
 .form-actions button {

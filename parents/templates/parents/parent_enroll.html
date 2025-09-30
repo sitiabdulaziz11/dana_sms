@@ -70,9 +70,9 @@
         <select name="existing_parents" multiple size="5">
           {% for parent in all_parents %}
           <div id="p-list">
-          <option value="{{ parent.id }}" >
-              {{parent.id}}  {{ parent.first_name }} {{ parent.middle_name }} {{ parent.last_name }}
-          </option>
+            <option value="{{ parent.id }}" >
+                {{parent.id}}  {{ parent.first_name }} {{ parent.middle_name }} {{ parent.last_name }}
+            </option>
           </div>
           {% empty %}
           <option disabled>No parents found</option>
@@ -158,9 +158,9 @@
    </script>
 
    <footer>
-    <h1>Cleanliness is valuable!</h1>
-    <h1>ንፅህና ዋጋ አለው!</h1>
-    <h1>Safuun gatii qaba!</h1>
+    <h2>Cleanliness is valuable!</h2>
+    <h2>ንፅህና ዋጋ አለው!</h2>
+    <h2>Safuun gatii qaba!</h2>
   </footer>
 
 {% endblock %}

@@ -1,4 +1,11 @@
 
+{%  load static %}
+
+{% block css_file %}
+    <link rel="stylesheet" href="{% static "payments/edit_review.css" %}" >
+    <link rel="stylesheet" href="{% static 'parents/common.css' %}">
+{% endblock %}
+
 {% include "includes/messages.html" %}
 
 
@@ -6,21 +13,27 @@
   {% csrf_token %}
 
   <h3>Student Information</h3>
-      <fieldset>
+  <fieldset>
+   <div class="form_control">
         {{ student_form.as_p }}
-      </fieldset>
+   </div>
+</fieldset>
 
   <h3>Parents</h3>
 {{ parent_formset.management_form }}
 
 {% for parent_form, phone_formset in parent_phone_pairs %}
   <fieldset>
+    <div class="form_control">
     {{ parent_form.as_p }}
+    </div>
 
-    <h4>Phones</h4>
+    <h3>Phones</h3>
     {{ phone_formset.management_form }}
     {% for pf in phone_formset %}
-      {{ pf.as_p }}
+    <div class="form_control">
+   {{ pf.as_p }}
+    </div>
     {% endfor %}
   </fieldset>
 {% endfor %}
@@ -28,13 +41,21 @@
   <h3>Emergency</h3>
 {{ emergency_formset.management_form }}
 {% for form in emergency_formset %}
+<fieldset>
+  <div class="form_control">
     {{ form.as_p }}
+</div>
+</fieldset>
 {% endfor %}
 
 <h3>Payment</h3>
 {{ payment_formset.management_form }}
 {% for form in payment_formset %}
-    {{ form.as_p }}
+<fieldset>
+  <div class="form_control">
+      {{ form.as_p }}
+  </div>
+</fieldset>
 {% endfor %}
 
   <button type="submit">Confirm & Save</button>

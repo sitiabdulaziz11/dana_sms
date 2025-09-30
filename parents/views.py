@@ -223,8 +223,8 @@ def phoneNum_info(request):
             if "add_another" in request.POST:
                 return redirect("phone_info")   # Reload the same page for adding another phone
             else:
-                request.session.pop("current_parent_id", None) 
-                return redirect("register")   # Move to the next step (emergency contact)
+                # request.session.pop("current_parent_id", None) 
+                return redirect("register")   # Move to the next
     else:
         form = PhoneNumberForm()
         request.session["current_step"] = 2
@@ -243,18 +243,12 @@ def emergency_info(request):
     """
     if "emergency_ids" not in request.session:
         request.session["emergency_ids"] = []
-
-    # current_parent_id = request.session.get("current_parent_id")
-    # if not current_parent_id:
-    #     messages.error(request, "from emergency contact, No parent found in session. Please register a parent first.")
-    #     return redirect("prnt_info")
     
     student_id = request.session.get("student_id")
     if not student_id:
         messages.error(request, "No student found. Please register a student first.")
         return redirect("register")  # Redirect to student registration
     
-    # parent_id = parent_ids[-1]
     # parent = get_object_or_404(Parent, id=parent_ids)
 
     student = get_object_or_404(StudentRegistration, id=student_id)
@@ -286,9 +280,6 @@ def emergency_info(request):
             print(phone)  #  debug
 
             if parent and phone:
-                # if not parents.filter(id=parent.id).exists():
-                # # if parent not in parents  # and phone.parent == parent and student_id_get == student.id:
-                #     messages.error(request, "The selected parent is not registered for this student.")
                 if phone.parent_id != parent.id:  # ✅ ensure phone really belongs to that parent
                     messages.error(request, "The selected phone number does not belong to the chosen parent.")
                     return redirect("emrgncy_info")
@@ -354,9 +345,7 @@ def emergency_info(request):
         request.session["current_step"] = 4
         request.session.modified = False
 
-    # Display all saved phones for this parent
-    # phones = PhoneNumber.objects.filter(parent=parent)
     return render(request, "parents/emergency_enroll.html", {
         "new_form": new_form,
         "existing_form": existing_form,
-       }) #"phones": phones})
+       })

@@ -17,7 +17,7 @@ class StudentRegistrationForm(forms.ModelForm):
         """
 
         model = StudentRegistration
-        exclude = ["join_year"]
+        exclude = ["join_year", "parents"]
         labels = {
             "city": "City/ከተማ",
             "kfle_ketema": "Subcity/ክፍለ ከተማ",

@@ -38,14 +38,15 @@ def make_payment(request, student_id=None):
             payment.save()
             request.session["payment_id"] = payment.id
             messages.success(request, "Payment success")
-            # return redirect("review")
-            # return redirect("edit", pk=student_id)
+            # return redirect("review")          
 
             if "add_another" in request.POST:
                #  return redirect("pay", student_id=student_id)
                 return redirect("pay_with_id", student_id=student.id)
             
+            request.session.pop("current_step", None)
             return redirect("edit")
+         
          except ValidationError:
             messages.error(request, "⚠️ Duplicate payment: This student already paid for this month and type.")
             return redirect("pay_with_id", student_id=student_id)
@@ -58,7 +59,6 @@ def make_payment(request, student_id=None):
       "form": payment_form,
       "student": student,
    })
-
 
 
 def review_all(request):

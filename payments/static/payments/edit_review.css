@@ -1,0 +1,66 @@
+
+body {
+    background-color:  rgb(3, 92, 128);
+    /* background-color:rgb(2, 77, 107); */
+    color: antiquewhite;
+}
+
+form {
+  max-width: 60rem;   /* limit width */
+  margin: 0 auto;     /* center horizontally */
+  padding: 2rem;
+  background: rgba(0,0,0,0.2);
+  border-radius: 12px;
+}
+
+/* --- Student registration form --- */
+.form_control {
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* two columns */
+  gap: 0.5rem 1rem;                 /* spacing */
+  margin: 0;
+}
+
+.form_control {
+  column-count: 2;       /* two vertical columns */
+  column-gap: 2rem; 
+}
+
+.form_control label {
+  font-weight: bold;
+  font-size:1.4rem;  /*to give size on lables out side of input area*/
+  display: block;
+  margin: 0;
+}
+
+ .form_control input,
+.form_control select,
+.form_control textarea {
+    display: block;
+    padding: 0.3rem;
+    border-radius: 6px;
+    outline: none;
+    border-width: small;
+     /*text-align: left;  */
+    max-width: 17rem;
+    font-size: 1.3rem; /* to give size on texst inside input*/
+    
+} 
+
+.form_control input:focus,
+.form_control select:focus,
+.form_control textarea:focus {
+    border-color: rgba(83, 221, 228, 0.6) ;
+    box-shadow: 1px 2px 5px #39bd6a;
+    background-color: #d7e0ef;
+    border-width: 5px;
+    border-radius: 10px;
+}
+
+/* to make all label equal */
+.form_control p {  
+  display: flex;
+  flex-direction: column;  /*label on top of input*/
+  margin: 0;
+}
+

@@ -93,3 +93,22 @@ h3, h4 {
 .form-actions button[type="submit"]:not([name]):hover {
   background-color: #0d91dd;
 }
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5rem;
+  background-color: rgb(28, 6, 6);
+  color: azure;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+}
+
+footer h2 {
+  padding: 1rem;
+  font-weight: 1rem;
+}
