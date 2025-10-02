@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% load static %}
 {% include "includes/messages.html" %}
 
@@ -7,7 +8,8 @@
 {% endblock %}
 
 {% block css_file %}
-    <link rel="stylesheet" href="{% static "students/dashboards.css" %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'students/dashboards.css' %}" />
 {% endblock %}
 
 {% block content%}
@@ -15,14 +17,55 @@
 <section id="dash">
    <h1>Dashboards</h1> 
 </section>
-<aside class="sidebar">
-    <ul>
-        {% comment %} <li><a href="{% url "register"%}">📝Student Registration</a></li> {% endcomment %}
-        <li><a href="{% url "prnt_info" %}">📝Student Registration</a></li>
-        <li><a href="">💳Payments</a></li>
-        <li><a href="">📅Attendance</a></li>
-        <li><a href="">📊Student result</a></li>
-        <li><a href="">Admin</a></li>
-    </ul>
-</aside>
+
+<div id="dbord">
+    <aside class="sidebar">
+        <ul>
+            <li><a href="{% url "prnt_info" %}">📝Student Registration</a></li>
+            <li><a href="#"><i class="fa-solid fa-credit-card"></i> Payments</a></li> {% comment %} 💳 {% endcomment %}
+            <li><a href="">📅Attendance</a></li>
+            <li><a href="">📊Student result</a></li>
+            <li><a href="">🔒 Admin</a></li>
+        </ul>
+    </aside>
+
+    <div class="charts">
+        <canvas id="studentGenderChart"></canvas>
+        <canvas id="studentCountChart"></canvas>
+    </div>
+</div>
+
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> {% endcomment %}
+<script src="{% static 'students/js/chart.umd.min.js' %}"></script>
+
+<script>
+
+    const genderCtx = document.getElementById('studentGenderChart');
+    new Chart(genderCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Male', 'Female'],
+            datasets: [{
+                label: 'Student by Gender',
+                data: [{{ male_students|default:0 }}, {{ female_students|default:0 }}],
+                backgroundColor: ['#36A2EB', '#FF6384'],
+            }]
+        }
+    })
+
+    const countCtx = document.getElementById('studentCountChart');
+    new Chart(countCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Students'],
+            datasets: [{
+                label: 'Count',
+                data: [{{ total_students }}],
+                backgroundColor: ['#4BC0C0'],
+            }]
+        }
+    });
+
+</script>
+
 {% endblock content%}

@@ -4,8 +4,31 @@
     background: linear-gradient(to right top, rgb(154, 209, 227), rgb(3, 3, 236));
 } */
 
+#dbord {
+    display: flex;
+    color: black;
+
+}
+
+.charts {
+    /*flex: 1;  take remaining space next to sidebar */
+    display: flex;
+    color: black;
+    /* justify-content: center; */
+    /* align-items: center; */
+    gap: 5rem;
+   
+    /* margin-left: 12rem; */
+}
+
+canvas {
+    width: 300px !important;
+    height: 300px !important;
+    color: black;
+}
+
 #dash {
-    padding: 3rem 1rem 1%;
+    padding: 2.5rem 1rem 1%;
     margin: 0;
     background: linear-gradient(to right top, rgb(17, 130, 168), rgb(4, 4, 106));
 }
@@ -20,7 +43,7 @@
 .sidebar {
     width: 20rem;
     background: linear-gradient(to right top, rgb(41, 134, 162), rgb(206, 13, 42));
-    position: fixed;
+    /* position: fixed; */
     min-height: 100vh;
     /* color: white; */
     /* padding: 2rem 1rem; */
@@ -57,3 +80,9 @@
     background-color: rgb(48, 1, 87);
     border-radius: 1.7rem;
 }
+
+/* @media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+    }
+} */

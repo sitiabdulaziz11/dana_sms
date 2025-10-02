@@ -10,6 +10,37 @@ after this 5 step
 8 move whole students on next year
 
 
+Suggestions for what to display on dashboard
+
+For a primary school system, useful widgets are:
+
+✅ Total Students (male/female breakdown)
+
+✅ Attendance summary (today’s present/absent %)
+
+✅ Payments summary (paid vs pending)
+
+✅ Recent student registrations
+
+✅ Teachers count / classes count
+
+How other computers access it
+
+Now imagine students in the library with desks and laptops.
+
+If their laptops are connected to the same school Wi-Fi (or LAN cable network),
+
+They can type the server’s IP address in their browser and access the system.
+
+So:
+
+Server computer runs Django (python manage.py runserver 0.0.0.0:8000 or deployed via Apache/Nginx).
+
+Other computers type something like:
+http://192.168.1.10:8000
+and they’ll see your Django app!
+
+
 what are the examples on Payment Gateway	and  Webhook?
 
 payment system

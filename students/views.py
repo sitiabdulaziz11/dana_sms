@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 
 from .forms import StudentRegistrationForm, EnrollmentFormSet, AcademicYearForm
-from .models import AcademicYear, Enrollment
+from .models import StudentRegistration, AcademicYear, Enrollment
 from django.contrib import messages
 from parents.models import Parent
 
@@ -10,14 +10,22 @@ from parents.models import Parent
 STEPS = [ "parent", "phone", "student", "emergency", "payment"]
 
 def main_page(request):
-    """To display main or home page
+    """To display main or home page.
     """
     return render(request, "students/index.html")
 
 def dashboards(request):
-    """To display main or home page
+    """To display different dashboards.
     """
-    return render(request, "students/dashboards.html")
+    total_students = StudentRegistration.objects.count()
+    male_students = StudentRegistration.objects.filter(gender="male").count()
+    female_students = StudentRegistration.objects.filter(gender="female").count()
+
+    return render(request, "students/dashboards.html", {
+        "total_students": total_students,
+        "male_students": male_students,
+        "female_students": female_students,
+    })
 
 
 def register_student(request):
