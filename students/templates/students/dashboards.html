@@ -22,21 +22,35 @@
     <aside class="sidebar">
         <ul>
             <li><a href="{% url "prnt_info" %}">📝Student Registration</a></li>
-            <li><a href="#"><i class="fa-solid fa-credit-card"></i> Payments</a></li> {% comment %} 💳 {% endcomment %}
+            <li><a href="{% url "pay" %}"><i class="fa-solid fa-credit-card"></i> Payments</a></li> {% comment %} 💳 {% endcomment %}
             <li><a href="">📅Attendance</a></li>
             <li><a href="">📊Student result</a></li>
             <li><a href="">🔒 Admin</a></li>
         </ul>
     </aside>
 
-    <div class="charts">
-        <canvas id="studentGenderChart"></canvas>
-        <canvas id="studentCountChart"></canvas>
+    <div class="title">
+        <h2>Numbers Of Students in Dana Academy</h2>
+        <div class="charts">
+            <canvas id="studentGenderChart"></canvas>
+            <div class="chart-info">
+                <p>Male: {{ male_students|default:0 }}</p>
+                <p>Female: {{ female_students|default:0 }}</p>
+            </div>
+                <canvas id="studentCountChart"></canvas>
+                <p class="chart-info">Total: {{ total_students|default:0 }}</p>
+            </div>
+        </div>
     </div>
 </div>
 
-{% comment %} <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> {% endcomment %}
-<script src="{% static 'students/js/chart.umd.min.js' %}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    if (typeof Chart === "undefined") {
+        document.write('<script src="{% static "students/js/chart.umd.min.js" %}"><\/script>');
+    }
+</script>
 
 <script>
 
@@ -46,12 +60,29 @@
         data: {
             labels: ['Male', 'Female'],
             datasets: [{
-                label: 'Student by Gender',
+               // label: 'Student by Gender',
                 data: [{{ male_students|default:0 }}, {{ female_students|default:0 }}],
                 backgroundColor: ['#36A2EB', '#FF6384'],
             }]
+        },
+        options: {
+        plugins: {
+            legend: {
+                labels: {
+                    font: {
+                        size: 38   // legend text size
+                    }
+                }
+            },
+            title: {
+                display: true,
+                text: 'Students by Gender',
+                font: { size: 34, weight: 'bold' } // title font size
+            }
         }
-    })
+    }
+
+    });
 
     const countCtx = document.getElementById('studentCountChart');
     new Chart(countCtx, {
@@ -63,7 +94,47 @@
                 data: [{{ total_students }}],
                 backgroundColor: ['#4BC0C0'],
             }]
+        },
+        options: {
+        plugins: {
+            legend: {
+                labels: {
+                    font: {
+                        size: 26   // legend text size
+                    }
+                }
+            },
+            title: {
+                display: true,
+                text: 'Total Students',
+                font: { size: 25, weight: 'bold' } // title font size
+            }
+        },
+        scales: {
+        y: {
+            beginAtZero: true,
+            ticks: {
+                font: { size: 20, weight: 'bold' }, // bigger numbers
+                stepSize: 10, // spacing between lines (optional)
+                color: '#333' // color of numbers
+            },
+            grid: {
+                color: '#ccc', // grid line color
+                lineWidth: 2   // thickness of lines
+            }
+        },
+        x: {
+            ticks: {
+                font: { size: 18, weight: 'bold' }
+            },
+            grid: {
+                color: '#ddd',
+                lineWidth: 1
+            }
         }
+    }
+    }
+
     });
 
 </script>

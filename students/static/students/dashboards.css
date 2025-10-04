@@ -6,25 +6,70 @@
 
 #dbord {
     display: flex;
+    /* min-height: 100vh; */
     color: black;
 
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+}
+
+.title h2 {
+    text-align: center;
 }
 
 .charts {
-    /*flex: 1;  take remaining space next to sidebar */
-    display: flex;
-    color: black;
-    /* justify-content: center; */
-    /* align-items: center; */
-    gap: 5rem;
-   
-    /* margin-left: 12rem; */
+   flex: 1;   /*take remaining space next to sidebar */
+    padding: 20px;
+    /* display: grid;  to put contents top to bottom */
+    display: flex; /*to put contents left to right*/
+    gap: 6rem;
+    margin-left: 8rem;
 }
 
 canvas {
-    width: 300px !important;
-    height: 300px !important;
+    width: 100%;
+    max-width: 350px;   
+    height: 320px !important;
     color: black;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 10px;
+}
+
+@media (max-width: 1000px) {
+    .charts {
+        flex: unset;
+        flex-direction: column; /* stack top to bottom */
+        align-items: center;    /* center charts when stacked */
+        gap: 1rem;
+    }
+
+    canvas {
+        width: 100% !important; /* full width of container */
+        height: auto !important;    /* keep responsive */
+        max-width: 450px;   
+        height: 420px !important;
+    }
+
+    .chart-info {
+    /* display: flex; */
+    /* justify-content: space-around; */
+    font-size: 8px;
+    font-weight: bold;
+    margin-top: 0.1rem;
+    }
+}
+
+.chart-info {
+    /* display: flex; */
+    /* justify-content: space-around; */
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 1rem;
 }
 
 #dash {
@@ -40,21 +85,22 @@ canvas {
     font-size: 2rem;
 }
 
-.sidebar {
+@media (min-width: 1000px) {
+  .sidebar {
     width: 20rem;
+  }
+}
+
+.sidebar {
+    /* width: 20rem; */
     background: linear-gradient(to right top, rgb(41, 134, 162), rgb(206, 13, 42));
     /* position: fixed; */
     min-height: 100vh;
-    /* color: white; */
-    /* padding: 2rem 1rem; */
-    /* top: 0; */
-    /* bottom: 0;  */
-    /* left: 0; */
 }
 
 .sidebar ul {
     list-style: none;
-    /* padding: 0; */
+    padding: 2px;
 }
 
 .sidebar li {
