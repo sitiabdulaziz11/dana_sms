@@ -33,11 +33,11 @@ class Payment(models.Model):
         ('monthly', 'Monthly'),
         ('after_class', 'After Class Reading'),
     ]
+    
+    # Relation with student model 
+    student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name='payments')
 
-    payer_name = models.CharField(max_length=120, null=True, blank=True)   #?
     amount = models.FloatField()
-    debited_date_time = models.DateTimeField(default=timezone.now)
-    # debited_date = models.DateField(auto_now_add=True)
     debited_month = models.CharField(max_length=120, choices=MONTH_CHOICES)
     payment_type = models.CharField(max_length=120, choices=PAYMENT_TYPE_CHOICES, null=True, blank=True)  # monthly or for after class redding
     payment_status = models.CharField(max_length=20,
@@ -45,11 +45,13 @@ class Payment(models.Model):
         default='pending',
         blank=True,
         null=True)  # payid or not payid
+    payer_name = models.CharField(max_length=120, null=True, blank=True)   #?
     payment_receipt_image = models.ImageField(upload_to="receipts/", null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
- 
-    # Relation with student model 
-    student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name='payments') #  payer name need or not student is enough or?
+    #  payer name need or not student is enough or?
+
+    debited_date_time = models.DateTimeField(default=timezone.now)
+    # debited_date = models.DateField(auto_now_add=True)
 
     class Meta:
         """To make sure the same student can't pay twice for the same month and type.
