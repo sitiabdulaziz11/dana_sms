@@ -6,7 +6,8 @@ from . import views
 
 urlpatterns = [
     path("payment/<int:student_id>/", views.make_payment, name="pay_with_id"),
-    path("payment/", views.make_payment, name="pay"),
+    path("payment/", views.make_payment, name="pay_nid"),
+    path("m-payment/", views.monthly_payment, name="pay"),
     path("edit_view/", views.review, name="edit"),
     # path("review/", views.review_all_enrollment, name="review"),
     # path("edit_view/<int:pk>", views.review, name="edit"),

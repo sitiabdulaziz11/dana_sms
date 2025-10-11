@@ -1,0 +1,89 @@
+{% load static %}
+
+{%block title %}
+   
+{% endblock title %}
+    
+{% block css_file %}
+    <link rel="stylesheet" href="{% static "payments/monthly_payment.css" %}" >
+    <link rel="stylesheet" href="{% static "parents/parent.css" %}" >
+    <link rel="stylesheet" href="{% static 'parents/common.css' %}">
+{% endblock %}
+
+
+{% block content %}
+{% include "includes/messages.html" %}
+
+<h2 id="hhh2pay"> Make Monthly Payment for:</h2>
+<form id="paymentForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <div class="form_control">
+        {{ form.as_p}}
+    </div>
+
+    <div class="form-actions">
+        <button type="submit">Save</button>
+        {% comment %} <a href="{% url 'edit' %}" class="review-btn">Review</a> {% endcomment %}
+    </div>
+</form>
+
+<footer>
+    <h2>Cleanliness is valuable!</h2>
+    <h2>ንፅህና ዋጋ አለው!</h2>
+    <h2>Safuun gatii qaba!</h2>
+</footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("paymentForm");
+
+        form.addEventListener("submit", function(event) {
+        // Prevent immediate submission
+        event.preventDefault();
+
+        // Get values from form fields
+        const studentSelect = document.querySelector("select[name='student']");
+        const monthSelect = document.querySelector("select[name='debited_month']");
+        const paymentType = document.querySelector("select[name='payment_type']");
+        const amount = document.querySelector("input[name='amount']");
+
+        // Get readable values
+        const studentName = studentSelect ? studentSelect.options[studentSelect.selectedIndex].text : "Unknown";
+        const month = monthSelect ? monthSelect.options[monthSelect.selectedIndex].text : "Unknown";
+        const type = paymentType ? paymentType.options[paymentType.selectedIndex].text : "Unknown";
+        const amt = amount ? amount.value : "0";
+
+        // Build confirmation message
+        const message = `⚠️ Are you sure you want to record this payment?\n\n` +
+                        ` Student: ${studentName}\n` +
+                        `💵 Amount: ${amt}\n` +
+                        `🗓️ Month: ${month}\n` +
+                        `📘 Type: ${type}`;
+
+        // Show confirmation popup
+        if (confirm(message)) {
+            // If user confirms, proceed to submit form
+            form.submit();
+        } else {
+            // Else, cancel
+            alert("Payment cancelled. Please review and try again.");
+        }
+    });
+    });
+
+    // Wait for DOM ready
+  document.addEventListener("DOMContentLoaded", function () {
+    const messages = document.getElementById("messages");
+    if (messages) {
+      setTimeout(() => {
+        messages.style.opacity = "0"; // fade out
+        setTimeout(() => {
+          messages.remove(); // remove from DOM completely
+        }, 1000); // after fade transition
+      }, 10000); // stay visible for x seconds
+    }
+  });
+
+  </script>
+  {% endblock %}

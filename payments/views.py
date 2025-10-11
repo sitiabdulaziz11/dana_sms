@@ -20,74 +20,112 @@ from parents.forms import ParentFormSet, PhoneFormSet, EmergencyContactForm, Eme
 def make_payment(request, student_id=None):
    """views to make student payment.
    """
-   student = None
-   
+   student_id = request.POST.get("student") or student_id
+
    if student_id:
       try:
          student = StudentRegistration.objects.get(id=student_id)
       except StudentRegistration.DoesNotExist:
          messages.error(request,"Sorry, no student exists")
          return redirect("register")
-   
+
    payment_form = PaymentForm(request.POST or None, request.FILES or None)
+   
+   if request.method == "POST" and student:
+      if payment_form.is_valid():
+         payment = payment_form.save(commit=False)
+         payment.student = student
 
-   if request.method == "POST":
-      # CASE 1, Student ID from URL
-      if student:
-         if payment_form.is_valid():
-            try:
-               payment = payment_form.save(commit=False)
-               payment.student = student
-               payment.save()
+         # 🔍 Check for duplicate
+         duplicate = Payment.objects.filter(
+            student=student,
+            debited_month=payment.debited_month,
+            payment_type=payment.payment_type,).exists()
+         
+         if duplicate:
+                messages.warning(
+                    request,
+                    f"⚠️ Duplicate payment: This student {student.first_name} {student.middle_name} already paid for {payment.debited_month} ({payment.payment_type})."
+                )
+                return redirect("pay_with_id", student_id=student.id)
 
-               request.session["payment_id"] = payment.id
-               messages.success(request, "Payment success")
-               # return redirect("review")          
-               
-               if "add_another" in request.POST:
-                  #  return redirect("pay", student_id=student_id)
-                  return redirect("pay_with_id", student_id=student.id)
-               
-               request.session.pop("current_step", None)
-               return redirect("edit")
-            
-            except ValidationError:
-               messages.error(request, f"⚠️ Duplicate payment: This student already paid for this {payment.debited_month} month and {payment.payment_type}.")
-               return redirect("pay_with_id", student_id=student_id)
-            
+         payment.save()
+         request.session["payment_id"] = payment.id
+         messages.success(request, f"Payment for {student.first_name} {student.middle_name} ({payment.debited_month}, {payment.payment_type}) recorded successfully!")
+         # return redirect("review")
+         # return redirect("edit", pk=student_id)
+
+         if "add_another" in request.POST:
+            #  return redirect("pay", student_id=student_id)
+               return redirect("pay_with_id", student_id=student.id)
+         
+         else:
+            return redirect("edit")
+         
+      else:
+            messages.error(request, "Please correct the errors below.")
    else:
       payment_form = PaymentForm()
+      student = None
+
       request.session["current_step"] = 5
       request.session.modified = False
-      
+
    return render(request, "payments/make_payment.html", {
       "form": payment_form,
       "student": student,
    })
 
-#CASE 2: for Monthly payment
-      # else:
-      #    if payment_form.is_valid():
-      #       student_id_g = request.POST.get("student")
-      #       print(student_id_g)   #debug
-            
-      #       if not student_id_g:
-      #               messages.error(request, "Please select a student.")
-      #               return redirect("pay")
-      #       try:
-      #          student = StudentRegistration.objects.get(id=student_id_g)
-      #          print(student)   #debug
+def monthly_payment(request):
+   """Views for monthly payment handling.
+   """
+   
+   if request.method == "POST":
+      payment_form = PaymentForm(request.POST, request.FILES)
+      
+      if payment_form.is_valid():
+         student_id_g = request.POST.get("student")
+         print(student_id_g)   #debug
+         
+         if not student_id_g:
+                  messages.error(request, "Please select a student.")
+                  return redirect("pay")
+         try:
+            student = StudentRegistration.objects.get(id=student_id_g)
+            print(student)   #debug
 
-      #          payment = payment_form.save(commit=False)
-      #          payment.student = student
-      #          payment.save()
-               
-      #          messages.success(request, f"Monthly payment for {student.first_name} {student.middle_name}: amount {payment.amount}: for month {payment.debited_month} recorded successfully!")
-      #          return redirect("success_page")
+            payment = payment_form.save(commit=False)
+            payment.student = student
+
+            # 🔍 Check for duplicate
+            duplicate = Payment.objects.filter(
+               student=student,
+               debited_month=payment.debited_month,
+               payment_type=payment.payment_type,).exists()
             
-      #       except StudentRegistration.DoesNotExist:
-      #          messages.error(request, "Selected student not found.")
-      #          return redirect("pay")
+            if duplicate:
+                  messages.warning(
+                     request,
+                     f"⚠️ Duplicate payment: The student {student.first_name} {student.middle_name}already paid for {payment.debited_month} ({payment.payment_type})."
+                  )
+                  return redirect("pay")
+
+            payment.save()
+            messages.success(request, f"Monthly payment for {student.first_name} {student.middle_name}:"
+            f"amount {payment.amount}: for  {payment.debited_month} month {payment.payment_type} recorded successfully!")
+            return redirect("pay")
+         
+         except StudentRegistration.DoesNotExist:
+            messages.error(request, "Selected student not found.")
+            return redirect("pay")
+   else:
+      payment_form = PaymentForm()
+      student = None
+   
+   return render(request, "payments/monthly_payment.html", {
+      "form": payment_form,
+      # "student": student,
+   })
 
 
 def review(request):
