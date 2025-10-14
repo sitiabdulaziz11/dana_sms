@@ -39,6 +39,9 @@
 {% endfor %}
   
   <h3>Emergency</h3>
+  <div class="form_control">
+   {{ existing_form.as_p }}
+  </div>
 {{ emergency_formset.management_form }}
 {% for form in emergency_formset %}
 <fieldset>

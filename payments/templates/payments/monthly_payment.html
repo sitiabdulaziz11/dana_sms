@@ -4,10 +4,11 @@
    
 {% endblock title %}
     
+
 {% block css_file %}
-    <link rel="stylesheet" href="{% static "payments/monthly_payment.css" %}" >
     <link rel="stylesheet" href="{% static "parents/parent.css" %}" >
     <link rel="stylesheet" href="{% static 'parents/common.css' %}">
+    <link rel="shortcut icon" href="{% static "images/dana_logo1.PNG"%}">
 {% endblock %}
 
 
@@ -23,8 +24,8 @@
     </div>
 
     <div class="form-actions">
+        <a href="{% url 'dashboard' %}" class="back-btn">Back</a>
         <button type="submit">Save</button>
-        {% comment %} <a href="{% url 'edit' %}" class="review-btn">Review</a> {% endcomment %}
     </div>
 </form>
 

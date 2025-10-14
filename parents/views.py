@@ -238,6 +238,7 @@ def phoneNum_info(request):
         "parent_c": parent_c
         })
 
+
 def emergency_info(request):
     """For emergency handiling.
     """
@@ -252,16 +253,20 @@ def emergency_info(request):
     # parent = get_object_or_404(Parent, id=parent_ids)
 
     student = get_object_or_404(StudentRegistration, id=student_id)
-    student_id_get = request.POST.get("student")
-    if student_id_get:
-        student_id_get = int(student_id_get)
+    
+    # student_id_get = request.POST.get("student")
+    # if student_id_get:
+    #     student_id_get = int(student_id_get)
 
-    print("_id", student_id_get)  #  debug
-    print(".id", student.id)  #  debug
+    # print("_id", student_id_get)  #  debug
+    # print(".id", student.id)      #  debug
 
     parents = student.parents.all()
     # phone = parent.phone_numbers.all() # works for one parent.
-    print("Parents queryset1:", list(parents))
+    print("Parents queryset1:", list(parents))  #  debug
+
+    # if request.POST.get("student") == student and request.POST.get("parent") in parents:
+    #     pass
 
     phone = PhoneNumber.objects.filter(parent__in=parents)  # to get many parents phone no at once.
 
@@ -271,7 +276,7 @@ def emergency_info(request):
 
         saved_ids = []  # Keep track of what was saved this round
 
-        if existing_form.is_valid():
+        if existing_form.is_valid() and not new_form.has_changed():
             parent = existing_form.cleaned_data.get("parent")
             print("Chosen parent:", parent)  #  debug
             print("Check:", parent in parents)  #  debug
@@ -284,9 +289,9 @@ def emergency_info(request):
                     messages.error(request, "The selected phone number does not belong to the chosen parent.")
                     return redirect("emrgncy_info")
 
-                elif student_id_get != student.id:
-                    messages.error(request, "Selected student does not match the current student on registration.")
-                    return redirect("emrgncy_info")
+                # elif student_id_get != student.id:
+                #     messages.error(request, "Selected student does not match the current student on registration.")
+                #     return redirect("emrgncy_info")
                 else:
                     all_exists = EmergencyContact.objects.filter(
                         student=student,
@@ -295,7 +300,7 @@ def emergency_info(request):
                     ).exists()
                     if all_exists:
                         messages.warning(request, "This emergency contact is already registered for this student.")
-                        return redirect("emrgncy_info")
+                        return redirect("pay_with_id", student_id=student.id)
                     else:
                         emergency = EmergencyContact.objects.create(
                             student=student,
@@ -304,7 +309,7 @@ def emergency_info(request):
                             )
                         saved_ids.append(emergency.id)
 
-        if new_form.is_valid():
+        elif new_form.is_valid():
             emergency = new_form.save(commit=False)
             emergency.student = student
 

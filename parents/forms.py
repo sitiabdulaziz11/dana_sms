@@ -67,6 +67,12 @@ class ExistingEmergencyContactForm(forms.ModelForm):
         model = EmergencyContact
         fields = ("student", "parent", "phone_num",)
 
+ExistingEmergencyContactFormSet = modelformset_factory(
+    EmergencyContact,
+    form=ExistingEmergencyContactForm,
+    extra=0,
+    can_delete=True
+)
 
 
 class PhoneNumberForm(forms.ModelForm):

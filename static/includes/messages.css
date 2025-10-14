@@ -16,7 +16,7 @@
     background-color: #f8d7da;
     color: #f3192f;
     border: 2px solid #f44336;
-    width: 50%;
+    width: 70%;
     font-weight: bold;
     font-size: 1.2rem;
     padding: 1rem 1.5rem;
@@ -27,7 +27,7 @@
 .message.success {
     background-color: #d4edda;
     color: #27b748;
-    width: 50%;
+    width: 60%;
     border: 2px solid #4CAF50;     /* green border */
     font-weight: bold;             /* make text bold */
     font-size: 1.2rem;             /* increase size */

@@ -12,69 +12,11 @@ from students.models import StudentRegistration
 from parents.models import Parent, PhoneNumber, EmergencyContact
 from .forms import PaymentForm, PaymentFormSet
 from students.forms import StudentRegistrationForm
-from parents.forms import ParentFormSet, PhoneFormSet, EmergencyContactForm, EmergencyContactFormSet
+from parents.forms import ParentFormSet, PhoneFormSet, EmergencyContactForm, EmergencyContactFormSet, ExistingEmergencyContactFormSet
 
 # Create your views here.
 
 
-def make_payment(request, student_id=None):
-   """views to make student payment.
-   """
-   student_id = request.POST.get("student") or student_id
-
-   if student_id:
-      try:
-         student = StudentRegistration.objects.get(id=student_id)
-      except StudentRegistration.DoesNotExist:
-         messages.error(request,"Sorry, no student exists")
-         return redirect("register")
-
-   payment_form = PaymentForm(request.POST or None, request.FILES or None)
-   
-   if request.method == "POST" and student:
-      if payment_form.is_valid():
-         payment = payment_form.save(commit=False)
-         payment.student = student
-
-         # 🔍 Check for duplicate
-         duplicate = Payment.objects.filter(
-            student=student,
-            debited_month=payment.debited_month,
-            payment_type=payment.payment_type,).exists()
-         
-         if duplicate:
-                messages.warning(
-                    request,
-                    f"⚠️ Duplicate payment: This student {student.first_name} {student.middle_name} already paid for {payment.debited_month} ({payment.payment_type})."
-                )
-                return redirect("pay_with_id", student_id=student.id)
-
-         payment.save()
-         request.session["payment_id"] = payment.id
-         messages.success(request, f"Payment for {student.first_name} {student.middle_name} ({payment.debited_month}, {payment.payment_type}) recorded successfully!")
-         # return redirect("review")
-         # return redirect("edit", pk=student_id)
-
-         if "add_another" in request.POST:
-            #  return redirect("pay", student_id=student_id)
-               return redirect("pay_with_id", student_id=student.id)
-         
-         else:
-            return redirect("edit")
-         
-      else:
-            messages.error(request, "Please correct the errors below.")
-   else:
-      payment_form = PaymentForm()
-      student = None
-
-      request.session["current_step"] = 5
-      request.session.modified = False
-
-   return render(request, "payments/make_payment.html", {
-      "form": payment_form,
-      "student": student,
-   })
 
 def monthly_payment(request):
    """Views for monthly payment handling.
@@ -128,6 +70,76 @@ def monthly_payment(request):
    })
 
 
+def make_payment(request, student_id=None):
+   """views to make student payment.
+   """
+   student = None
+   # student_id = request.POST.get("student") or student_id
+
+   if student_id:
+      try:
+         student = StudentRegistration.objects.get(id=student_id)
+      except StudentRegistration.DoesNotExist:
+         messages.error(request,"Sorry, no student exists")
+         return redirect("register")
+      
+   if request.method == "POST":
+      student_id_g = request.POST.get("student")
+      print(student_id_g)
+      
+      student = StudentRegistration.objects.get(pk=student_id_g)
+      
+      if  str(student_id) != str(student_id_g):
+         messages.error(request, f"The selected student ({student.first_name} {student.middle_name}) is not part of the current registration process.")
+         return redirect("pay_with_id", student_id=student_id)
+
+   payment_form = PaymentForm(request.POST or None, request.FILES or None)
+   
+   if request.method == "POST" and student:
+      if payment_form.is_valid():
+         payment = payment_form.save(commit=False)
+         payment.student = student
+
+         # 🔍 Check for duplicate
+         duplicate = Payment.objects.filter(
+            student=student,
+            debited_month=payment.debited_month,
+            payment_type=payment.payment_type,).exists()
+         
+         if duplicate:
+                messages.warning(
+                    request,
+                    f"⚠️ Duplicate payment: This student {student.first_name} {student.middle_name} already paid for {payment.debited_month} ({payment.payment_type})."
+                )
+                return redirect("pay_with_id", student_id=student.id)
+
+         payment.save()
+         request.session["payment_id"] = payment.id
+         messages.success(request, f"Payment for {student.first_name} {student.middle_name} ({payment.debited_month}, {payment.payment_type}) recorded successfully!")
+         # return redirect("review")
+         # return redirect("edit", pk=student_id)
+
+         if "add_another" in request.POST:
+            #  return redirect("pay", student_id=student_id)
+               return redirect("pay_with_id", student_id=student.id)
+         
+         else:
+            return redirect("edit")
+         
+      else:
+            messages.error(request, "Please correct the errors below.")
+   else:
+      payment_form = PaymentForm()
+
+      request.session["current_step"] = 5
+      request.session.modified = False
+
+   return render(request, "payments/make_payment.html", {
+      "form": payment_form,
+      "student": student,
+   })
+
+
 def review(request):
     """
     Review and edit all data for a student (student, parents, phones, emergency, payment).
@@ -135,25 +147,33 @@ def review(request):
     student_id = request.session.get("student_id")
     
     if not student_id:
-        messages.error(request, "Session expired or student not found. Please select from the list oor restart the registration.") # how to make to select?
+        messages.error(request, "Session expired or student not found. Please select from the list or restart the registration.") # how to make to select?
         return redirect("register")
     
+   #  student = get_object_or_404(StudentRegistration, pk=student_id_g)
+    
     student = get_object_or_404(StudentRegistration, pk=student_id)
+
     parents = student.parents.all()
     print(parents)  # debug
     
-    emergency = EmergencyContact.objects.filter(student=student)
+    emergency = EmergencyContact.objects.filter(student=student).distinct()
+   #  emergenc = EmergencyContact.objects.get(student=student.id)
+    print("emer", emergency)
 
-   
       #   payment = Payment.objects.get(student=student
     payments = Payment.objects.filter(student=student)
+    print(payments)
+   
     if not payments.exists():
-      return HttpResponse("No payment record found for this student.")
-    
+      return HttpResponse(f"No payment record found for the student {student.first_name} {student.middle_name}.")
+      
     if request.method == "POST":
         student_form = StudentRegistrationForm(request.POST, request.FILES, instance=student)
         parent_formset = ParentFormSet(request.POST, request.FILES, queryset=parents, prefix="parents")
         emergency_formset = EmergencyContactFormSet(request.POST, request.FILES, queryset=emergency, prefix="Emergency")
+        existing_form = ExistingEmergencyContactFormSet(request.POST, queryset=emergency, prefix="existing")
+
       #   payment_form = PaymentForm(request.POST, request.FILES, instance=payment)
         payment_formset = PaymentFormSet(request.POST, request.FILES, queryset=payments, prefix="Payments")
 
@@ -165,6 +185,7 @@ def review(request):
         print("Student form errors:", student_form.errors)
         print("Emergency form errors:", emergency_formset.errors)
         print("Parent formset errors:", parent_formset.errors)
+
         for i, pf in enumerate(phone_formsets):
             print(f"Phone formset {i} errors:", pf.errors)
         print("Payment form errors:", payment_formset.errors)
@@ -172,14 +193,15 @@ def review(request):
         if (
             student_form.is_valid()
             and emergency_formset.is_valid()
+            and existing_form.is_valid()
             and parent_formset.is_valid()
             and payment_formset.is_valid()
             and all(pf.is_valid() for pf in phone_formsets)
         ):
            student_form.save()
            parent_formset.save()
-           
            emergency_formset.save()
+           existing_form.save()
            payment_formset.save()
            for pf in phone_formsets:
                pf.save()
@@ -202,6 +224,8 @@ def review(request):
 
         parent_phone_pairs = zip(parent_formset.forms, phone_formsets)
         emergency_formset = EmergencyContactFormSet(queryset=emergency, prefix="Emergency")
+        existing_form = ExistingEmergencyContactFormSet(queryset=emergency, prefix="existing")
+
         payment_formset = PaymentFormSet(queryset=payments, prefix="Payments")
 
     return render(
@@ -213,8 +237,10 @@ def review(request):
             "parent_phone_pairs": parent_phone_pairs,
             "emergency_formset": emergency_formset,
             "payment_formset": payment_formset,
+            "existing_form": existing_form
         },
     )
+
 
 
 def payment_success(request):

@@ -104,7 +104,7 @@ class EmergencyContact(models.Model):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     relationship = models.CharField(max_length=100, choices=RELATION_CHOICES, null=True, blank=True)
     phone_number = models.CharField(max_length=100, null=True, blank=True)
-    registration_date = models.DateField(auto_now_add=True)
+    registration_date = models.DateTimeField(default=timezone.now)
     image_file = models.ImageField(null=True, blank=True, upload_to="images/", default="jp.png")
     city = models.CharField(max_length=50, default="Sheger")
     kfle_ketema = models.CharField(max_length=50, default="Gelanguda")

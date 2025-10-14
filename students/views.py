@@ -56,10 +56,12 @@ def register_student(request):
                 student.parents.set(parents)  # or with POST like phone
             else:
                 messages.error(request, "No parent id to link with the student.")
+                return redirect("prnt_info")
       
-            messages.success(request, "student registerd successfully!")
+            messages.success(request, "Student registerd successfully!")
             request.session.pop("parent_ids", None)  # To clear previous parent for new student registration.
             request.session.pop("phone_ids", None)   # check  ?
+            print(student)
             return redirect("emrgncy_info")
         else:
             messages.error(request, "Please correct the errors below.")

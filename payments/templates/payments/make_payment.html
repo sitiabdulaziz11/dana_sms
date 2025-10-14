@@ -9,6 +9,7 @@
 {% block css_file %}
     <link rel="stylesheet" href="{% static "parents/parent.css" %}" >
     <link rel="stylesheet" href="{% static 'parents/common.css' %}">
+    <link rel="shortcut icon" href="{% static "images/dana_logo1.PNG"%}">
 {% endblock %}
 
 
@@ -27,7 +28,7 @@
 </div>
 <h3 id="hh2">Step {{ current_step }} of {{ total_steps }}</h3>
 
-    <h2 id="hhh2pay">Make Payment for {{ student.first_name}} {{ student.middle_name}}</h2>
+    <h2 id="hhh2pay">Make Payment for: {{ student.first_name}} {{ student.middle_name}}</h2>
     <form id="paymentForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         
@@ -35,10 +36,8 @@
             {{ form.as_p}}
         </div>
 
-        <button type="submit">Make Monthly Payment</button>
-
         <div class="form-actions">
-            <a href="{% url 'dashboard' %}" class="back-btn">Back</a>
+            <a href="{% url 'emrgncy_info' %}" class="back-btn">Back</a>
             <button type="submit" name="add_another">Save & Add Another</button>
             <button type="submit">Review</button>
             {% comment %} <a href="{% url 'edit' %}" class="review-btn">Review</a> {% endcomment %}
