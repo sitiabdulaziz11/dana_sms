@@ -54,7 +54,7 @@ def monthly_payment(request):
 
             payment.save()
             messages.success(request, f"Monthly payment for {student.first_name} {student.middle_name}:"
-            f"amount {payment.amount}: for  {payment.debited_month} month {payment.payment_type} recorded successfully!")
+            f"amount {payment.amount}: for  {payment.debited_month} month {payment.payment_type} in pending status.")
             return redirect("pay")
          
          except StudentRegistration.DoesNotExist:
@@ -115,7 +115,7 @@ def make_payment(request, student_id=None):
 
          payment.save()
          request.session["payment_id"] = payment.id
-         messages.success(request, f"Payment for {student.first_name} {student.middle_name} ({payment.debited_month}, {payment.payment_type}) recorded successfully!")
+         messages.success(request, f"Payment for {student.first_name} {student.middle_name} ({payment.debited_month}, {payment.payment_type}) in pending status.")
          # return redirect("review")
          # return redirect("edit", pk=student_id)
 
@@ -206,7 +206,7 @@ def review(request):
            for pf in phone_formsets:
                pf.save()
 
-           messages.success(request, "All Data Saved successfully!")
+           messages.success(request, "All Data Saved successfully except payment status, it is in pending status, we will announcy you soon")
            request.session.pop("student_id", None)
            request.session.pop("parent_ids", None)
            request.session.pop("phone_ids", None)

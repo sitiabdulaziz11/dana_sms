@@ -72,9 +72,9 @@ class Payment(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()  # Calls the clean() method before saving
         
-        if not self.debited_date_time:
-            self.payment_status = 'pending'
-        self.payment_status = 'paid'
+        # if not self.debited_date_time:
+        #     self.payment_status = 'pending'
+        # self.payment_status = 'paid'
 
         super().save(*args, **kwargs)
 

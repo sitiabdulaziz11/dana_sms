@@ -19,6 +19,7 @@ class PaymentMonthFilter(admin.SimpleListFilter):
         raw_months = Payment.objects.values_list('debited_month', flat=True)  #.distinct()  # To get distinct months from Payment model.
         cleaned_months = set(month.strip().capitalize() for month in raw_months if month)
         return [(month, month) for month in cleaned_months if month]
+    
         # return [(month, month) for month in sorted(cleaned_months) if month] # sorted used to ordedr alphabeticaly
         # return Payment.MONTH_CHOICES
     
@@ -27,6 +28,7 @@ class PaymentMonthFilter(admin.SimpleListFilter):
         """
         if self.value():
             paid_students_ids = Payment.objects.filter(debited_month=self.value(), payment_status='').values_list('student_id', flat=True)
+            
             if self.value() == 'paid':
                 return queryset.filter(id__in=paid_students_ids)
             return queryset.exclude(id__in=paid_students_ids)
@@ -51,6 +53,7 @@ class PaymentStatusFilter(admin.SimpleListFilter):
         payment_type = request.GET.get('payment_type')
 
         filter_kwargs = {}
+
         if month:
             filter_kwargs['debited_month'] = month
         if payment_type:

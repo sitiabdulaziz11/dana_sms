@@ -1,0 +1,27 @@
+
+{% load static %}
+
+<title>{%block title %}
+        Admin Dashboard
+{% endblock title %}</title>
+
+{% block css_file %}
+    <link rel="stylesheet" href="{% static "" %}">
+    <link rel="shortcut icon" href="{% static "images/dana_logo1.PNG"%}">
+{% endblock %}
+
+
+{% block content%}
+<ul>
+    <li><a href="{% url 'grade_reg' %}">Grade and Section Registration</a></li>
+    <li><a href=""> Payments </a></li> 
+    <li><a href=""> Parents </a></li> 
+    <li><a href=""> Payments </a></li> 
+    <li><a href=""> Payments </a></li> 
+    <li><a href="/admin/students/studentregistration/">Students</a></li>
+
+    {% comment %} <li><a href="">📅Attendance</a></li> {% endcomment %}
+    
+</ul>
+
+{% endblock content %}

@@ -25,7 +25,7 @@
             <li><a href="{% url "pay" %}">💳 Payments</a></li> {% comment %}  <i class="fa-solid fa-credit-card"></i> {% endcomment %}
             <li><a href="">📅Attendance</a></li>
             <li><a href="">📊Student result</a></li>
-            <li><a href="">🔒 Admin</a></li>
+            <li><a href="{% url "stff" %}">🔒 Admin</a></li>
         </ul>
     </aside>
 
@@ -61,7 +61,7 @@
             labels: ['Male', 'Female'],
             datasets: [{
                // label: 'Student by Gender',
-                data: [{{ male_students|default:0 }}, {{ female_students|default:0 }}],
+                data: [{{ male_students|default:"0" }}, {{ female_students|default:"0" }}],
                 backgroundColor: ['#36A2EB', '#FF6384'],
             }]
         },
@@ -139,4 +139,4 @@
 
 </script>
 
-{% endblock content%}
+{% endblock content %}

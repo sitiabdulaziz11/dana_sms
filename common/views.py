@@ -22,6 +22,14 @@ def gradeSection_register(request):
         "s_form": section_form,
         })
 
+
+def admins_page (request):
+    """Admin dashboard page.
+    """
+    
+    return render(request, "common/admins_page.html")
+
+
 # def section_register(request):
 #     """Register section.
 #     """
