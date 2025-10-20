@@ -8,7 +8,13 @@
     display: flex;
     /* min-height: 100vh; */
     color: black;
+}
 
+.sidebar {
+    width: 22%;
+    background: linear-gradient(to right top, rgb(41, 134, 162), rgb(206, 13, 42));
+    /* position: flex; */
+    /* min-height: 100vh; */
 }
 
 .title {
@@ -21,18 +27,19 @@
 }
 
 .charts {
-   flex: 1;   /*take remaining space next to sidebar */
-    padding: 20px;
+   /*flex: 0 1 auto;   take remaining space next to sidebar */
+   padding: 20px;
     /* display: grid;  to put contents top to bottom */
     display: flex; /*to put contents left to right*/
-    gap: 6rem;
-    margin-left: 8rem;
+    gap: 2.5rem;
+    margin-left: 6rem;
+    width: 75%;
 }
 
 canvas {
     width: 100%;
-    max-width: 350px;   
-    height: 320px !important;
+    max-width: 290px;   
+    height: 300px !important;
     color: black;
     background: #fff;
     border-radius: 12px;
@@ -40,36 +47,14 @@ canvas {
     padding: 10px;
 }
 
-@media (max-width: 1000px) {
-    .charts {
-        flex: unset;
-        flex-direction: column; /* stack top to bottom */
-        align-items: center;    /* center charts when stacked */
-        gap: 1rem;
-    }
-
-    canvas {
-        width: 100% !important; /* full width of container */
-        height: auto !important;    /* keep responsive */
-        max-width: 450px;   
-        height: 420px !important;
-    }
-
-    .chart-info {
-    /* display: flex; */
-    /* justify-content: space-around; */
-    font-size: 8px;
-    font-weight: bold;
-    margin-top: 0.1rem;
-    }
-}
-
 .chart-info {
     /* display: flex; */
     /* justify-content: space-around; */
-    font-size: 18px;
+    /* width: 100%; */
+    font-size: 15px;
     font-weight: bold;
     margin-top: 1rem;
+    white-space: nowrap;  /* prevent text wrapping/ go next line */
 }
 
 #dash {
@@ -85,22 +70,11 @@ canvas {
     font-size: 2rem;
 }
 
-@media (min-width: 1000px) {
-  .sidebar {
-    width: 20rem;
-  }
-}
 
-.sidebar {
-    /* width: 20rem; */
-    background: linear-gradient(to right top, rgb(41, 134, 162), rgb(206, 13, 42));
-    /* position: fixed; */
-    min-height: 100vh;
-}
 
 .sidebar ul {
     list-style: none;
-    padding: 2px;
+    padding: 1px;
 }
 
 .sidebar li {
@@ -110,7 +84,7 @@ canvas {
 .sidebar a {
     text-decoration: none;
     color: rgb(237, 225, 98);
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     padding: 0.7rem;
 }
 .sidebar:hover li,
@@ -127,8 +101,33 @@ canvas {
     border-radius: 1.7rem;
 }
 
-/* @media (max-width: 768px) {
+
+@media (max-width: 1000px) {
+    
     .sidebar {
-        position: relative;
+        width: 35%;
     }
-} */
+
+    .charts {
+        /* flex: unset; */
+        flex-direction: column; /* stack top to bottom */
+        align-items: center;    /* center charts when stacked */
+        gap: 1rem;
+        margin-left: 2rem;
+    }
+
+    canvas {
+         width: 100% !important; /*full width of container */
+        height: auto !important;    /* keep responsive */
+        max-width: 300px;   
+        height: 290px !important;
+    }
+
+    .chart-info {
+    /* display: flex; */
+    /* justify-content: space-around; */
+    font-size: 10px;
+    font-weight: bold;
+    margin-top: 0.1rem;
+    }
+}

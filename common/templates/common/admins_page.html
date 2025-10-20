@@ -6,22 +6,31 @@
 {% endblock title %}</title>
 
 {% block css_file %}
-    <link rel="stylesheet" href="{% static "" %}">
+    <link rel="stylesheet" href="{% static "common/admins_page.css" %}">
     <link rel="shortcut icon" href="{% static "images/dana_logo1.PNG"%}">
 {% endblock %}
 
 
 {% block content%}
+<h2> Welcome, Dear Admin! 👋</h2>
+<p>Manage your school system efficiently and with ease.</p>
+<h4>Where would you like to go?</h4>
+
 <ul>
     <li><a href="{% url 'grade_reg' %}">Grade and Section Registration</a></li>
-    <li><a href=""> Payments </a></li> 
-    <li><a href=""> Parents </a></li> 
-    <li><a href=""> Payments </a></li> 
-    <li><a href=""> Payments </a></li> 
-    <li><a href="/admin/students/studentregistration/">Students</a></li>
+    <li><a href="/admin/students/studentregistration/">Students page</a></li>
+    <li><a href="/admin/parents/parent/"> Parents page</a></li> 
+    <li><a href="/admin/parents/emergencycontact/"> Emergency Contact page </a></li> 
+    <li><a href="/admin/parents/phonenumber/"> Phone page </a></li> 
+    <li><a href="/admin/payments/payment/"> Payment page </a></li> 
+    <li><a href="{% url 'A_year' %}"> Academic Year registration page </a></li> 
 
     {% comment %} <li><a href="">📅Attendance</a></li> {% endcomment %}
-    
 </ul>
 
 {% endblock content %}
+
+<footer>
+    &copy; {{ now|date:"Y" }} LearningBridge — All Rights Reserved.
+</footer>
+

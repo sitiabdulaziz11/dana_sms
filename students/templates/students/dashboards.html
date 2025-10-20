@@ -38,7 +38,8 @@
                 <p>Female: {{ female_students|default:0 }}</p>
             </div>
                 <canvas id="studentCountChart"></canvas>
-                <p class="chart-info">Total: {{ total_students|default:0 }}</p>
+                <div class="chart-info">
+                    <p>Total: {{ total_students|default:0 }}</p>
             </div>
         </div>
     </div>
@@ -70,14 +71,14 @@
             legend: {
                 labels: {
                     font: {
-                        size: 38   // legend text size
+                        size: 15   // legend text size
                     }
                 }
             },
             title: {
                 display: true,
                 text: 'Students by Gender',
-                font: { size: 34, weight: 'bold' } // title font size
+                font: { size: 18, weight: 'bold' } // title font size
             }
         }
     }
@@ -96,18 +97,21 @@
             }]
         },
         options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 1.5,
         plugins: {
             legend: {
                 labels: {
                     font: {
-                        size: 26   // legend text size
+                        size: 15  // legend text size
                     }
                 }
             },
             title: {
                 display: true,
                 text: 'Total Students',
-                font: { size: 25, weight: 'bold' } // title font size
+                font: { size: 20, weight: 'bold' } // title font size
             }
         },
         scales: {

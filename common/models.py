@@ -9,7 +9,10 @@ from students.models import StudentRegistration
 class Grade(models.Model):
     """Grade model that specify students grade level.
     """
-    grade_name = models.CharField(max_length=30)
+    grade_name = models.IntegerField()
+
+    class Meta:
+        ordering = ["grade_name"]
 
     def __str__(self):
         return f" Grade {self.grade_name}"
@@ -17,7 +20,10 @@ class Grade(models.Model):
 class Section(models.Model):
     """Models which define students section.
     """
-    section_name = models.CharField(max_length=30)
+    section_name = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ["section_name"]
 
     def __str__(self):
         return f"Section {self.section_name}"

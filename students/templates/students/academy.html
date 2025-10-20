@@ -1,6 +1,16 @@
 
 {% load static %}
 
+{% block css_file %}
+    <link rel="stylesheet" href="{% static "common/admins_page.css" %}">
+    <link rel="shortcut icon" href="{% static "images/dana_logo1.PNG"%}">
+{% endblock %}
+
+<section>
+    <h1>Welcome Dear Admin!</h1>
+    <h3>Register Academic Year Here.</h3>
+</section>
+
 <section>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
