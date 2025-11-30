@@ -1,0 +1,3 @@
+CREATE USER 'dana'@'localhost' IDENTIFIED BY '9191Dana*';
+GRANT ALL PRIVILEGES ON dana_db.* TO 'dana'@'localhost';
+FLUSH PRIVILEGES;

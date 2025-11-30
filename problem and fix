@@ -1,0 +1,43 @@
+ 
+ 1  File "/home/alhemdulillah/projects/dana_sms/parents/urlsp.py", line 2, in <module>
+    from . import views
+  File "/home/alhemdulillah/projects/dana_sms/parents/views.py", line 2, in <module>
+    from formtools.wizard.views import SessionWizardView
+ModuleNotFoundError: No module named 'formtools'
+(venv) alhemdulillah@DESKTOP-DUCMFP2:~/projects/dana_sms$ pip install formtools
+ERROR: Could not find a version that satisfies the requirement formtools (from versions: none)
+ERROR: No matching distribution found for formtools
+
+sol/n
+(venv) alhemdulillah@DESKTOP-DUCMFP2:~/projects/dana_sms$ pip install django-formtools
+
+2   GET / HTTP/1.1" 200 6186
+[30/Nov/2025 15:32:49] "GET /static/students/index.css HTTP/1.1" 404 179
+[30/Nov/2025 15:32:49] "GET /static/app.css HTTP/1.1" 404 179
+[30/Nov/2025 15:32:49] "GET /static/students/images/dana_logo1.PNG HTTP/1.1" 404 179
+[30/Nov/2025 15:32:49] "GET /static/students/images/better.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:50] "GET /static/students/images/encourage.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:50] "GET /static/students/images/learn.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:50] "GET /static/students/images/team.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:50] "GET /static/students/images/respect.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:50] "GET /static/students/images/support.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:50] "GET /static/students/images/celebrate.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:50] "GET /static/students/images/challenge.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:50] "GET /static/students/images/forgive.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET / HTTP/1.1" 200 6186
+[30/Nov/2025 15:32:51] "GET /static/app.css HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/better.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/index.css HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/dana_logo1.PNG HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/learn.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/team.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/respect.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/encourage.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/celebrate.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/support.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/challenge.png HTTP/1.1" 404 179
+[30/Nov/2025 15:32:51] "GET /static/students/images/forgive.png HTTP/1.1" 404 179
+^C(venv) alhemdulillah@DESKTOP-DUCMFP2:~/projects/dana_s
+
+fixed by after many soltion by adding DEBUG=True on .env file
+ 
