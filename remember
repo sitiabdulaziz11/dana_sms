@@ -1,4 +1,15 @@
 
+remember to start on:
+ change color of oromo text
+ remove background of enkuan
+
+source /home/alhemdulillah/projects/HerTradeBridge/venv/bin/activate
+
+
+Django REST Framework (DRF)
+JWT (JSON Web Token) Authentication
+
+
 backports.zoneinfo>=0.2.4
 after this 5 step
 1 login and out with first-name/user_name and code

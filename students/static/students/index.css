@@ -76,7 +76,7 @@
 }
 
 h3 {
-    background-color: rgb(28, 6, 6);
+    /* background-color: rgb(28, 6, 6); */
     font-size: 4.1rem;
     /* height: 10rem; */
     /* margin: 2rem; */
@@ -88,8 +88,8 @@ h3 {
     /* max-width: 30rem; */
     /* display: flex; */
     /* justify-items: center; */
-    /* color: rgb(229, 71, 31); */
-    /* color: gold */
+    color: rgb(229, 71, 31);
+    color: gold
 }
 /* h3 {
     background-color: rgb(28, 6, 6);
