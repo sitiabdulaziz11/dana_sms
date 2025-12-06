@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import StudentRegistration, Enrollment
+from .models import StudentRegistration, Enrollment, AcademicYear
 from payments.models import Payment
 from parents.admin import ParentInline
 
@@ -123,3 +123,4 @@ class EnrollmentAdmin(admin.ModelAdmin):
 
 admin.site.register(StudentRegistration, StudentRegistrationAdmin)
 admin.site.register(Enrollment, EnrollmentAdmin)
+admin.site.register(AcademicYear)

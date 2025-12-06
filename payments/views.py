@@ -112,6 +112,14 @@ def make_payment(request, student_id=None):
                     f"⚠️ Duplicate payment: This student {student.first_name} {student.middle_name} already paid for {payment.debited_month} ({payment.payment_type})."
                 )
                 return redirect("pay_with_id", student_id=student.id)
+          
+             
+         if Payment.payment_type == 'registration':
+            Payment.debited_month = None
+         if Payment.payment_type != 'registration' and Payment.payment_type == None:
+            messages.error(request, "debited_month is required.")
+            return redirect("pay_with_id", student_id=student.id)
+
 
          payment.save()
          request.session["payment_id"] = payment.id

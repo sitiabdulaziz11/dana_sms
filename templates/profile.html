@@ -1,0 +1,39 @@
+
+
+<div class="container mx-auto p-6 bg-white rounded shadow">
+  <div class="flex">
+    <!-- Photo -->
+    <div class="w-1/4">
+      <img src="{{ student.image_file.url }}" alt="Student Photo" class="rounded-full w-full">
+    </div>
+    
+    <!-- Personal & Academic Info -->
+    <div class="w-3/4 pl-6">
+      <h2 class="text-2xl font-bold mb-2">{{ student.first_name }} {{ student.middle_name }} {{ student.last_name }}</h2>
+      <p><strong>Gender:</strong> {{ student.gender }}</p>
+      <p><strong>Birth Date:</strong> {{ student.birth_date }}</p>
+      <p><strong>Age:</strong> {{ student.age }}</p>
+      <p><strong>City:</strong> {{ student.city }}</p>
+      <p><strong>Kfle Ketema:</strong> {{ student.kfle_ketema }}</p>
+      <p><strong>Wereda:</strong> {{ student.wereda }}</p>
+      <p><strong>House Number:</strong> {{ student.hous_number }}</p>
+      <p><strong>Nationality:</strong> {{ student.nationality }}</p>
+      <p><strong>Email:</strong> {{ student.email }}</p>
+
+      <hr class="my-4">
+      <h3 class="text-xl font-semibold">Academic Info</h3>
+      <p><strong>Grade:</strong> {{ student.grade.name }}</p>
+      <p><strong>Section:</strong> {{ student.section.name }}</p>
+      <p><strong>Registration Date:</strong> {{ student.registration_date }}</p>
+      <p><strong>Join Year:</strong> {{ student.join_year }}</p>
+
+      <hr class="my-4">
+      <h3 class="text-xl font-semibold">Parents</h3>
+      {% for parent in student.parents.all %}
+        <p>{{ parent.first_name }} {{ parent.last_name }} - {{ parent.phone }}</p>
+      {% empty %}
+        <p>No parents linked</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>

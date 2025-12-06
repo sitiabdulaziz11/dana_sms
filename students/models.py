@@ -19,7 +19,7 @@ COUNTRY_CHOICES = sorted([(country.name, country.name) for country in pycountry.
 class StudentRegistration(models.Model):
     """Studentes information.
     """
-    # user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, db_index=True, null=True, blank=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)

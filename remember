@@ -1,7 +1,13 @@
 
+
+if hasattr(request.user, "student"):
+        student = request.user.student not work
+        
 remember to start on:
  change color of oromo text
- remove background of enkuan
+
+
+remove background of enkuan ✔
 
 source /home/alhemdulillah/projects/HerTradeBridge/venv/bin/activate
 

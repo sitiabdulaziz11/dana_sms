@@ -1,9 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth.models import User
 
 from .forms import StudentRegistrationForm, EnrollmentFormSet, AcademicYearForm
+from django.contrib.auth.decorators import login_required
 from .models import StudentRegistration, AcademicYear, Enrollment
 from django.contrib import messages
 from parents.models import Parent
+import random
 
 # Create your views here.
 
@@ -14,6 +17,28 @@ def main_page(request):
     """
     return render(request, "students/index.html")
 
+def login_page(request):
+    """ login page
+    """
+    print("Logged in user:", request.user)
+    print("Has student?", hasattr(request.user, "student"))
+    return render(request, "registration/login.html")
+
+@login_required
+def profile_page(request):
+    """ To handle user profile
+    """
+    # request.user gives logged-in user
+    # student = StudentRegistration.objects.get()
+    # student = request.user.student
+    if hasattr(request.user, "student"):
+        student = request.user.student
+    else:
+        return HttpResponse("This user is not a student.")
+    return render(request, "profile.html", {"student": student})
+
+
+@login_required
 def dashboards(request):
     """To display different dashboards.
     """
@@ -44,7 +69,9 @@ def register_student(request):
 
         # if current_step == 1 and student_form.is_valid():
         if student_form.is_valid() and enrollment_formset.is_valid():
-            student = student_form.save()
+            student = student_form.save(commit=False)
+            student.save()
+            
             request.session["student_id"] = student.id  # store for next steps
             
             enrollment_formset.instance = student
@@ -57,6 +84,20 @@ def register_student(request):
             else:
                 messages.error(request, "No parent id to link with the student.")
                 return redirect("prnt_info")
+            
+            # CREATE USER ACCOUNT AUTOMATICALLY FOR STUDENT
+            username = student.first_name
+            password = str(random.randint(10000, 99999))
+            
+            user = User.objects.create_user(
+                username=username,
+                password=password
+            )
+            # Save reference (optional, but recommended)
+            student.user = user
+            student.save()
+            messages.success(request, f"Student registered! Password: {password}")
+            print(password)
       
             messages.success(request, "Student registerd successfully!")
             request.session.pop("parent_ids", None)  # To clear previous parent for new student registration.

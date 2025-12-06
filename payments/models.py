@@ -29,7 +29,7 @@ class Payment(models.Model):
 ]
     
     PAYMENT_TYPE_CHOICES = [
-        ('Registration', 'Registration'),
+        ('registration', 'Registration'),
         ('monthly', 'Monthly'),
         ('after_class', 'After Class Reading'),
     ]
@@ -38,7 +38,7 @@ class Payment(models.Model):
     student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name='payments')
 
     amount = models.FloatField()
-    debited_month = models.CharField(max_length=120, choices=MONTH_CHOICES)
+    debited_month = models.CharField(max_length=120, choices=MONTH_CHOICES, blank=True, null=True)
     payment_type = models.CharField(max_length=120, choices=PAYMENT_TYPE_CHOICES, null=True, blank=True)  # monthly or for after class redding
     payment_status = models.CharField(max_length=20,
         choices=PAYMENT_STATUS_CHOICES,
@@ -59,15 +59,15 @@ class Payment(models.Model):
         unique_together = ('student', 'debited_month', 'payment_type')
         ordering = ['-debited_date_time']
     
-    def clean(self):
-        """Custom validation logic
-        """
-        if self.payment_type == 'Registration':
-            # self.payment_status = None
-            self.debited_month = None
-        else:
-            if not self.debited_month:
-                raise ValidationError("debited_month is required.")
+    # def clean(self):
+    #     """Custom validation logic
+    #     """
+    #     if self.payment_type == 'registration':
+    #         # self.payment_status = None
+    #         self.debited_month = None
+    #     else:
+    #         if not self.debited_month:
+    #             raise ValidationError("debited_month is required.")
     
     def save(self, *args, **kwargs):
         self.full_clean()  # Calls the clean() method before saving
