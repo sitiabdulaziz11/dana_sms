@@ -1,11 +1,13 @@
 
+css like reduce size, make good button logout
+ <span>Welcome, {{ user.username }}</span>
+  <button type="submit">Logout</button>
 
-if hasattr(request.user, "student"):
-        student = request.user.student not work
-        
-remember to start on:
+  remember to start on:
  change color of oromo text
 
+if hasattr(request.user, "student"): ✔
+     student = request.user.student not work ✔
 
 remove background of enkuan ✔
 

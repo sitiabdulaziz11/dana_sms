@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -26,6 +27,19 @@ urlpatterns = [
     path("", include("students.surls")),
     path("", include("common.urlsc")),
     path("", include("parents.urlsp")),
+    
+    
+    path(
+        "accounts/logout/",
+        auth_views.LogoutView.as_view(
+            # next_page="/",
+            # extra_context={'message': 'You have successfully logged out!'}
+        ),
+        name="logout"
+    ),
+    
+    path("accounts/", include("django.contrib.auth.urls")),
+    
 ]
 
 if settings.DEBUG:

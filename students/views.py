@@ -17,12 +17,19 @@ def main_page(request):
     """
     return render(request, "students/index.html")
 
-def login_page(request):
-    """ login page
+
+# def login_page(request):
+#     """ login page
+#     """
+#     print("Logged in user:", request.user)
+#     print("Has student?", hasattr(request.user, "student"))
+#     return render(request, "registration/login.html")
+
+def logout_page(request):
+    """ logout page
     """
-    print("Logged in user:", request.user)
-    print("Has student?", hasattr(request.user, "student"))
-    return render(request, "registration/login.html")
+    return render(request, "registration/log_out.html")
+
 
 @login_required
 def profile_page(request):
@@ -31,8 +38,8 @@ def profile_page(request):
     # request.user gives logged-in user
     # student = StudentRegistration.objects.get()
     # student = request.user.student
-    if hasattr(request.user, "student"):
-        student = request.user.student
+    if hasattr(request.user, "studentregistration"):
+        student = request.user.studentregistration
     else:
         return HttpResponse("This user is not a student.")
     return render(request, "profile.html", {"student": student})

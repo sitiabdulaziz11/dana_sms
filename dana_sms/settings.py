@@ -156,3 +156,11 @@ STATICFILES_FINDERS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# # Keep the user logged in for 2 weeks
+# SESSION_COOKIE_AGE = 1209600     # 2 weeks in seconds
+# SESSION_SAVE_EVERY_REQUEST = True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Redirect user after logout
+# LOGOUT_REDIRECT_URL = "/"  # or "/home/" or any landing page

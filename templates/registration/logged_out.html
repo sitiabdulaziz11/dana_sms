@@ -1,0 +1,27 @@
+
+{% comment %} {% extends "base.html" %} {% endcomment %}
+
+
+{% comment %} <h2>You have been logged out</h2>
+<a href="{% url 'login' %}">Login again</a> {% endcomment %}
+
+{% comment %} <form method="POST" action="{% url 'logout' %}"  onsubmit="return confirm('Are you sure you want to logout?');">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form> {% endcomment %}
+
+{% include "includes/messages.html" %}
+
+
+{% comment %} <form method="POST" action="{% url 'logout' %}"> {% endcomment %}
+    {% comment %} {% csrf_token %} {% endcomment %}
+<div>
+    <p>Are you sure you want to logout?</p>
+    {% comment %} <button class="btn btn-light ms-2" type="submit">Logout</button> {% endcomment %}
+    <a href="{% url 'log_out' %}" class="btn btn-primary mt-3">Logout</a>
+    {% comment %} </form> {% endcomment %}
+</div> 
+
+
+
+

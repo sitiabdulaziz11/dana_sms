@@ -41,3 +41,26 @@ sol/n
 
 fixed by after many soltion by adding DEBUG=True on .env file
  
+ 3
+   "User' object has no attribute 'student'" and This user is not a student.
+   issue solved by making student to studentregistratinon b/c my model is that.
+@login_required
+def profile_page(request):
+    """ To handle user profile
+    """
+    # request.user gives logged-in user
+    # student = StudentRegistration.objects.get()
+    # student = request.user.student
+    if hasattr(request.user, "studentregistration"):
+        student = request.user.studentregistration
+    else:
+        return HttpResponse("This user is not a student.")
+    return render(request, "profile.html", {"student": student})
+
+
+4  
+<a href="{% url 'logout' %}" class="btn btn-primary mt-3">Logout</a> 
+not work b/c i use "logout" name same with built in logout
+and after i changed to 
+<a href="{% url 'log_out' %}" class="btn btn-primary mt-3">Logout</a> 
+works

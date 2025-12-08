@@ -1,0 +1,5 @@
+
+permission checks, how it handle?
+Call logout() in the view, how log out work?
+@login_required to ask new users and after some duration , think is default
+

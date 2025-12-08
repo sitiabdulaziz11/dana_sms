@@ -1,0 +1,274 @@
+In Django, @login_required does NOT ask for login every time because:
+
+✅ Reason
+
+When a user logs in, Django stores their authentication in a session (using cookies).
+As long as the session is valid (not expired, not cleared), the user stays logged in.
+
+So when they visit a page with @login_required, Django sees:
+
+User has a valid session
+
+→ Access is allowed
+
+→ No need to re-login
+
+This is normal behavior and exactly how authentication systems work.
+
+✅ If you want Django to ask login every time
+
+There are several ways, depending on what you want.
+
+Option 1: Reduce session expiry time
+
+Make login expire very quickly (e.g., 1 minute).
+
+# settings.py
+SESSION_COOKIE_AGE = 60   # 60 seconds
+
+
+Then after 1 minute of inactivity, the user must log in again.
+
+Option 2: Log out user automatically after each request
+
+If you want force login every time, you can log users out manually:
+
+Example: force logout before accessing special view
+from django.contrib.auth import logout
+
+@login_required
+def sensitive_page(request):
+    logout(request)
+    return redirect('login')
+
+
+But this logs them out immediately, so they must log in again.
+
+Option 3: Use session-based login (no remember-me)
+
+By default Django session lasts until the browser is closed.
+
+If your browser keeps sessions after restart, disable it:
+
+# settings.py
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+So the user must log in again after closing the browser.
+
+Option 4: Add your own confirmation password page
+
+If you want something like "Re-enter password to continue":
+
+You can add a custom view:
+
+@login_required
+def verify_password(request):
+    if request.method == "POST":
+        if request.user.check_password(request.POST["password"]):
+            request.session['verified'] = True
+            return redirect('sensitive-page')
+    return render(request, "verify.html")
+
+⭐ Summary
+What you want	Solution
+Ask login after short time	SESSION_COOKIE_AGE
+Login required every visit	Call logout() in the view
+Login expires when browser closes	SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+Re-enter password for special page	Custom confirm view
+
+If you tell me exactly what behavior you want, I can give you the best recommended setup.
+
+You said:
+not expired, not cleared, when it expried and how it cleared?
+ChatGPT said:
+
+Great question — let’s make it very clear and simple.
+
+✅ When does Django login session expire and get cleared?
+
+Django sessions are stored in cookies + database (or cache).
+Three things determine when a user is logged out:
+
+1️⃣ Expiration by time (SESSION_COOKIE_AGE)
+
+By default:
+
+SESSION_COOKIE_AGE = 1209600   # 2 weeks (in seconds)
+
+
+That means:
+
+✔️ After 2 weeks, the session expires
+✔️ User must log in again
+
+You can change it:
+
+SESSION_COOKIE_AGE = 3600   # 1 hour
+
+2️⃣ Expiration when browser closes
+
+If you enable:
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+Then Django does not store expiry time in the cookie.
+
+✔️ When the browser closes → user logged out
+✔️ When reopened → must log in again
+
+3️⃣ Clearing when the user logs out
+
+If you manually log out:
+
+from django.contrib.auth import logout
+
+logout(request)
+
+
+✔️ This clears the session immediately.
+
+4️⃣ Clearing when Django cleans old sessions
+
+Django has a built-in command:
+
+python manage.py clearsessions
+
+
+This removes expired sessions from the database.
+
+Django also runs this automatically periodically if you use:
+
+database sessions
+
+cache sessions
+
+✔️ Expired sessions are deleted
+✔️ User gets logged out (because session cookie no longer matches)
+
+5️⃣ Clearing by deleting cookies manually
+
+If the user clears browser cookies:
+
+✔️ Session cookie is removed
+✔️ User gets logged out instantly
+
+⭐ Summary: Why your login is not asking again
+
+Because:
+
+Your session cookie is still valid (not 2 weeks old)
+
+You have not closed the browser (if you didn’t enable SESSION_EXPIRE_AT_BROWSER_CLOSE)
+
+Django hasn’t cleared the session
+
+You didn’t click logout
+
+This is normal authentication behavior.
+
+⭐ If you want it to ask login every single visit…
+
+Tell me exactly how you want it to behave:
+
+Choose one:
+
+❓ Ask login every time user opens the page
+
+❓ Ask login after a very short time (e.g., 1 minute)
+
+❓ Ask login after closing the browser
+
+❓ Ask password again only for a special sensitive page
+
+Which one do you want?
+
+You said:
+Clearing by deleting cookies manually, how i do it?
+ChatGPT said:
+
+You can delete cookies yourself from the browser.
+When you delete cookies, Django’s session cookie is removed → the user is logged out immediately.
+
+Below is how to do it in different browsers.
+
+🔵 Google Chrome (Windows / Mac)
+Option 1: Delete cookies for one site
+
+Open your website in Chrome
+
+Click the padlock icon on the left of the URL
+
+Click Cookies
+
+Select each cookie → click Remove
+
+Refresh the page → you will be logged out
+
+Option 2: Clear all cookies
+
+Open Chrome
+
+Press Ctrl + Shift + Delete (Windows)
+Or Cmd + Shift + Delete (Mac)
+
+Choose:
+
+Cookies and other site data
+
+Click Clear data
+
+This logs you out of all sites.
+
+🔵 Mozilla Firefox
+
+Click the menu (☰)
+
+Go to Settings
+
+Go to Privacy & Security
+
+In Cookies and Site Data, click Manage Data
+
+Search your site
+
+Select it → Remove Selected
+
+Refresh → logged out
+
+🔵 Microsoft Edge
+
+Click the padlock icon → Cookies
+
+Remove cookies for the site
+
+Refresh the page
+
+Or:
+
+Press Ctrl + Shift + Delete
+
+Select Cookies
+
+Clear data
+
+🔵 Safari (Mac)
+
+Click Safari > Settings
+
+Go to Privacy
+
+Click Manage Website Data
+
+Search for your site
+
+Click Remove
+
+⭐ After deleting cookies
+
+When you open your Django page with @login_required, Django will:
+
+✔️ Not find the session cookie
+✔️ Redirect the user to the login page
+✔️ Ask to log in again

@@ -1,0 +1,17 @@
+
+{% block content %}
+
+<div class="text-center mt-5">
+    <h3>You have successfully logged out.</h3>
+    {% comment %} <p>Redirecting to home...</p> {% endcomment %}
+
+    {% comment %} <a href="/" class="btn btn-primary mt-3">Go Now</a> {% endcomment %}
+</div>
+
+<script>
+    setTimeout(function() {
+        window.location.href = "/";
+    }, 3000);  // redirect after 2 seconds
+</script>
+
+{% endblock %}

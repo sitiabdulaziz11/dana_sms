@@ -7,7 +7,7 @@
 
 <h2>Login</h2>
 
-<form method="POST">
+<form method="POST"  action="{% url 'login' %}?next={% url 'dashboard' %}">
     {% csrf_token %}
     {{ form.as_p }}
 
